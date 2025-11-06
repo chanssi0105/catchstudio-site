@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* 보더박스 통일 */
 *, *::before, *::after { box-sizing: border-box;}
 
