@@ -1,0 +1,123 @@
+/* 보더박스 통일 */
+*, *::before, *::after { box-sizing: border-box;}
+
+/* 문서 기본 (root는 16px 유지) */
+html {
+  font-size: 100%;             
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
+  letter-spacing: -0.2px;
+  word-break: keep-all;        
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", sans-serif;
+}
+
+/* 미디어(반응형 기본) */
+img, picture, video, canvas, svg {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+/* 폼/인터랙션 최소 리셋 */
+input, button, textarea, select { font: inherit; color: inherit; }
+button { border: 0; background: transparent; cursor: pointer; }
+a { color: var(--color-secondary); text-decoration: none; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* 리스트/테이블 최소화 */
+ul, ol { margin: 0; padding: 0; list-style: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 기본 마진 정리 */
+:where(h1, h2, h3, h4, p, figure, blockquote) { margin: 0; }
+
+/* 모션 감소 선호 */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ===================== 디자인 토큰 ====================================== */
+:root{
+  /* Color */
+  --color-primary:#000;
+  --color-secondary:#000;
+  --color-white:#000;
+  --color-black:#000;
+  --color-gray100:#000;
+  --color-gray200:#000;
+  --color-gray300:#000;
+  --color-transparent:transparent;
+
+  /* Type scale (fluid) — root 16px 기준 */
+  --fs-12: clamp(0.75rem, 0.4vw + 0.6rem, 0.8rem);     /* ≈12~13px */
+  --fs-14: clamp(0.875rem, 0.5vw + 0.7rem, 0.95rem);   /* ≈14~15px */
+  --fs-16: clamp(1rem, 0.6vw + 0.8rem, 1.0625rem);     /* ≈16~17px */
+  --fs-18: clamp(1.125rem, 0.8vw + 0.85rem, 1.25rem);  /* ≈18~20px */
+  --fs-h4: clamp(1.25rem, 1.0vw + 0.9rem, 1.375rem);   /* ≈20~22px */
+  --fs-h3: clamp(1.375rem, 1.4vw + 1rem, 1.5rem);      /* ≈22~24px */
+  --fs-h2: clamp(1.5rem, 2.0vw + 1rem, 1.75rem);       /* ≈24~28px */
+  --fs-h1: clamp(2rem, 4vw + 1rem, 2.875rem);          /* ≈32~46px */
+
+  /* Space */
+  --space-60: 3.75rem;   /* 60px */
+  --space-120: 7.5rem;   /* 120px */
+
+  /* Layout */
+  --container: 80rem;    /* 1280px */
+}
+
+/* 다크모드 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #000;
+    --color-secondary: #000;
+    --color-white: #000;
+    --color-black: #000;
+    --color-gray100: #1a1a1a;
+    --color-gray200: #2a2a2a;
+    --color-gray300: #3a3a3a;
+    /* 기타 필요한 색상 토큰만 수정하면 됨 */
+  }
+}
+
+/* 브레이크포인트(모바일 퍼스트) — em 단위(사용자 확대 대응) */
+@media (min-width: 30em)  { /* 480px  */ }
+@media (min-width: 48em)  { /* 768px  */ }
+@media (min-width: 64em)  { /* 1024px */ }
+@media (min-width: 80em)  { /* 1280px */ }
+@media (min-width: 96em)  { /* 1536px */ }
+
+
+/* ===================== 타이포 =========================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+body, p { font-size: var(--fs-16); }
+
+/* ===================== 유틸 ============================================= */
+/* 줄임(멀티라인) */
+.sentence-line1 {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sentence-line2, .sentence-line3, .sentence-line4 {
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
+}
+.sentence-line2 { -webkit-line-clamp: 2; }
+.sentence-line3 { -webkit-line-clamp: 3; }
+.sentence-line4 { -webkit-line-clamp: 4; }
