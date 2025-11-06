@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <title>Catch Studio</title>
+    <head id="site-head">
+        <style>
+            .coming{display:flex; flex-direction:column; justify-content:center; align-items:center; width:100%; height:100vh; text-align:center;}
+            .coming p{margin-top:1rem;}
+        </style>
     </head>
     <body>
-        <h1>Catch Studio 사이트 배포 성공!</h1>
-        <p>깃허브 자동 배포 연결 완료!!</p>
+        <div class="coming">
+            <h1>Everything starts with a Catch</h1>
+            <p>캐치 스튜디오의 새로운 사이트를 준비하고 있어요.</p>
+        </div>
     </body>
+
+    <!-- 로컬 개발에 안전한 상대경로 권장 -->
+  <script defer src="./assets/js/includes.js" data-head="./partials/_head.html" data-nocache="false"></script>
+  <!--
+    data-header="./partials/header.html"
+    data-footer="./partials/footer.html"
+  -->
 </html>
