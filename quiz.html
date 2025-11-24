@@ -82,7 +82,6 @@
     .screen { display: none; flex: 1; }
     .screen.active { display: flex; flex-direction: column;}
     #screen-ready, #screen-result{justify-content: center; height:100%;}
-    
 
     /* ---- 제시어 선택 ---- */
     .category-list {
@@ -297,6 +296,33 @@
       border-color: #2563eb;
       color: #ffffff;
     }
+
+    /* 패스 설정 버튼 */
+    .pass-section-label {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin: 4px 0 6px;
+    }
+    .pass-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .pass-btn {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+    }
+    .pass-btn.active {
+      background: #3b82f6;
+      border-color: #2563eb;
+      color: #ffffff;
+    }
+
     .modal-footer {
       display: flex;
       justify-content: flex-end;
@@ -322,7 +348,7 @@
       }
     }
     @media (min-width: 768px) {
-      #game-word {font-size: 15rem;} /* 또는 14rem, 15rem 원하는대로 */
+      #game-word {font-size: 15rem;}
       .result-number{font-size: 20rem;}
     }
     @media (max-width: 600px) {
@@ -341,7 +367,7 @@
       <button class="icon-button" id="btn-settings">⚙️</button>
     </div>
     <div class="subtitle" id="subtitle-area">
-      우측 상단 ⚙️ 버튼으로 라운드 시간을 설정하고,<br>
+      우측 상단 ⚙️ 버튼으로 라운드 시간과 패스 횟수를 설정하고,<br>
       제시어를 골라 O / X / 패스로 진행해봐!
     </div>
 
@@ -363,7 +389,7 @@
       <div class="info-text">
         선택한 제시어 카테고리로 게임을 시작해!<br>
         제한 시간 안에 맞춤 / 틀림 / 패스로 진행하면 돼.<br>
-        (패스는 한 판에 2번까지)
+        (패스 횟수는 설정 화면에서 정할 수 있어)
       </div>
       <div class="btn-row">
         <button class="btn-secondary" id="btn-back-list">제시어 다시 고르기</button>
@@ -386,6 +412,7 @@
             <button class="btn-o" id="btn-o">정답! (O)</button>
             <button class="btn-x" id="btn-x">틀림 (X)</button>
           </div>
+          <!-- 초기 텍스트는 어차피 startGame에서 덮어씀 -->
           <button class="btn-pass" id="btn-pass">패스 (2회 남음)</button>
           <div class="btn-row">
             <button class="btn-ghost" id="btn-stop">게임 중단</button>
@@ -411,10 +438,14 @@
   <div id="settings-backdrop" class="modal-backdrop hidden">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title">라운드 시간 설정</div>
+        <div class="modal-title">게임 설정</div>
         <button class="modal-close" id="btn-settings-close">✕</button>
       </div>
-      <div class="modal-body">30초 ~ 180초 중 하나를 선택해줘.</div>
+      <div class="modal-body">
+        라운드 시간과 한 판당 패스 횟수를 설정해줘.
+      </div>
+
+      <!-- 시간 설정 -->
       <div class="timer-buttons">
         <button class="timer-btn" data-seconds="30">30초</button>
         <button class="timer-btn" data-seconds="60">60초</button>
@@ -422,6 +453,17 @@
         <button class="timer-btn" data-seconds="120">120초</button>
         <button class="timer-btn" data-seconds="180">180초</button>
       </div>
+
+      <!-- 패스 설정 -->
+      <div class="pass-section-label">패스 횟수 (1 ~ 5회)</div>
+      <div class="pass-buttons">
+        <button class="pass-btn" data-pass="1">1회</button>
+        <button class="pass-btn" data-pass="2">2회</button>
+        <button class="pass-btn" data-pass="3">3회</button>
+        <button class="pass-btn" data-pass="4">4회</button>
+        <button class="pass-btn" data-pass="5">5회</button>
+      </div>
+
       <div class="modal-footer">
         <button class="btn-secondary" id="btn-settings-ok">닫기</button>
       </div>
@@ -431,7 +473,7 @@
   <script>
     /* ---- 데이터 ---- */
     const data = {
-      "🐾 동물": ["펭귄","코끼리","기린","고래","캥거루","늑대","하마","여우","판다","독수리","코알라","다람쥐","부엉이","수달","바다거북","고릴라","두더지","원숭이","바다사자","사슴","스컹크","타조","치타","물개","두루미","백조","바다표범","거미","문어","매미"],
+      "🐾 동물": ["강아지","고양이","말","돼지","소","닭","토끼","사자","호랑이","곰","코끼리","기린","펭귄","원숭이","고릴라","멧돼지","낙타","늑대","캥거루","하마","판다","수달","독수리","고래","상어","물개","뱀","여우","고슴도치","햄스터","개구리","악어","거미","문어","게","양","타조"]
       "🍉 과일": ["바나나","수박","사과","포도","파인애플","오렌지","체리","망고","자두","레몬","귤","배","복숭아","블루베리","멜론","석류","자몽","무화과","아보카도","키위","코코넛","라임","올리브","대추야자","용과","파파야","사과 반쪽","과일꼬치","과일 주스","과일 바구니"],
       "🏅 스포츠": ["볼링","수영","농구","테니스","배드민턴","축구","골프","태권도","유도","펜싱","복싱","스키","스노보드","서핑","컬링","탁구","승마","양궁","마라톤","역도","라크로스","아이스하키","스쿼시","클라이밍","체조","배구","씨름","씨클로크로스","수상스키","암벽등반"],
       "💼 직업": ["요리사","경찰","소방관","선생님","의사","간호사","우체부","파일럿","카레이서","바리스타","사진작가","가수","댄서","마술사","운동선수","화가","DJ","헤어디자이너","영양사","판사","정비사","농부","택시기사","선원","수의사","심판","외교관","고고학자","등반가","성악가"],
@@ -467,6 +509,7 @@
     const btnSettingsOk    = document.getElementById("btn-settings-ok");
 
     const timerButtons     = settingsBackdrop.querySelectorAll(".timer-btn");
+    const passButtons      = settingsBackdrop.querySelectorAll(".pass-btn");
 
     const bgSound      = document.getElementById("bg-sound");
     const endSound     = document.getElementById("end-sound");
@@ -483,7 +526,7 @@
     let timeLeft = 60;
     let timerId = null;
     let passCount = 0;
-    const maxPass = 2;
+    let selectedPassCount = 2; // 기본 패스 2회
 
     /* ---- 공통 ---- */
     function shuffle(arr) {
@@ -511,35 +554,50 @@
       btnSettings.style.display = isListScreen ? "block" : "none";
     }
 
-    /* ---- 설정 모달 ---- */
+    /* ---- 설정 모달 : 시간 ---- */
     function setSelectedTime(sec) {
       selectedTimeSec = sec;
       timerButtons.forEach(btn=>{
         btn.classList.toggle("active", Number(btn.dataset.seconds)===sec);
       });
     }
+
+    /* ---- 설정 모달 : 패스 ---- */
+    function setSelectedPass(count) {
+      selectedPassCount = count;
+      passButtons.forEach(btn=>{
+        btn.classList.toggle("active", Number(btn.dataset.pass)===count);
+      });
+    }
+
     btnSettings.addEventListener("click", ()=> {
       setSelectedTime(selectedTimeSec);
+      setSelectedPass(selectedPassCount);
       settingsBackdrop.classList.remove("hidden");
     });
     btnSettingsClose.addEventListener("click", ()=> settingsBackdrop.classList.add("hidden"));
     btnSettingsOk.addEventListener("click", ()=> settingsBackdrop.classList.add("hidden"));
+
     timerButtons.forEach(btn=>{
       btn.addEventListener("click", ()=> setSelectedTime(Number(btn.dataset.seconds)));
     });
+    passButtons.forEach(btn=>{
+      btn.addEventListener("click", ()=> setSelectedPass(Number(btn.dataset.pass)));
+    });
+
     settingsBackdrop.addEventListener("click", e=>{
       if(e.target===settingsBackdrop) settingsBackdrop.classList.add("hidden");
     });
 
     /* ---- 패스 버튼 업데이트 ---- */
     function updatePassButton() {
-      const r = maxPass - passCount;
+      const r = selectedPassCount - passCount;
       btnPass.textContent = `패스 (${r}회 남음)`;
       btnPass.disabled = r<=0;
     }
 
-    /* ---- 사운드 ---- */
-    function playCorrectSound(){ try{soungCorrect.currentTime=0; soundCorrect.play();}catch{} }
+    /* ---- 사운드 (사용 안 하는 래퍼는 그대로 둠) ---- */
+    function playCorrectSound(){ try{soundCorrect.currentTime=0; soundCorrect.play();}catch{} }
     function playWrongSound(){   try{soundWrong.currentTime=0;   soundWrong.play();}catch{} }
     function playPassSound(){    try{soundPass.currentTime=0;    soundPass.play();}catch{} }
 
@@ -569,7 +627,7 @@
         if(timeLeft<=0) {
           timeLeft = 0;
           timeTextEl.textContent = formatTime(timeLeft);
-          endGame(true);
+          endGame();
         } else {
           timeTextEl.textContent = formatTime(timeLeft);
         }
@@ -600,11 +658,11 @@
         endSound.currentTime = 0;
       }).catch(() => {});
 
-      // 🖥 전체화면 요청 (갤럭시 탭 크롬 포함)
+      // 🖥 전체화면 요청
       const docEl = document.documentElement;
       if (docEl.requestFullscreen) {
         docEl.requestFullscreen().catch(() => {});
-      } else if (docEl.webkitRequestFullscreen) { // 혹시 구형 브라우저 대비
+      } else if (docEl.webkitRequestFullscreen) {
         docEl.webkitRequestFullscreen();
       }
 
@@ -626,7 +684,7 @@
       goNextWord();
     });
     btnPass.addEventListener("click", ()=>{
-      if(passCount>=maxPass) return;
+      if(passCount>=selectedPassCount) return;
       passCount++;
       updatePassButton();
       try{ soundPass.currentTime=0; soundPass.play(); }catch{}
@@ -660,6 +718,9 @@
 
     /* ---- 초기 렌더 ---- */
     renderCategoryList();
+    // 초기 설정 선택 표시
+    setSelectedTime(selectedTimeSec);
+    setSelectedPass(selectedPassCount);
   </script>
 </body>
 </html>
