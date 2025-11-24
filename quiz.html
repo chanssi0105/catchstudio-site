@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>몸으로 말해요 제시어 게임</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      line-height:1.5;
+    }
+
+    .app {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- 헤더 (제시어 화면에서만 보임) ---- */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    h1 {
+      width: 100%;
+      font-size: 2rem;
+      margin: 0;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 1rem;
+      text-align: center;
+      color: #777;
+      margin-bottom: 30px;
+    }
+    .icon-button {
+      position:absolute;
+      z-index:1;
+      top:30px;
+      right:30px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.3rem;
+      padding: 4px;
+    }
+
+    /* ---- 공통 화면 ---- */
+    .screen { display: none; flex: 1; }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ---- 제시어 선택 ---- */
+    .category-list {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5열 */
+      gap: 20px;
+    }
+    .category-item {
+      width: 100%;
+      min-height:250px;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: column;
+      font-size: 2rem;
+      text-align:center;
+    }
+    .category-item span.sub {
+      font-size: 1rem;
+      color: #9ca3af;
+    }
+    .category-item:hover {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
+
+    .big-word {
+      font-size: 4rem;
+      font-weight: 600;
+      text-align: center;
+      margin: 32px 12px 20px;
+      word-break: keep-all;
+    }
+    .info-text {
+      font-size: 1.2rem;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-primary { background: #3b82f6; color: white; }
+    .btn-secondary { background: #e5e7eb; color: #111827; }
+    .btn-ghost { background: transparent; color: #6b7280; }
+
+    /* ---- 게임 화면 ---- */
+    #screen-game { height: 100%; }
+    .game-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    .badge {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 1.2rem;
+      background: #f3f4f6;
+    }
+    .badge.timer {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .badge.score {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    .game-word-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+    }
+    #game-word {
+      font-size: clamp(5rem, 12vw, 11rem);
+      font-weight: 700;
+      text-align: center;
+      word-break: keep-all;
+      line-height: 1.1;
+    }
+
+    .ox-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 16px;
+    }
+    .btn-o, .btn-x {
+      flex: 1;
+      height:100px;
+      padding: 20px;
+      font-size: 2rem;
+      font-weight:700;
+      color: white;
+    }
+    .btn-o { background: #22c55e; }
+    .btn-x { background: #ef4444; }
+
+    .btn-pass {
+      width: 100%;
+      margin-top: 30px;
+      background: #e5e7eb;
+      color: #111827;
+      padding: 20px;
+      font-size: 2rem;
+      font-weight:700;
+    }
+    .btn-pass:disabled {
+      background: #f3f4f6;
+      color: #9ca3af;
+      cursor: default;
+    }
+
+    .result-number {
+      font-size: clamp(5rem, 12vw, 11rem);
+      font-weight: 700;
+      text-align: center;
+      margin: 16px 0 8px;
+    }
+    .result-label {
+      font-size: 1.2rem;
+      text-align: center;
+      color: #4b5563;
+    }
+
+    /* ---- 설정 모달 ---- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .modal {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 18px 14px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .modal-close {
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .modal-body {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-bottom: 12px;
+    }
+    .timer-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .timer-btn {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+    }
+    .timer-btn.active {
+      background: #3b82f6;
+      border-color: #2563eb;
+      color: #ffffff;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .modal-footer button {
+      padding: 8px 14px;
+      font-size: 0.9rem;
+    }
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 1200px) {
+      .category-list {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    @media (max-width: 900px) {
+      .category-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .category-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 헤더는 처음 화면에서만 보이는 영역 -->
+    <div class="app-header" id="title-area">
+      <h1>몸으로 말해요 제시어 게임</h1>
+      <button class="icon-button" id="btn-settings">⚙️</button>
+    </div>
+    <div class="subtitle" id="subtitle-area">
+      우측 상단 ⚙️ 버튼으로 라운드 시간을 설정하고,<br>
+      제시어를 골라 O / X / 패스로 진행해봐!
+    </div>
+
+    <!-- 사운드 -->
+    <audio id="bg-sound" src="sounds/tick-loop.mp3" preload="auto" loop></audio>
+    <audio id="end-sound" src="sounds/time-up.mp3" preload="auto"></audio>
+    <audio id="sound-correct" src="sounds/correct.mp3" preload="auto"></audio>
+    <audio id="sound-wrong"   src="sounds/wrong.mp3" preload="auto"></audio>
+    <audio id="sound-pass"    src="sounds/pass.mp3" preload="auto"></audio>
+
+    <!-- 1. 제시어 선택 -->
+    <div id="screen-list" class="screen active">
+      <div class="category-list" id="category-list"></div>
+    </div>
+
+    <!-- 2. 준비 -->
+    <div id="screen-ready" class="screen">
+      <div class="big-word" id="ready-category"></div>
+      <div class="info-text">
+        선택한 제시어 카테고리로 게임을 시작해!<br>
+        제한 시간 안에 맞춤 / 틀림 / 패스로 진행하면 돼.<br>
+        (패스는 한 판에 2번까지)
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btn-back-list">제시어 다시 고르기</button>
+        <button class="btn-primary" id="btn-start-game">게임 시작</button>
+      </div>
+    </div>
+
+    <!-- 3. 게임 -->
+    <div id="screen-game" class="screen">
+      <div class="game-inner">
+        <div class="game-header">
+          <div class="badge timer">남은 시간: <span id="time-text">0:00</span></div>
+          <div class="badge score">맞춘 개수: <span id="score-text">0</span></div>
+        </div>
+        <div class="game-word-wrap">
+          <div id="game-word"></div>
+        </div>
+        <div>
+          <div class="ox-row">
+            <button class="btn-o" id="btn-o">정답! (O)</button>
+            <button class="btn-x" id="btn-x">틀림 (X)</button>
+          </div>
+          <button class="btn-pass" id="btn-pass">패스 (2회 남음)</button>
+          <div class="btn-row">
+            <button class="btn-ghost" id="btn-stop">게임 중단</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 결과 -->
+    <div id="screen-result" class="screen">
+      <div class="result-label">이번 라운드에서 맞힌 문제 수</div>
+      <div class="result-number" id="result-score">0</div>
+      <div class="info-text">
+        다시 하려면 아래 버튼을 눌러 제시어를 고른 뒤 시작해줘!
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btn-result-to-list">제시어 목록으로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 설정 모달 -->
+  <div id="settings-backdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">라운드 시간 설정</div>
+        <button class="modal-close" id="btn-settings-close">✕</button>
+      </div>
+      <div class="modal-body">30초 ~ 180초 중 하나를 선택해줘.</div>
+      <div class="timer-buttons">
+        <button class="timer-btn" data-seconds="30">30초</button>
+        <button class="timer-btn" data-seconds="60">60초</button>
+        <button class="timer-btn" data-seconds="90">90초</button>
+        <button class="timer-btn" data-seconds="120">120초</button>
+        <button class="timer-btn" data-seconds="180">180초</button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-settings-ok">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---- 데이터 ---- */
+    const data = {
+      "🐾 동물": ["펭귄","코끼리","기린","고래","캥거루","늑대","하마","여우","판다","독수리","코알라","다람쥐","부엉이","수달","바다거북","고릴라","두더지","원숭이","바다사자","사슴","스컹크","타조","치타","물개","두루미","백조","바다표범","거미","문어","매미"],
+      "🍉 과일": ["바나나","수박","사과","포도","파인애플","오렌지","체리","망고","자두","레몬","귤","배","복숭아","블루베리","멜론","석류","자몽","무화과","아보카도","키위","코코넛","라임","올리브","대추야자","용과","파파야","사과 반쪽","과일꼬치","과일 주스","과일 바구니"],
+      "🏅 스포츠": ["볼링","수영","농구","테니스","배드민턴","축구","골프","태권도","유도","펜싱","복싱","스키","스노보드","서핑","컬링","탁구","승마","양궁","마라톤","역도","라크로스","아이스하키","스쿼시","클라이밍","체조","배구","씨름","씨클로크로스","수상스키","암벽등반"],
+      "💼 직업": ["요리사","경찰","소방관","선생님","의사","간호사","우체부","파일럿","카레이서","바리스타","사진작가","가수","댄서","마술사","운동선수","화가","DJ","헤어디자이너","영양사","판사","정비사","농부","택시기사","선원","수의사","심판","외교관","고고학자","등반가","성악가"],
+      "🍽 음식": ["피자","햄버거","김밥","라면","떡볶이","치킨","만두","파스타","케이크","샌드위치","스테이크","커리","햄&치즈 토스트","쌀국수","소고기구이","피쉬앤칩스","핫도그","삼겹살","탕수육","우동","초밥","오므라이스","부리또","타코","치즈퐁듀","로브스터","파에야","그릴 채소","팝콘","바비큐"],
+      "😊 감정": ["기쁨","슬픔","분노","당황","놀람","지루함","자랑스러움","뿌듯함","애정","민망함","피곤함","활기참","초조함","깜짝 행복","심술","응원하는 기분","화해하려는 감정","긴장","승리감","아쉬움","후회","질투","허세","열광","냉담함","집착","경쟁심","흐뭇함","자포자기","편안함"],
+      "📦 사물": ["카메라","시계","칼","우산","빗자루","선풍기","칫솔","이어폰","가위","망치","낚싯대","라이터","텐트","돋보기","전기밥솥","키보드","마우스","의자","지갑","선글라스","캐리어","드론","돗자리","붕대","화장품 파우치","비누","스마트워치","리모컨","셀카봉","망원경"]
+    };
+
+    /* ---- DOM ---- */
+    const screenList   = document.getElementById("screen-list");
+    const screenReady  = document.getElementById("screen-ready");
+    const screenGame   = document.getElementById("screen-game");
+    const screenResult = document.getElementById("screen-result");
+    const titleArea    = document.getElementById("title-area");
+    const subtitleArea = document.getElementById("subtitle-area");
+
+    const categoryListEl   = document.getElementById("category-list");
+    const readyCategoryEl  = document.getElementById("ready-category");
+    const gameWordEl       = document.getElementById("game-word");
+    const timeTextEl       = document.getElementById("time-text");
+    const scoreTextEl      = document.getElementById("score-text");
+    const resultScoreEl    = document.getElementById("result-score");
+    const btnBackList      = document.getElementById("btn-back-list");
+    const btnStartGame     = document.getElementById("btn-start-game");
+    const btnO             = document.getElementById("btn-o");
+    const btnX             = document.getElementById("btn-x");
+    const btnPass          = document.getElementById("btn-pass");
+    const btnStop          = document.getElementById("btn-stop");
+    const btnResultToList  = document.getElementById("btn-result-to-list");
+    const btnSettings      = document.getElementById("btn-settings");
+    const settingsBackdrop = document.getElementById("settings-backdrop");
+    const btnSettingsClose = document.getElementById("btn-settings-close");
+    const btnSettingsOk    = document.getElementById("btn-settings-ok");
+
+    const timerButtons     = settingsBackdrop.querySelectorAll(".timer-btn");
+
+    const bgSound      = document.getElementById("bg-sound");
+    const endSound     = document.getElementById("end-sound");
+    const soundCorrect = document.getElementById("sound-correct");
+    const soundWrong   = document.getElementById("sound-wrong");
+    const soundPass    = document.getElementById("sound-pass");
+
+    /* ---- 상태 ---- */
+    let selectedTimeSec = 60;
+    let currentCategory = null;
+    let currentIndex = 0;
+    let currentWords = [];
+    let score = 0;
+    let timeLeft = 60;
+    let timerId = null;
+    let passCount = 0;
+    const maxPass = 2;
+
+    /* ---- 공통 ---- */
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i=a.length-1; i>0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function formatTime(sec) {
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return m + ":" + (s<10 ? "0"+s : s);
+    }
+
+    /* ---- 화면 표시 제어 (타이틀/톱니 포함) ---- */
+    function showScreen(target) {
+      [screenList, screenReady, screenGame, screenResult].forEach(s => s.classList.remove("active"));
+      target.classList.add("active");
+
+      const isListScreen = (target === screenList);
+      titleArea.style.display = isListScreen ? "flex" : "none";
+      subtitleArea.style.display = isListScreen ? "block" : "none";
+      btnSettings.style.display = isListScreen ? "block" : "none";
+    }
+
+    /* ---- 설정 모달 ---- */
+    function setSelectedTime(sec) {
+      selectedTimeSec = sec;
+      timerButtons.forEach(btn=>{
+        btn.classList.toggle("active", Number(btn.dataset.seconds)===sec);
+      });
+    }
+    btnSettings.addEventListener("click", ()=> {
+      setSelectedTime(selectedTimeSec);
+      settingsBackdrop.classList.remove("hidden");
+    });
+    btnSettingsClose.addEventListener("click", ()=> settingsBackdrop.classList.add("hidden"));
+    btnSettingsOk.addEventListener("click", ()=> settingsBackdrop.classList.add("hidden"));
+    timerButtons.forEach(btn=>{
+      btn.addEventListener("click", ()=> setSelectedTime(Number(btn.dataset.seconds)));
+    });
+    settingsBackdrop.addEventListener("click", e=>{
+      if(e.target===settingsBackdrop) settingsBackdrop.classList.add("hidden");
+    });
+
+    /* ---- 패스 버튼 업데이트 ---- */
+    function updatePassButton() {
+      const r = maxPass - passCount;
+      btnPass.textContent = `패스 (${r}회 남음)`;
+      btnPass.disabled = r<=0;
+    }
+
+    /* ---- 사운드 ---- */
+    function playCorrectSound(){ try{soungCorrect.currentTime=0; soundCorrect.play();}catch{} }
+    function playWrongSound(){   try{soundWrong.currentTime=0;   soundWrong.play();}catch{} }
+    function playPassSound(){    try{soundPass.currentTime=0;    soundPass.play();}catch{} }
+
+    /* ---- 게임 로직 ---- */
+    function openReadyScreen() {
+      const parts = currentCategory.split(" ");
+      readyCategoryEl.textContent = parts.length>1 ? parts.slice(1).join(" ") : currentCategory;
+      showScreen(screenReady);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = selectedTimeSec;
+      passCount = 0;
+
+      scoreTextEl.textContent = score;
+      timeTextEl.textContent = formatTime(timeLeft);
+      updatePassButton();
+
+      currentWords = shuffle(data[currentCategory]);
+      currentIndex = 0;
+      gameWordEl.textContent = currentWords[currentIndex];
+
+      if(timerId) clearInterval(timerId);
+      timerId = setInterval(()=>{
+        timeLeft--;
+        if(timeLeft<=0) {
+          timeLeft = 0;
+          timeTextEl.textContent = formatTime(timeLeft);
+          endGame(true);
+        } else {
+          timeTextEl.textContent = formatTime(timeLeft);
+        }
+      },1000);
+
+      try{bgSound.currentTime=0; bgSound.play();}catch{}
+      showScreen(screenGame);
+    }
+
+    function goNextWord() {
+      currentIndex = (currentIndex + 1) % currentWords.length;
+      gameWordEl.textContent = currentWords[currentIndex];
+    }
+
+    function endGame() {
+      if(timerId) { clearInterval(timerId); timerId=null; }
+      try{ bgSound.pause(); bgSound.currentTime=0; }catch{}
+      try{ endSound.currentTime=0; endSound.play(); }catch{}
+      resultScoreEl.textContent = score;
+      showScreen(screenResult);
+    }
+
+    /* ---- 버튼 이벤트 ---- */
+    btnStartGame.addEventListener("click", ()=>{
+      endSound.play().then(()=>{ endSound.pause(); endSound.currentTime=0; }).catch(()=>{});
+      startGame();
+    });
+    btnBackList.addEventListener("click", ()=> showScreen(screenList));
+    btnResultToList.addEventListener("click", ()=> showScreen(screenList));
+    btnStop.addEventListener("click", ()=> endGame());
+
+    btnO.addEventListener("click", ()=>{
+      score++; scoreTextEl.textContent=score;
+      try{ soundCorrect.currentTime=0; soundCorrect.play(); }catch{}
+      goNextWord();
+    });
+    btnX.addEventListener("click", ()=>{
+      try{ soundWrong.currentTime=0; soundWrong.play(); }catch{}
+      goNextWord();
+    });
+    btnPass.addEventListener("click", ()=>{
+      if(passCount>=maxPass) return;
+      passCount++;
+      updatePassButton();
+      try{ soundPass.currentTime=0; soundPass.play(); }catch{}
+      goNextWord();
+    });
+
+    /* ---- 카테고리 렌더링 ---- */
+    function renderCategoryList() {
+      categoryListEl.innerHTML = "";
+      Object.keys(data).forEach(name=>{
+        const count = data[name].length;
+        const parts = name.split(" ");
+        const emoji = parts[0];
+        const label = parts.slice(1).join(" ");
+        const btn = document.createElement("button");
+        btn.className = "category-item";
+        btn.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <span style="margin-bottom:5px;font-size:3rem;line-height:1;">${emoji}</span>
+            <span>${label}</span>
+          </div>
+          <span class="sub">${count} 문제</span>
+        `;
+        btn.addEventListener("click", ()=>{
+          currentCategory = name;
+          openReadyScreen();
+        });
+        categoryListEl.appendChild(btn);
+      });
+    }
+
+    /* ---- 초기 렌더 ---- */
+    renderCategoryList();
+  </script>
+</body>
+</html>
