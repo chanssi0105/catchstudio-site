@@ -33,7 +33,7 @@
       line-height:1.5;
 
       overscroll-behavior: none;
-      touch-action: none;
+      touch-action: none; /* 기본은 스크롤 막기 */
     }
 
     .app {
@@ -44,6 +44,52 @@
       padding: 2.5%;
       display: flex;
       flex-direction: column;
+    }
+
+    /* ---- 세로모드 유도 오버레이 ---- */
+    .orientation-lock {
+      position: fixed;
+      inset: 0;
+      background: #020617;
+      color: #f9fafb;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      z-index: 99;
+    }
+    .orientation-inner {
+      max-width: 320px;
+    }
+    .orientation-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .orientation-text {
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    /* 작은 화면 + 가로 방향일 때: 게임 숨기고 세로 안내만 노출 */
+    @media (orientation: landscape) and (max-width: 900px) {
+      .app { display:none; }
+      .orientation-lock { display:flex; }
+    }
+
+    /* ---- 공통 화면 ---- */
+    .screen { display: none; flex: 1; }
+    .screen.active { display: flex; flex-direction: column;}
+    #screen-ready, #screen-result{justify-content: center; height:100%;}
+
+    /* 🔥 첫 화면(제시어 리스트)만 스크롤 허용 */
+    #screen-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: auto; /* 여기서는 터치 스크롤 가능하게 풀기 */
+      padding-bottom: 16px; /* 마지막 줄 여유 */
     }
 
     /* ---- 헤더 (제시어 화면에서만 보임) ---- */
@@ -78,17 +124,13 @@
       padding: 4px;
     }
 
-    /* ---- 공통 화면 ---- */
-    .screen { display: none; flex: 1; }
-    .screen.active { display: flex; flex-direction: column;}
-    #screen-ready, #screen-result{justify-content: center; height:100%;}
-
     /* ---- 제시어 선택 ---- */
     .category-list {
       margin-top: 8px;
       display: grid;
       grid-template-columns: repeat(5, 1fr); /* 5열 */
       gap: 20px;
+      /* 필요하다면 여기에도 touch-action:auto; 추가 가능 */
     }
     .category-item {
       width: 100%;
@@ -119,8 +161,9 @@
       font-size: 4rem;
       font-weight: 600;
       text-align: center;
-      margin: 32px 12px 20px;
+      margin: 0 12px 20px;
       word-break: keep-all;
+      line-height:1;
     }
     .info-text {
       font-size: 1.2rem;
@@ -229,7 +272,7 @@
       font-size: clamp(7rem, 8vw, 20rem);
       font-weight: 700;
       text-align: center;
-      margin: 16px 0 8px;
+      margin: 0 0 10px;
       line-height:1;
     }
     .result-label {
@@ -360,6 +403,17 @@
   </style>
 </head>
 <body>
+  <!-- 세로모드 안내 오버레이 -->
+  <div id="orientation-lock" class="orientation-lock">
+    <div class="orientation-inner">
+      <div class="orientation-icon">📱</div>
+      <div class="orientation-text">
+        이 게임은 세로 화면에 최적화되어 있어.<br>
+        기기를 세로로 돌려서 이용해줘!
+      </div>
+    </div>
+  </div>
+
   <div class="app">
     <!-- 헤더는 처음 화면에서만 보이는 영역 -->
     <div class="app-header" id="title-area">
