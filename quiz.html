@@ -80,7 +80,9 @@
 
     /* ---- 공통 화면 ---- */
     .screen { display: none; flex: 1; }
-    .screen.active { display: flex; flex-direction: column; }
+    .screen.active { display: flex; flex-direction: column;}
+    #screen-ready, #screen-result{justify-content: center; height:100%;}
+    
 
     /* ---- 제시어 선택 ---- */
     .category-list {
@@ -225,10 +227,11 @@
     }
 
     .result-number {
-      font-size: clamp(7rem, 8vw, 15rem);
+      font-size: clamp(7rem, 8vw, 20rem);
       font-weight: 700;
       text-align: center;
       margin: 16px 0 8px;
+      line-height:1;
     }
     .result-label {
       font-size: 1.2rem;
@@ -319,10 +322,8 @@
       }
     }
     @media (min-width: 768px) {
-      #game-word {
-        font-size: 15rem; /* 또는 14rem, 15rem 원하는대로 */
-      }
-      .result-number{font-size:15rem;}
+      #game-word {font-size: 15rem;} /* 또는 14rem, 15rem 원하는대로 */
+      .result-number{font-size: 20rem;}
     }
     @media (max-width: 600px) {
       .category-list {
