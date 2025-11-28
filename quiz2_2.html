@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>같은 동작하기 게임</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+    }
+
+    body { overflow: hidden; }
+
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 버튼 */
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 18px 32px;
+      font-size: 40px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #111827;
+      color: #ffffff;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+      min-width: 220px;
+      text-align: center;
+      transition:
+        transform 0.06s ease-out,
+        box-shadow 0.06s ease-out;
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 rgba(0,0,0,0.25);
+    }
+
+    .btn-primary { background: #2563eb; }
+    .btn-next { background: #2563eb; width: 100%; }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 18px;
+      min-width: auto;
+      box-shadow: none;
+      background: transparent;
+      color: #666;
+      border-radius: 100px;
+      border: 1px solid #999;
+    }
+
+    #screen-start .title {
+      font-size: clamp(4rem, 6vw, 8rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    /* 퀴즈 화면 */
+    #screen-quiz { position: relative; }
+
+    #btnExit {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+
+    .word-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .big-word {
+      width: 100%;
+      text-align: center;
+      font-size: clamp(4rem, 14vw, 14rem);
+      font-weight: 800;
+      white-space: pre-line;
+      line-height: 1.2;
+    }
+
+    .bottom-area {
+      width: 100%;
+      margin-bottom: 5%;
+    }
+
+    /* 완료 화면 */
+    #screen-finished .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #screen-finished .text {
+      font-size: 22px;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      text-align: center;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 시작 화면 -->
+  <div id="screen-start" class="screen active">
+    <div class="title">같은 동작하기 게임</div>
+    <button id="btnStart" class="btn btn-primary">시작</button>
+  </div>
+
+  <!-- 게임 화면 -->
+  <div id="screen-quiz" class="screen">
+    <button id="btnExit" class="btn btn-small">종료</button>
+
+    <div class="word-wrapper">
+      <div id="currentWord" class="big-word">시작하세요</div>
+    </div>
+
+    <div class="bottom-area">
+      <button id="btnNext" class="btn btn-next">다음</button>
+    </div>
+  </div>
+
+  <!-- 완료 화면 -->
+  <div id="screen-finished" class="screen">
+    <div class="title">모든 제시어 완료!</div>
+    <div class="text">
+준비된 모든 제시어를 다 사용했어요.
+
+다시 시작하려면 아래 버튼을 눌러주세요.
+    </div>
+
+    <button id="btnHome" class="btn btn-primary">첫 화면으로</button>
+  </div>
+
+  <script>
+    // 제시어 목록
+    const ALL_WORDS = [
+      "배드민턴","의사","군인","축구","요리사","테니스","코끼리","스키","낚시",
+      "가위바위보","배구","삽질","펜싱","청소부","역도","사진사","탁구","야구",
+      "스키","양궁","경찰","운전","지휘자","검도","수영","하품","농구",
+      "사이클","드럼","승마","핸드폰","교사/선생님"
+    ];
+
+    let remainingWords = [];
+
+    const screenStart = document.getElementById("screen-start");
+    const screenQuiz = document.getElementById("screen-quiz");
+    const screenFinished = document.getElementById("screen-finished");
+
+    const btnStart = document.getElementById("btnStart");
+    const btnNext = document.getElementById("btnNext");
+    const btnExit = document.getElementById("btnExit");
+    const btnHome = document.getElementById("btnHome");
+
+    const currentWordEl = document.getElementById("currentWord");
+
+    function showScreen(name) {
+      screenStart.classList.remove("active");
+      screenQuiz.classList.remove("active");
+      screenFinished.classList.remove("active");
+
+      if (name === "start") screenStart.classList.add("active");
+      if (name === "quiz") screenQuiz.classList.add("active");
+      if (name === "finished") screenFinished.classList.add("active");
+    }
+
+    function resetWords() {
+      remainingWords = [...ALL_WORDS];
+    }
+
+    // 랜덤 제시어 꺼내기
+    function getRandomWord() {
+      if (remainingWords.length === 0) return null;
+
+      const idx = Math.floor(Math.random() * remainingWords.length);
+      const picked = remainingWords[idx];
+      remainingWords.splice(idx, 1);
+      return picked;
+    }
+
+    // 전체화면 진입
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+      else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+    }
+
+    // 시작 버튼
+    btnStart.addEventListener("click", () => {
+      enterFullscreen();
+      resetWords();
+      currentWordEl.textContent = "다음을\n눌러줘";
+      showScreen("quiz");
+    });
+
+    // 다음 버튼
+    btnNext.addEventListener("click", () => {
+      const word = getRandomWord();
+      if (!word) {
+        showScreen("finished");
+        return;
+      }
+      currentWordEl.textContent = word;
+    });
+
+    // 종료 버튼
+    btnExit.addEventListener("click", () => {
+      showScreen("start");
+    });
+
+    // 홈 버튼
+    btnHome.addEventListener("click", () => {
+      resetWords();
+      showScreen("start");
+    });
+
+    showScreen("start");
+  </script>
+
+</body>
+</html>
