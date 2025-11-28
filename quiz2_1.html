@@ -2,8 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>네글자 앞두글자 퀴즈</title>
+  <title>네글자 이어 말하기 퀴즈</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 기본 파비콘 -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-quiz.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/favicon-quiz.png">
 
   <style>
     * { box-sizing: border-box; }
@@ -236,6 +240,25 @@
 
     const currentWordEl = document.getElementById("currentWord");
 
+    function speakKorean(text) {
+      if (!("speechSynthesis" in window)) {
+        // 브라우저가 지원 안 하면 그냥 조용히 패스
+        return;
+      }
+
+      // 혹시 이전 재생 중이면 정리
+      window.speechSynthesis.cancel();
+
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ko-KR";        // 한국어
+      utter.rate = 1.0;            // 말 속도 (0.1 ~ 10.0)
+      utter.pitch = 1.0;           // 음 높이
+      utter.volume = 1.0;          // 볼륨 (0 ~ 1)
+
+      window.speechSynthesis.speak(utter);
+    }
+
+
     function showScreen(name) {
       screenStart.classList.remove("active");
       screenQuiz.classList.remove("active");
@@ -283,14 +306,15 @@
     btnNext.addEventListener("click", () => {
       const prefix = getRandomPrefix();
 
-      // 🔥 여기서 이제 첫 화면이 아니라 "finished" 화면으로
       if (!prefix) {
         showScreen("finished");
         return;
       }
 
       currentWordEl.textContent = prefix;
+      speakKorean(prefix);   // 🔊 여기서 음성으로 읽기
     });
+
 
     btnExit.addEventListener("click", () => {
       showScreen("start");
