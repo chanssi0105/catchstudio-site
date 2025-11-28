@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>일심동체 게임</title>
+  <title>브랜드 퀴즈</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- 기본 파비콘 -->
+  <!-- 기본 파비콘 -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-quiz.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/favicon-quiz.png">
 
@@ -37,7 +37,7 @@
       justify-content: center;
     }
 
-    /* 버튼 */
+    /* 버튼 공통 */
     .btn {
       border: none;
       border-radius: 999px;
@@ -61,17 +61,26 @@
     }
 
     .btn-primary { background: #2563eb; }
-    .btn-next { background: #2563eb; width: 100%; }
+
+    .btn-next {
+      background: #2563eb;
+      flex: 1;
+    }
+
+    .btn-back {
+      background: #6b7280;
+      flex: 1;
+    }
 
     .btn-small {
       padding: 8px 16px;
       font-size: 18px;
       min-width: auto;
-      box-shadow: none;
       background: transparent;
       color: #666;
       border-radius: 100px;
       border: 1px solid #999;
+      box-shadow: none;
     }
 
     #screen-start .title {
@@ -88,6 +97,16 @@
       position: absolute;
       top: 16px;
       right: 16px;
+    }
+
+    /* 좌측 상단 진행도 */
+    #progressText {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
     }
 
     .word-wrapper {
@@ -112,6 +131,12 @@
       margin-bottom: 5%;
     }
 
+    .bottom-buttons {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
     /* 완료 화면 */
     #screen-finished .title {
       font-size: 40px;
@@ -130,16 +155,18 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- 시작 화면 -->
   <div id="screen-start" class="screen active">
-    <div class="title">일심동체 게임</div>
+    <div class="title">브랜드 퀴즈</div>
     <button id="btnStart" class="btn btn-primary">시작</button>
   </div>
 
   <!-- 게임 화면 -->
   <div id="screen-quiz" class="screen">
+    <div id="progressText">0/0</div>
     <button id="btnExit" class="btn btn-small">종료</button>
 
     <div class="word-wrapper">
@@ -147,7 +174,10 @@
     </div>
 
     <div class="bottom-area">
-      <button id="btnNext" class="btn btn-next">다음</button>
+      <div class="bottom-buttons">
+        <button id="btnBack" class="btn btn-back">뒤로가기</button>
+        <button id="btnNext" class="btn btn-next">다음</button>
+      </div>
     </div>
   </div>
 
@@ -156,7 +186,6 @@
     <div class="title">모든 제시어 완료!</div>
     <div class="text">
 준비된 모든 제시어를 다 사용했어요.
-
 다시 시작하려면 아래 버튼을 눌러주세요.
     </div>
 
@@ -164,15 +193,25 @@
   </div>
 
   <script>
-    // 제시어 목록
+    // 실제 게임 제시어들
     const ALL_WORDS = [
-      "배드민턴","의사","군인","축구","요리사","테니스","코끼리","스키","낚시",
-      "가위바위보","배구","삽질","펜싱","청소부","역도","사진사","탁구","야구",
-      "스키","양궁","경찰","운전","지휘자","검도","수영","하품","농구",
-      "사이클","드럼","승마","핸드폰","교사/선생님"
+      "님자로 끝나는 말은",
+      "자동차 브랜드",
+      "라면 제품",
+      "편의점",
+      "스포츠 운동 브랜드",
+      "치킨 브랜드",
+      "피자 브랜드",
+      "카페 브랜드"
     ];
 
-    let remainingWords = [];
+    // 예시 제시어
+    const EXAMPLE_TEXT = "예시)\n과일";
+
+    let wordOrder = [];
+    let totalCount = ALL_WORDS.length;
+    let currentIndex = -1;   // -1이면 아직 실제 제시어 시작 전
+    let isOnExample = false; // true면 예시 화면 상태
 
     const screenStart = document.getElementById("screen-start");
     const screenQuiz = document.getElementById("screen-quiz");
@@ -180,10 +219,12 @@
 
     const btnStart = document.getElementById("btnStart");
     const btnNext = document.getElementById("btnNext");
+    const btnBack = document.getElementById("btnBack");
     const btnExit = document.getElementById("btnExit");
     const btnHome = document.getElementById("btnHome");
 
     const currentWordEl = document.getElementById("currentWord");
+    const progressText = document.getElementById("progressText");
 
     function showScreen(name) {
       screenStart.classList.remove("active");
@@ -195,18 +236,45 @@
       if (name === "finished") screenFinished.classList.add("active");
     }
 
-    function resetWords() {
-      remainingWords = [...ALL_WORDS];
+    // 배열 섞기 (Fisher-Yates)
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
 
-    // 랜덤 제시어 꺼내기
-    function getRandomWord() {
-      if (remainingWords.length === 0) return null;
+    function resetWords() {
+      wordOrder = shuffle(ALL_WORDS);
+      currentIndex = -1;
+      isOnExample = false;
+      updateProgress();
+    }
 
-      const idx = Math.floor(Math.random() * remainingWords.length);
-      const picked = remainingWords[idx];
-      remainingWords.splice(idx, 1);
-      return picked;
+    function updateProgress() {
+      // 예시는 0/전체 로 표시
+      if (isOnExample || currentIndex < 0) {
+        progressText.textContent = `0/${totalCount}`;
+      } else {
+        const used = currentIndex + 1;
+        progressText.textContent = `${used}/${totalCount}`;
+      }
+    }
+
+    function showExample() {
+      isOnExample = true;
+      currentIndex = -1;
+      currentWordEl.textContent = EXAMPLE_TEXT;
+      updateProgress();
+    }
+
+    function showCurrentWord() {
+      if (currentIndex >= 0 && currentIndex < wordOrder.length) {
+        currentWordEl.textContent = wordOrder[currentIndex];
+      }
+      updateProgress();
     }
 
     // 전체화면 진입
@@ -217,25 +285,53 @@
       else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
     }
 
-    // 시작 버튼
+    // 시작 버튼: 예시부터 보여주기
     btnStart.addEventListener("click", () => {
       enterFullscreen();
       resetWords();
-      currentWordEl.textContent = "다음을\n눌러줘";
+      showExample();
       showScreen("quiz");
     });
 
     // 다음 버튼
     btnNext.addEventListener("click", () => {
-      const word = getRandomWord();
-      if (!word) {
-        showScreen("finished");
+      // 예시 → 첫 실제 제시어로 이동
+      if (isOnExample) {
+        isOnExample = false;
+        currentIndex = 0;
+        showCurrentWord();
         return;
       }
-      currentWordEl.textContent = word;
+
+      // 실제 제시어 진행
+      if (currentIndex < wordOrder.length - 1) {
+        currentIndex++;
+        showCurrentWord();
+      } else {
+        // 마지막 제시어에서 다음 누르면 종료 화면
+        showScreen("finished");
+      }
     });
 
-    // 종료 버튼
+    // 뒤로가기 버튼
+    btnBack.addEventListener("click", () => {
+      // 실제 제시어에서 뒤로가기
+      if (!isOnExample && currentIndex > 0) {
+        currentIndex--;
+        showCurrentWord();
+        return;
+      }
+
+      // 첫 번째 제시어에서 뒤로가기 → 예시로 복귀
+      if (!isOnExample && currentIndex === 0) {
+        showExample();
+        return;
+      }
+
+      // 예시 상태에서 뒤로가기 눌러도 더 갈 곳 없음 (무시)
+    });
+
+    // 종료 버튼 (그냥 첫 화면으로 복귀)
     btnExit.addEventListener("click", () => {
       showScreen("start");
     });
