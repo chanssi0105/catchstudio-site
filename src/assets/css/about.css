@@ -219,6 +219,10 @@ Section 4 : Trust (Accordion)
     .about-s4__title{margin-bottom:0;}
 }
 
+@media (max-width: 520px){
+    .about-s4__title br{display:none;}
+}
+
 /* =========================
 S4 Desktop Layout Fix (>=961)
 ========================= */

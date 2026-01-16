@@ -133,6 +133,8 @@
     const state={name:"",email:"",schedule_flexible:"unknown",schedule_from:"",schedule_to:"",message:""};
     const done={name:false,email:false,schedule:false,message:false};
 
+    const isMobile = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
     let active="name";
     let returnTo=null;
 
@@ -243,9 +245,11 @@
     };
 
     const focusFirst=()=>{
+      if(isMobile) return; // ✅ A안: 모바일 자동 포커스 금지
       const t=panel.querySelector("input,textarea,button");
       t && t.focus({preventScroll:true});
     };
+
 
     const setActive=(k,scrollIntoView=false)=>{
       active=k;
@@ -797,7 +801,6 @@
     // initial
     renderPanel();
     renderFeed();
-    focusFirst();
   };
 
   boot();

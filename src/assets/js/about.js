@@ -21,50 +21,75 @@
   });
 
   // ----------------------------------------------------------
-  // 1) Hero title split (word) - safe (ignores tags)
-  // ----------------------------------------------------------
-  const splitWords = (el) => {
-    const html = el.innerHTML.replace(/<br\s*\/?>/gi, "\n");
-    const tmp = document.createElement("div");
-    tmp.innerHTML = html;
+// 1) Hero title split (word) - safe (ignores tags) + reload/mobile safe
+// ----------------------------------------------------------
+const splitWords = (el) => {
+  const html = el.innerHTML.replace(/<br\s*\/?>/gi, "\n");
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
 
-    const text = (tmp.textContent || "").replace(/[ \t]+/g, " ").trim();
-    const lines = text.split("\n").map((s) => s.trim()).filter(Boolean);
+  const text = (tmp.textContent || "").replace(/[ \t]+/g, " ").trim();
+  const lines = text.split("\n").map((s) => s.trim()).filter(Boolean);
 
-    el.innerHTML = "";
-    const frag = document.createDocumentFragment();
+  el.innerHTML = "";
+  const frag = document.createDocumentFragment();
 
-    let idx = 0;
-    lines.forEach((line, lineIndex) => {
-      line.split(" ").forEach((word) => {
-        const w = document.createElement("span");
-        w.className = "w";
-        const i = document.createElement("i");
-        i.textContent = word;
-        i.style.transitionDelay = `${Math.min(idx * 45, 520)}ms`;
-        w.appendChild(i);
-        frag.appendChild(w);
-        frag.appendChild(document.createTextNode(" "));
-        idx += 1;
-      });
-      if (lineIndex < lines.length - 1) frag.appendChild(document.createElement("br"));
+  let idx = 0;
+  lines.forEach((line, lineIndex) => {
+    line.split(" ").forEach((word) => {
+      const w = document.createElement("span");
+      w.className = "w";
+      const i = document.createElement("i");
+      i.textContent = word;
+      i.style.transitionDelay = `${Math.min(idx * 45, 520)}ms`;
+      w.appendChild(i);
+      frag.appendChild(w);
+      frag.appendChild(document.createTextNode(" "));
+      idx += 1;
     });
+    if (lineIndex < lines.length - 1) frag.appendChild(document.createElement("br"));
+  });
 
-    el.appendChild(frag);
-    el.classList.add("is-animated");
-  };
+  el.appendChild(frag);
+};
 
+const initHero = (tries = 40) => {
   const heroTitle = document.querySelector("[data-split-words]");
-  if (heroTitle) {
-    if (heroTitle.dataset.splitted === "1") {
-      // already processed
-    } else if (!prefersReduce) {
-      heroTitle.dataset.splitted = "1";
-      splitWords(heroTitle);
-    } else {
-      heroTitle.classList.add("is-animated");
-    }
+  if (!heroTitle) {
+    if (tries <= 0) return;
+    setTimeout(() => initHero(tries - 1), 25);
+    return;
   }
+
+  // reduce motion이면 그냥 노출
+  if (prefersReduce) {
+    heroTitle.classList.add("is-animated");
+    return;
+  }
+
+  // 이미 split이 되어 있어도(뒤로가기 캐시/리로드) 모션 재트리거를 위해 리셋 후 다시
+  heroTitle.classList.remove("is-animated");
+
+  // split이 안 되어 있으면 구성
+  if (heroTitle.dataset.splitted !== "1") {
+    heroTitle.dataset.splitted = "1";
+    splitWords(heroTitle);
+  }
+
+  // is-ready 이후에 모션이 확실히 타도록, 다음 프레임에 트리거
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      heroTitle.classList.add("is-animated");
+    });
+  });
+};
+
+// DOM 준비되면 실행
+document.addEventListener("DOMContentLoaded", () => initHero());
+
+// bfcache(모바일 사파리/크롬)에서 돌아올 때도 실행
+window.addEventListener("pageshow", () => initHero());
+
 
   // ----------------------------------------------------------
   // 2) Reveal on scroll
