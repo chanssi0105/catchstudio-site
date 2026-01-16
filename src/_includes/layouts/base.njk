@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  {% include "head-common.njk" %}
+  {% if pageCss %}<link rel="stylesheet" href="{{ pageCss }}" />{% endif %}
+</head>
+<body class="{{ bodyClass | default('') }}">
+  {% include "header.njk" %}
+
+  <main>
+    {{ content | safe }}
+  </main>
+
+  {% include "footer.njk" %}
+  {% if pageJs %}<script src="{{ pageJs }}" defer></script>{% endif %}
+</body>
+</html>

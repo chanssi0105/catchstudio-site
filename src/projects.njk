@@ -1,0 +1,28 @@
+---
+layout: layouts/base.njk
+title: Projects
+---
+
+{% set all = collections.projects %}
+{% set total = all | length %}
+{% set pageSize = 9 %}
+{% set initial = all | slice(0, pageSize) %}
+
+<section class="projects-wrap" data-total="{{ total }}" data-page="{{ pageSize }}">
+  <div class="projects-grid" id="projectGrid">
+    {% for p in initial %}
+      {% include "components-cardList.njk" %}
+    {% endfor %}
+  </div>
+
+  {% if total > pageSize %}
+  <div class="projects-more">
+    <button type="button" id="loadMoreBtn" class="projects-more-btn">
+      <span class="projects-more-label">More Project</span>
+      <span class="projects-count" id="countBadge">{{ initial | length }}/{{ total }}</span>
+    </button>
+  </div>
+  {% endif %}
+</section>
+
+<script src="/assets/js/projects-loadmore.js" defer></script>

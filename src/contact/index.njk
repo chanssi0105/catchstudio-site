@@ -1,0 +1,46 @@
+---
+layout: layouts/base.njk
+title: Contact
+description: Catch Studio 프로젝트 문의
+pageCss: /assets/css/contact.css
+pageJs: /assets/js/contact.js
+---
+
+<section class="contact-hero about-shell" aria-label="Contact hero">
+  <div class="about-container--wide contact-hero__inner">
+    <h6 class="contact-hero__eyebrow">Contact</h6>
+    <h1 class="contact-hero__title" data-split-words>
+      LET&#39;S START<br />
+      WITH A<br />
+      CATCH.
+    </h1>
+  </div>
+</section>
+
+<section class="contact-body contact-shell" aria-label="Contact">
+  <div class="contact-container">
+    <div class="contact-grid">
+      <!-- LEFT: 문구 + 이미지 -->
+      <div class="contact-left">
+        <div class="contact-form-head">
+          <h3 class="contact-desc">부담 없이 간단히 남겨주세요 :) <br />빠르게 답장 드릴게요!</h3>
+          <p class="contact-privacy">제출된 내용은 문의 응대 목적에만 사용됩니다. (Formspree 이용)</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: 등록 폼 -->
+      <div class="contact-right">
+        <form class="contact-form" action="https://formspree.io/f/xgoovbyy" method="POST" data-contact-form>
+          <input class="contact-hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <div class="contact-viewport" data-contact-viewport>
+            <div class="contact-stage" data-contact-stage>
+              <div class="contact-panel" data-contact-panel aria-live="polite"></div>
+              <div class="contact-feed" data-contact-feed aria-label="Completed fields"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

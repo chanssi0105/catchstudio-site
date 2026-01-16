@@ -1,0 +1,145 @@
+{# src/_includes/head-common.njk #}
+{# ----------------------------
+  기본값 / 페이지별 오버라이드 (Nunjucks 안전버전)
+  - 각 페이지 front matter에서 title, description, canonical, ogImage, noindex 등 지정 가능
+---------------------------- #}
+{% set SITE_NAME = (site and site.name) or "Catch Studio" %}
+{% set SITE_URL  = (site and site.url)  or "https://catch-studio.com" %}
+{% set LOCALE    = (site and site.locale) or "ko_KR" %}
+{# title: 페이지 title 있으면 "페이지 | 사이트", 없으면 site.defaultTitle > SITE_NAME #}
+{% set pageTitle = SITE_NAME %}
+{% if site and site.defaultTitle %}
+  {% set pageTitle = site.defaultTitle %}
+{% endif %}
+{% if title %}
+  {% set pageTitle = SITE_NAME ~ " | " ~ title %}
+{% endif %}
+{# description: 페이지 description > site.defaultDescription > fallback #}
+{% set pageDesc = "Catch Studio 포트폴리오" %}
+{% if site and site.defaultDescription %}
+  {% set pageDesc = site.defaultDescription %}
+{% endif %}
+{% if description %}
+  {% set pageDesc = description %}
+{% endif %}
+{# canonical: (페이지 canonical 지정) > SITE_URL + page.url #}
+{% set canonicalUrl = SITE_URL ~ (page.url or "/") %}
+{% if canonical %}
+  {% set canonicalUrl = canonical %}
+{% endif %}
+{# OG/Twitter 이미지: 페이지 ogImage > site.defaultOgImage > 빈값 #}
+{% set ogImg = "" %}
+{% if site and site.defaultOgImage %}
+  {% set ogImg = site.defaultOgImage %}
+{% endif %}
+{% if ogImage %}
+  {% set ogImg = ogImage %}
+{% endif %}
+{# OG 이미지 절대경로화: http로 시작하면 그대로, 아니면 SITE_URL 붙임 #}
+{% set ogImgAbs = "" %}
+{% if ogImg %}
+  {% if ogImg.indexOf("http") == 0 %}
+    {% set ogImgAbs = ogImg %}
+  {% else %}
+    {% set ogImgAbs = SITE_URL ~ ogImg %}
+  {% endif %}
+{% endif %}
+{# OG type 기본값 #}
+{% set ogTypeFinal = ogType or "website" %}
+{# theme-color 기본값 (페이지 값 > site 값 > fallback) #}
+{% set themeLight = "#ffffff" %}
+{% set themeDark  = "#0b0b0b" %}
+{% if site and site.themeColorLight %}
+  {% set themeLight = site.themeColorLight %}
+{% endif %}
+{% if site and site.themeColorDark %}
+  {% set themeDark = site.themeColorDark %}
+{% endif %}
+{% if themeColorLight %}
+  {% set themeLight = themeColorLight %}
+{% endif %}
+{% if themeColorDark %}
+  {% set themeDark = themeColorDark %}
+{% endif %}
+{# ----------------------------
+  1) 필수 메타
+---------------------------- #}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+{# ----------------------------
+  2) 컬러 모드 힌트 & 브라우저 UI 색
+---------------------------- #}
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="{{ themeLight }}" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="{{ themeDark }}" />
+
+{# ----------------------------
+  3) 기본 SEO
+---------------------------- #}
+<title>{{ pageTitle }}</title>
+<meta name="description" content="{{ pageDesc }}" />
+<link rel="canonical" href="{{ canonicalUrl }}" />
+
+{% if noindex %}
+<meta name="robots" content="noindex, nofollow" />
+{% else %}
+<meta name="robots" content="index, follow" />
+{% endif %}
+
+{# ----------------------------
+  4) Open Graph
+---------------------------- #}
+<meta property="og:type"        content="{{ ogTypeFinal }}" />
+<meta property="og:site_name"   content="{{ SITE_NAME }}" />
+<meta property="og:title"       content="{{ pageTitle }}" />
+<meta property="og:description" content="{{ ogDescription or pageDesc }}" />
+<meta property="og:url"         content="{{ canonicalUrl }}" />
+<meta property="og:locale"      content="{{ LOCALE }}" />
+{% if ogImgAbs %}
+<meta property="og:image"       content="{{ ogImgAbs }}" />
+{% endif %}
+
+{# ----------------------------
+  5) Twitter Cards
+---------------------------- #}
+<meta name="twitter:card"        content="{{ twitterCard or 'summary_large_image' }}" />
+<meta name="twitter:title"       content="{{ pageTitle }}" />
+<meta name="twitter:description" content="{{ twitterDescription or pageDesc }}" />
+{% if ogImgAbs %}
+<meta name="twitter:image"       content="{{ ogImgAbs }}" />
+{% endif %}
+
+{# ----------------------------
+  6) 아이콘
+---------------------------- #}
+<link rel="icon" href="/assets/images/favicon.ico?v=1" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/assets/images/icon.svg" />
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+
+{# ----------------------------
+  7) 성능 최적화: 폰트 preload / Google Fonts
+---------------------------- #}
+<link rel="preload" href="/assets/fonts/pretendard/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
+
+
+{# ----------------------------
+  8) CSS 로딩
+  - common.css는 항상 로드
+  - pageCss 배열이 있으면 projects/에서 추가 로드
+---------------------------- #}
+<link rel="stylesheet" href="/assets/css/common.css" />
+<link rel="stylesheet" href="/assets/css/main.css" />
+
+{# ----------------------------
+  9) 전역 스크립트
+  - 페이지에서 globalJs: false 로 끄기 가능
+---------------------------- #}
+{% if globalJs is not defined or globalJs %}
+<script defer src="/assets/js/main.js"></script>
+{% endif %}

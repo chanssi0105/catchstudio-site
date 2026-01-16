@@ -1,0 +1,48 @@
+{# src/_includes/header.njk #}
+{% set projectsCount = (collections.projects | length) %}
+<header class="site-header" data-theme="{{ headerTheme | default('light') }}">
+  <div class="site-header__inner">
+
+    <a href="/" class="brand" aria-label="Catch Studio">
+      <img class="brand__mark" src="/assets/images/logo.svg" alt="" aria-hidden="true" />
+    </a>
+
+    <div class="site-header__right">
+      <p class="tagline">
+        Everything Starts with a <span class="tagline__accent">Catch</span>
+      </p>
+
+      <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu-overlay" aria-hidden="true">
+  <div class="menu-overlay__inner">
+    <nav class="menu" aria-label="Site">
+      <ul class="menu__list">
+        <li class="menu__item"><a class="menu__link" href="/">Projects <span class="menu__badge" aria-hidden="true">{{ projectsCount }}</span></a></li>
+        <li class="menu__item"><a class="menu__link" href="/about/">About</a></li>
+        <li class="menu__item"><a class="menu__link" href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="menu-footer">
+      <a class="menu-footer__link" href="tel:0507-2097-3010">
+        <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.3 14C11.9111 14 10.5389 13.6973 9.18333 13.092C7.82778 12.4867 6.59444 11.6282 5.48333 10.5167C4.37222 9.40511 3.514 8.17178 2.90867 6.81667C2.30333 5.46156 2.00044 4.08933 2 2.7C2 2.5 2.06667 2.33333 2.2 2.2C2.33333 2.06667 2.5 2 2.7 2H5.4C5.55556 2 5.69444 2.05289 5.81667 2.15867C5.93889 2.26444 6.01111 2.38933 6.03333 2.53333L6.46667 4.86667C6.48889 5.04444 6.48333 5.19444 6.45 5.31667C6.41667 5.43889 6.35556 5.54444 6.26667 5.63333L4.65 7.26667C4.87222 7.67778 5.136 8.07489 5.44133 8.458C5.74667 8.84111 6.08289 9.21067 6.45 9.56667C6.79444 9.91111 7.15556 10.2307 7.53333 10.5253C7.91111 10.82 8.31111 11.0893 8.73333 11.3333L10.3 9.76667C10.4 9.66667 10.5307 9.59178 10.692 9.542C10.8533 9.49222 11.0116 9.47822 11.1667 9.5L13.4667 9.96667C13.6222 10.0111 13.75 10.0918 13.85 10.2087C13.95 10.3256 14 10.456 14 10.6V13.3C14 13.5 13.9333 13.6667 13.8 13.8C13.6667 13.9333 13.5 14 13.3 14Z" />
+        </svg>
+        0507-2097-3010
+      </a>
+      <a class="menu-footer__link" href="mailto:catchstudio25@gmail.com">
+        <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.66666 13.3334C2.29999 13.3334 1.98622 13.203 1.72533 12.9421C1.46444 12.6812 1.33377 12.3672 1.33333 12.0001V4.00008C1.33333 3.63341 1.46399 3.31964 1.72533 3.05875C1.98666 2.79786 2.30044 2.66719 2.66666 2.66675H13.3333C13.7 2.66675 14.014 2.79741 14.2753 3.05875C14.5367 3.32008 14.6671 3.63386 14.6667 4.00008V12.0001C14.6667 12.3667 14.5362 12.6807 14.2753 12.9421C14.0144 13.2034 13.7004 13.3339 13.3333 13.3334H2.66666ZM8 8.55008C8.05555 8.55008 8.11399 8.54164 8.17533 8.52475C8.23666 8.50786 8.29488 8.48297 8.34999 8.45008L13.0667 5.50008C13.1556 5.44453 13.2222 5.37519 13.2667 5.29208C13.3111 5.20897 13.3333 5.11719 13.3333 5.01675C13.3333 4.79453 13.2389 4.62786 13.05 4.51675C12.8611 4.40564 12.6667 4.41119 12.4667 4.53341L8 7.33342L3.53333 4.53341C3.33333 4.41119 3.13888 4.40853 2.95 4.52541C2.76111 4.6423 2.66666 4.80608 2.66666 5.01675C2.66666 5.12786 2.68888 5.22519 2.73333 5.30875C2.77777 5.3923 2.84444 5.45608 2.93333 5.50008L7.65 8.45008C7.70555 8.48342 7.764 8.50853 7.82533 8.52541C7.88666 8.5423 7.94488 8.55053 8 8.55008Z" />
+        </svg>
+        catchstudio25@gmail.com</a>
+    </div>
+  </div>
+</div>
