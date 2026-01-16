@@ -9,6 +9,7 @@
    - 버튼 화살표 추가 + 마지막 버튼 primary
    - date 입력: 지난 날짜 선택 불가(min=오늘)
    - ✅ 페이지 진입 후 몇 초 있다가 본문(폼)으로 자동 스크롤(once, 1.5s, smooth)
+   - ✅ Formspree 전송 시 name/email/schedule hidden 주입(서브미션/메일에 전부 보이게)
 ========================================================= */
 (() => {
   document.documentElement.classList.add("is-js");
@@ -28,7 +29,7 @@
         y=window.scrollY||0;
         const sbw=getSBW();
 
-        body.style.paddingRight = sbw ? `${sbw}px` : "";   // ✅ 폭 보정 강제
+        body.style.paddingRight = sbw ? `${sbw}px` : "";
         html.classList.add("is-scrollLocked");
         body.classList.add("is-scrollLocked");
 
@@ -37,7 +38,7 @@
         body.style.left="0";
         body.style.right="0";
         body.style.width="100%";
-        body.style.boxSizing="border-box";                // ✅ padding 때문에 가로 튐 방지
+        body.style.boxSizing="border-box";
       },
       off(){
         body.style.position="";
@@ -46,7 +47,7 @@
         body.style.right="";
         body.style.width="";
         body.style.boxSizing="";
-        body.style.paddingRight="";                       // ✅ 원복
+        body.style.paddingRight="";
 
         html.classList.remove("is-scrollLocked");
         body.classList.remove("is-scrollLocked");
@@ -55,7 +56,6 @@
       }
     };
   })();
-
 
   // 버튼 화살표
   const ARROW_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M16.9661 9.18144L10.1379 2.3532C9.85916 2.0745 9.72538 1.74934 9.73653 1.37774C9.74768 1.00613 9.89307 0.680978 10.1727 0.402274C10.4514 0.146796 10.7766 0.0130186 11.1482 0.000941246C11.5198 -0.0111361 11.8449 0.122641 12.1236 0.402274L21.3208 9.59949C21.4602 9.73885 21.5591 9.88981 21.6177 10.0524C21.6762 10.215 21.7045 10.3892 21.7027 10.575C21.7008 10.7608 21.6716 10.9349 21.6149 11.0975C21.5582 11.2601 21.4597 11.4111 21.3195 11.5504L12.1222 20.7476C11.8668 21.0031 11.5472 21.1309 11.1635 21.1309C10.7798 21.1309 10.4491 21.0031 10.1713 20.7476C9.8926 20.4689 9.75325 20.1377 9.75325 19.7541C9.75325 19.3704 9.8926 19.0397 10.1713 18.7619L16.9661 11.9685L1.39353 11.9685C0.998702 11.9685 0.66751 11.8347 0.399955 11.5671C0.1324 11.2996 -0.000914508 10.9689 1.4336e-05 10.575C0.00094318 10.1811 0.134721 9.84986 0.401347 9.58138C0.667973 9.3129 0.998702 9.17958 1.39353 9.18144L16.9661 9.18144Z" fill="currentColor"/></svg>`;
@@ -181,6 +181,18 @@
       return ((state.message||"").trim().slice(0,80) + (((state.message||"").trim().length>80)?"…":"")) || "";
     };
 
+    // ✅ Formspree에 같이 보낼 hidden input 주입(없으면 생성, 있으면 값 업데이트)
+    const ensureHidden=(name,value)=>{
+      let el=form.querySelector(`input[type="hidden"][name="${name}"]`);
+      if(!el){
+        el=document.createElement("input");
+        el.type="hidden";
+        el.name=name;
+        form.appendChild(el);
+      }
+      el.value=value==null? "" : String(value);
+    };
+
     const validateKey=(k,markTouched=true)=>{
       if(k==="name"){
         const v=(state.name||"");
@@ -226,7 +238,6 @@
         return ok;
       }
 
-      // message
       {
         const v=(state.message||"");
         const w=fieldWrap($("#c-msg",panel));
@@ -245,11 +256,10 @@
     };
 
     const focusFirst=()=>{
-      if(isMobile) return; // ✅ A안: 모바일 자동 포커스 금지
+      if(isMobile) return;
       const t=panel.querySelector("input,textarea,button");
       t && t.focus({preventScroll:true});
     };
-
 
     const setActive=(k,scrollIntoView=false)=>{
       active=k;
@@ -356,7 +366,6 @@
         return;
       }
 
-      // MESSAGE
       panel.innerHTML=
         `<div class="c-card">`+
           `<label class="c-label" for="c-msg">세부사항</label>`+
@@ -374,7 +383,6 @@
       btn?.addEventListener("click",()=>tryCommit(key));
     };
 
-    // NAME
     const bindName=()=>{
       const input=$("#c-name",panel);
       const wrap=fieldWrap(input);
@@ -404,7 +412,6 @@
       update(false);
     };
 
-    // EMAIL
     const bindEmail=()=>{
       const input=$("#c-email",panel);
       const wrap=fieldWrap(input);
@@ -437,7 +444,6 @@
       update(false);
     };
 
-    // SCHEDULE
     const bindSchedule=()=>{
       const radios=$$('input[name="schedule_flexible"]',panel);
       const extra=$("[data-schedule-extra]",panel);
@@ -445,7 +451,6 @@
       const to=$("#c-to",panel);
       const btn=$("[data-next]",panel);
 
-      // 지난 날짜 선택 불가(오늘부터)
       const minDate=getToday();
       from.min=minDate;
       to.min=minDate;
@@ -503,7 +508,6 @@
       update(false);
     };
 
-    // MESSAGE
     const bindMessage=()=>{
       const textarea=$("#c-msg",panel);
       const wrap=fieldWrap(textarea);
@@ -544,7 +548,6 @@
       requestAnimationFrame(()=>update(false));
     };
 
-    // FEED -> EDIT
     const openEdit=(k)=>{
       returnTo=active;
       setActive(k,true);
@@ -569,170 +572,162 @@
     });
 
     /* ----------------------------------------------------------
-   Submit (TEST MODE + REAL MODE)
-   - 테스트 모드: 네트워크 전송 없음(카운팅 0) / UI만 확인
-   - 실전 모드: Formspree fetch 전송 + 성공/실패 처리
-   - 버튼 카피: "이야기 나누기" -> "보내는 중" -> "보내기 완료"
-   - 성공 모달 CTA: index("/") 이동
----------------------------------------------------------- */
-(() => {
-  const isTestMode=(() => {
-    const qs=new URLSearchParams(location.search);
-    if(qs.get("test")==="1") return true;             // /contact/?test=1
-    // 로컬에서 자동 테스트 모드 원하면 아래 줄 주석 해제
-    // if(location.hostname==="localhost" || location.hostname==="127.0.0.1") return true;
-    return false;
-  })();
+       Submit (TEST MODE + REAL MODE)
+       - 테스트 모드: 네트워크 전송 없음 / UI만
+       - 실전 모드: Formspree fetch 전송
+       - 버튼 카피: 이야기 나누기 -> 보내는 중 -> 보내기 완료
+       - ✅ 제출 직전 state -> hidden 주입해서 Formspree/메일에 전부 보이게
+    ---------------------------------------------------------- */
+    (() => {
+      const isTestMode=(() => {
+        const qs=new URLSearchParams(location.search);
+        if(qs.get("test")==="1") return true;
+        return false;
+      })();
 
-  // 아이콘: 점 3개 / 체크
-  const DOTS_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="6" cy="11" r="1.8" fill="currentColor"/><circle cx="11" cy="11" r="1.8" fill="currentColor"/><circle cx="16" cy="11" r="1.8" fill="currentColor"/></svg>`;
-  const CHECK_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M9.1 15.3L4.7 10.9l1.4-1.4 3 3 6.8-6.8 1.4 1.4-8.2 8.2z" fill="currentColor"/></svg>`;
+      const DOTS_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="6" cy="11" r="1.8" fill="currentColor"/><circle cx="11" cy="11" r="1.8" fill="currentColor"/><circle cx="16" cy="11" r="1.8" fill="currentColor"/></svg>`;
+      const CHECK_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M9.1 15.3L4.7 10.9l1.4-1.4 3 3 6.8-6.8 1.4 1.4-8.2 8.2z" fill="currentColor"/></svg>`;
 
-  const getSubmitBtn=()=>panel.querySelector("[data-submit]");
-  const setBtn=(mode)=>{
-    const btn=getSubmitBtn();
-    if(!btn) return;
-    if(mode==="idle"){
-      btn.disabled=!true; // 아래에서 allOk로 다시 세팅될 수도 있어. 여기서는 "idle로 복귀"만 담당
-      btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
-      btn.removeAttribute("aria-busy");
-      btn.dataset.submitState="idle";
-      return;
-    }
-    if(mode==="busy"){
-      btn.disabled=true;
-      btn.innerHTML=`보내는 중${DOTS_SVG}`;
-      btn.setAttribute("aria-busy","true");
-      btn.dataset.submitState="busy";
-      return;
-    }
-    if(mode==="done"){
-      btn.disabled=true;
-      btn.innerHTML=`보내기 완료${CHECK_SVG}`;
-      btn.removeAttribute("aria-busy");
-      btn.dataset.submitState="done";
-    }
-  };
-
-  const makeModal=()=>{
-    let overlay=document.querySelector("[data-contact-modal]");
-    if(overlay) return overlay;
-
-    overlay=document.createElement("div");
-    overlay.className="contact-modal";
-    overlay.setAttribute("data-contact-modal","");
-    overlay.setAttribute("role","dialog");
-    overlay.setAttribute("aria-modal","true");
-    overlay.setAttribute("aria-label","문의 접수 완료");
-
-    const card=document.createElement("div");
-    card.className="contact-modal__card";
-
-    card.innerHTML=
-      `<h3 class="contact-modal__title">접수 완료</h3>`+
-      `<p class="contact-modal__desc">내용 잘 받았어요. 빠르게 답장드릴게요!</p>`+
-      `<div class="contact-modal__actions">`+
-        `<button type="button" data-modal-cta class="c-next c-next--primary">프로젝트 보러가기${ARROW_SVG}</button>`+
-      `</div>`;
-
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-
-    // CTA: 스크롤 잠금 해제 후 홈 이동
-    card.querySelector("[data-modal-cta]")?.addEventListener("click",()=>{
-      lockScroll.off();
-      location.href="/";
-    });
-
-    return overlay;
-  };
-
-
-  const openModal=()=>{
-    const overlay=makeModal();
-    lockScroll.on();
-    overlay.classList.add("is-open");
-  };
-
-  const showFail=()=>{
-    // 실패 시: 버튼 원복 + 다시 활성화(검증 로직에 의해 disabled 여부는 다시 계산될 수 있음)
-    const btn=getSubmitBtn();
-    if(!btn) return;
-    btn.disabled=false;
-    btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
-    btn.removeAttribute("aria-busy");
-    btn.dataset.submitState="idle";
-  };
-
-  // 기존 검증 로직은 유지하되, 성공 시 네트워크/테스트 UI로 진입
-  form.addEventListener("submit", async (e) => {
-    // 1) 동일한 검증(네 기존 로직 유지)
-    const ok0=isNameValid(state.name);
-    const ok1=isEmailValid(state.email);
-    const ok2=(()=>{
-      if(state.schedule_flexible!=="no") return true;
-      if(!state.schedule_from||!state.schedule_to) return false;
-      if(state.schedule_from>state.schedule_to) return false;
-      return true;
-    })();
-    const ok3=isMsgValid(state.message);
-
-    if(!ok0||!ok1||!ok2||!ok3){
-      e.preventDefault();
-      if(!ok0) return setActive("name",true);
-      if(!ok1) return setActive("email",true);
-      if(!ok2) return setActive("schedule",true);
-      return setActive("message",true);
-    }
-
-    // 2) 여기서부터는 "실제 전송" 또는 "테스트 UI"
-    e.preventDefault(); // ✅ 기본 submit(카운팅) 막음. 실전은 fetch로 보냄.
-    setBtn("busy");
-
-    // 테스트 모드: 네트워크 안 타고 성공/실패만 연출
-    if(isTestMode){
-      const FAIL_RATE=0.0; // 필요하면 0.2 같은 값으로 실패도 테스트
-      const delay=900;
-
-      setTimeout(()=>{
-        const fail=Math.random()<FAIL_RATE;
-        if(fail){
-          showFail();
+      const getSubmitBtn=()=>panel.querySelector("[data-submit]");
+      const setBtn=(mode)=>{
+        const btn=getSubmitBtn();
+        if(!btn) return;
+        if(mode==="idle"){
+          btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
+          btn.removeAttribute("aria-busy");
+          btn.dataset.submitState="idle";
           return;
         }
-        setBtn("done");
-        openModal();
-      }, delay);
+        if(mode==="busy"){
+          btn.disabled=true;
+          btn.innerHTML=`보내는 중${DOTS_SVG}`;
+          btn.setAttribute("aria-busy","true");
+          btn.dataset.submitState="busy";
+          return;
+        }
+        if(mode==="done"){
+          btn.disabled=true;
+          btn.innerHTML=`보내기 완료${CHECK_SVG}`;
+          btn.removeAttribute("aria-busy");
+          btn.dataset.submitState="done";
+        }
+      };
 
-      return;
-    }
+      const makeModal=()=>{
+        let overlay=document.querySelector("[data-contact-modal]");
+        if(overlay) return overlay;
 
-    // 실전 모드: Formspree fetch
-    try{
-      const res=await fetch(form.action,{
-        method:"POST",
-        body:new FormData(form),
-        headers:{Accept:"application/json"}
+        overlay=document.createElement("div");
+        overlay.className="contact-modal";
+        overlay.setAttribute("data-contact-modal","");
+        overlay.setAttribute("role","dialog");
+        overlay.setAttribute("aria-modal","true");
+        overlay.setAttribute("aria-label","문의 접수 완료");
+
+        const card=document.createElement("div");
+        card.className="contact-modal__card";
+
+        card.innerHTML=
+          `<h3 class="contact-modal__title">접수 완료</h3>`+
+          `<p class="contact-modal__desc">내용 잘 받았어요. 빠르게 답장드릴게요!</p>`+
+          `<div class="contact-modal__actions">`+
+            `<button type="button" data-modal-cta class="c-next c-next--primary">프로젝트 보러가기${ARROW_SVG}</button>`+
+          `</div>`;
+
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        card.querySelector("[data-modal-cta]")?.addEventListener("click",()=>{
+          lockScroll.off();
+          location.href="/";
+        });
+
+        return overlay;
+      };
+
+      const openModal=()=>{
+        const overlay=makeModal();
+        lockScroll.on();
+        overlay.classList.add("is-open");
+      };
+
+      const showFail=()=>{
+        const btn=getSubmitBtn();
+        if(!btn) return;
+        btn.disabled=false;
+        btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
+        btn.removeAttribute("aria-busy");
+        btn.dataset.submitState="idle";
+      };
+
+      form.addEventListener("submit", async (e) => {
+        const ok0=isNameValid(state.name);
+        const ok1=isEmailValid(state.email);
+        const ok2=(()=>{
+          if(state.schedule_flexible!=="no") return true;
+          if(!state.schedule_from||!state.schedule_to) return false;
+          if(state.schedule_from>state.schedule_to) return false;
+          return true;
+        })();
+        const ok3=isMsgValid(state.message);
+
+        if(!ok0||!ok1||!ok2||!ok3){
+          e.preventDefault();
+          if(!ok0) return setActive("name",true);
+          if(!ok1) return setActive("email",true);
+          if(!ok2) return setActive("schedule",true);
+          return setActive("message",true);
+        }
+
+        e.preventDefault();
+        setBtn("busy");
+
+        // ✅ 여기서 state를 hidden으로 주입 -> FormData에 같이 들어감
+        ensureHidden("name", state.name);
+        ensureHidden("email", state.email);
+        ensureHidden("schedule_flexible", state.schedule_flexible);
+        ensureHidden("schedule_from", state.schedule_from);
+        ensureHidden("schedule_to", state.schedule_to);
+
+        if(isTestMode){
+          const FAIL_RATE=0.0;
+          const delay=900;
+
+          setTimeout(()=>{
+            const fail=Math.random()<FAIL_RATE;
+            if(fail){
+              showFail();
+              return;
+            }
+            setBtn("done");
+            openModal();
+          }, delay);
+
+          return;
+        }
+
+        try{
+          const res=await fetch(form.action,{
+            method:"POST",
+            body:new FormData(form),
+            headers:{Accept:"application/json"}
+          });
+
+          if(!res.ok){
+            showFail();
+            return;
+          }
+
+          setBtn("done");
+          openModal();
+        }catch(_){
+          showFail();
+        }
       });
-
-      if(!res.ok){
-        showFail();
-        return;
-      }
-
-      setBtn("done");
-      openModal();
-    }catch(_){
-      showFail();
-    }
-  });
-})();
-
+    })();
 
     /* ----------------------------------------------------------
        Auto scroll to contact-body start (once) - CUSTOM SMOOTH
-       ✅ 1.5초로 고정 + 더 부드러운 easing
-       ✅ 타겟: .contact-body 섹션 시작점
     ---------------------------------------------------------- */
     (() => {
       if(prefersReduce) return;
@@ -745,14 +740,12 @@
         return Number.isFinite(n)?n:70;
       };
 
-      // ✅ 여기서 “속도/부드러움” 제어함
-      const SCROLL_DURATION=2000; //
+      const SCROLL_DURATION=2000;
 
       const smoothScrollTo=(targetY,duration)=>{
         const startY=window.scrollY;
         const dist=targetY-startY;
         const startT=performance.now();
-        // ✅ 부드러운 easeInOutCubic
         const ease=(t)=>t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
 
         const step=(now)=>{
@@ -765,7 +758,7 @@
 
       const run=async()=>{
         if(done) return;
-        if(window.scrollY > 10) return; // 사용자가 이미 스크롤했으면 개입 X
+        if(window.scrollY > 10) return;
 
         const target=document.querySelector(".contact-body");
         if(!target) return;
@@ -778,7 +771,7 @@
         await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
         const headerH=getHeaderH();
-        const EXTRA=0; // 섹션 시작 딱 붙이면 0, 조금 띄우면 12~24
+        const EXTRA=0;
         const rect=target.getBoundingClientRect();
 
         const scroller=document.scrollingElement || document.documentElement;
@@ -798,7 +791,6 @@
       }
     })();
 
-    // initial
     renderPanel();
     renderFeed();
   };
