@@ -27,8 +27,8 @@
 {% if canonical %}
   {% set canonicalUrl = canonical %}
 {% endif %}
-{# OG/Twitter 이미지: 페이지 ogImage > site.defaultOgImage > 빈값 #}
-{% set ogImg = "" %}
+{# OG/Twitter 이미지: 페이지 ogImage > site.defaultOgImage > default fallback #}
+{% set ogImg = "/assets/images/og/default-og.png" %}
 {% if site and site.defaultOgImage %}
   {% set ogImg = site.defaultOgImage %}
 {% endif %}
