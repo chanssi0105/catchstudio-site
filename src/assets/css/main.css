@@ -138,8 +138,13 @@ body{padding-top: var(--header-h);}
 
 /* 카드 */
 .p-card{position: relative; display: block; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: var(--color-gray800); transition: transform 420ms cubic-bezier(.22,.61,.36,1),opacity 420ms ease;}
-.p-thumb{position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.005); transition: transform 240ms ease;}
-.p-title{position: absolute; left: 0; right: 0; bottom: var(--space-4); padding: 0 var(--space-4); text-align: center; font-size: var(--fs-body-md); line-height: var(--lh-150); font-weight: 500; color: var(--color-white); opacity: .92; text-shadow: 0 4px 16px rgba(0,0,0,.45);}
+.p-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.22) 28%, rgba(0,0,0,0) 55%);}
+.p-thumb{position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.005); transition: transform 240ms ease;}
+.p-title{position: absolute; z-index: 2; left: 0; right: 0; bottom: var(--space-4); padding: 0 var(--space-4); text-align: center; font-size: var(--fs-body-md); line-height: var(--lh-150); font-weight: 500; color: var(--color-white); opacity: .92; text-shadow: 0 4px 16px rgba(0,0,0,.45);}
+
+/* category badge (top-left) */
+.p-cat{position:absolute;top:var(--space-4);left:var(--space-4);z-index:2;display:inline-flex;align-items:center;justify-content:center;padding: var(--space-2); border-radius:8px; font-size:var(--fs-body-xs); line-height:1; font-weight:400;letter-spacing:.02em;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 24px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;}
+
 
 /* hover */
 .p-card:hover .p-thumb{transform: scale(1.05);}
@@ -226,6 +231,7 @@ body{padding-top: var(--header-h);}
 .footer-cta-text,
 .footer-copy,
 .footer-tagline,
-.p404-btn{
+.p404-btn,
+.p-cat{
   font-family: var(--font-display);
 }
