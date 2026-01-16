@@ -20,6 +20,113 @@
     requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add("is-ready")));
   });
 
+
+  /* =========================================================
+   Mobile auto-scroll (About -> data-hero-sub) - ALWAYS (like Contact)
+   - 모바일에서만
+   - 페이지 진입 시마다 동작 (세션 제한 없음)
+   - 사용자가 이미 스크롤했으면 실행 안 함
+   - 커스텀 스무스(시간 고정)
+========================================================= */
+(() => {
+  const isMobile = window.matchMedia && window.matchMedia("(max-width: 820px)").matches;
+  if (!isMobile) return;
+
+  if (prefersReduce) return;
+
+  const getHeaderH = () => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue("--header-h").trim();
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? n : 70;
+  };
+
+  // ✅ 튜닝
+  const START_DELAY = 120;      // 시작 빠르게
+  const SCROLL_DURATION = 2000;  // 700~1200 추천 (더 느리게=1500~2000)
+
+  const smoothScrollTo = (targetY, duration) => {
+    const startY = window.scrollY;
+    const dist = targetY - startY;
+    const startT = performance.now();
+    const ease = (t) => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2);
+
+    const step = (now) => {
+      const p = Math.min(1, (now - startT) / duration);
+      window.scrollTo(0, startY + dist * ease(p));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  let done = false;
+  let canceled = false;
+
+  const cancel = () => { canceled = true; cleanup(); };
+  const cleanup = () => {
+    window.removeEventListener("wheel", cancel);
+    window.removeEventListener("touchstart", cancel);
+    window.removeEventListener("keydown", cancel);
+  };
+
+  window.addEventListener("wheel", cancel, { passive: true });
+  window.addEventListener("touchstart", cancel, { passive: true });
+  window.addEventListener("keydown", cancel);
+
+  const run = async () => {
+    if (done || canceled) return;
+
+    const scroller = document.scrollingElement || document.documentElement;
+
+    // ✅ 히어로 최상단에 있을 때만 발동 (컨텍트랑 동일 컨셉)
+    if ((scroller.scrollTop || 0) > 10) return;
+
+    const target = document.querySelector("[data-hero-sub]");
+    if (!target) return;
+
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    try {
+      if (document.fonts && document.fonts.ready) await Promise.race([document.fonts.ready, wait(500)]);
+      else await wait(80);
+    } catch (_) {}
+
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    if (canceled) return;
+
+    const headerH = getHeaderH();
+    const rect = target.getBoundingClientRect();
+    const maxScroll = scroller.scrollHeight - window.innerHeight;
+
+    const EXTRA = 50;
+    let y = window.scrollY + rect.top - headerH - EXTRA;
+    y = Math.max(0, Math.min(maxScroll, y));
+
+    done = true;
+    cleanup();
+
+    smoothScrollTo(y, SCROLL_DURATION);
+  };
+
+  // ✅ 진입마다 동작 (load 기준)
+  if (document.readyState === "complete") {
+    setTimeout(run, START_DELAY);
+  } else {
+    window.addEventListener("load", () => setTimeout(run, START_DELAY), { once: true });
+  }
+
+  // ✅ bfcache(뒤로가기)에서도 다시 동작하게
+  window.addEventListener("pageshow", () => {
+    done = false;
+    canceled = false;
+    setTimeout(run, START_DELAY);
+  });
+})();
+
+
+
+
+
+
+
   // ----------------------------------------------------------
 // 1) Hero title split (word) - safe (ignores tags) + reload/mobile safe
 // ----------------------------------------------------------
@@ -656,6 +763,59 @@ window.addEventListener("pageshow", () => initHero());
     ========================= */
     const track = s5.querySelector("[data-s5-track]");
     const slides = track ? Array.from(track.querySelectorAll(".about-s5__slide")) : [];
+
+
+    /* =========================
+      S5: title line split (for motion)
+    ========================= */
+    const buildS5TitleSpans = () => {
+      s56.querySelectorAll("[data-s5-title]").forEach((el) => {
+        if (el.dataset.built === "1") return;
+
+        const raw = el.innerHTML.replace(/<br\s*\/?>/gi, "\n");
+        const lines = raw.split("\n").map((s) => s.trim()).filter(Boolean);
+
+        el.innerHTML = lines.map((line) => `<span>${line}</span>`).join("<br />");
+        el.querySelectorAll("span").forEach((sp, i) => {
+          sp.style.transitionDelay = `${Math.min(i * 90, 240)}ms`;
+        });
+
+        el.dataset.built = "1";
+      });
+    };
+
+    // ✅ slides 초기화/카운터 세팅 전에 한 번 실행
+    buildS5TitleSpans();
+
+
+
+        // ✅ 첫 진입 시에도 타이틀 모션을 확실히 태움 (span이 나중에 생겨도)
+    const bootS5TitleMotion = () => {
+      if (prefersReduce) return;
+      slides.forEach((slide) => {
+        const h = slide.querySelector("[data-s5-title]");
+        if (!h) return;
+
+        // 지금 활성 슬라이드만 부트 (원하면 전체 슬라이드도 가능)
+        if (!slide.classList.contains("is-active")) return;
+
+        h.classList.add("is-boot");
+        // reflow
+        void h.offsetWidth;
+        requestAnimationFrame(() => {
+          h.classList.remove("is-boot");
+        });
+      });
+    };
+
+    bootS5TitleMotion();
+
+
+
+
+
+
+
     const btnPrev = s5.querySelector("[data-s5-prev]");
     const btnNext = s5.querySelector("[data-s5-next]");
     const pad2 = (n) => String(n).padStart(2, "0");

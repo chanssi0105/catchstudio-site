@@ -114,7 +114,7 @@ Section 1: Hero
 Section 2: Subtitle + Full-width marquee
 ========================================================= */
 .about-s2{padding-top: var(--space-fluid-100); background: var(--color-white);}
-.about-s2__subtitle{display:block; margin:0 0 var(--space-section-md) auto; text-align:left; max-width:830px; font-size: clamp(18px, 1.6vw, 26px); line-height: var(--lh-body-lg); font-weight:500; color:var(--color-black);}
+.about-s2__subtitle{display:block; margin:0 0 var(--space-section-md) auto; text-align:left; max-width:920px; font-size: clamp(18px, 1.6vw, 26px); line-height: var(--lh-body-lg); font-weight:500; color:var(--color-black);}
 
 /* marquee full width */
 .about-s2__marquee{width: 100%; opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease;}
@@ -305,6 +305,8 @@ S5 (slide base) - stage full
 .about-s5__slide.is-active .about-s5__no{opacity:1;transform:translateY(0);transition-delay:120ms;}
 .about-s5__slide.is-active .about-s5__h>span{transform:translateY(0);opacity:1;}
 .about-s5__slide.is-active .about-s5__p{opacity:1;transform:translateY(0);}
+
+.about-s5__slide.is-active .about-s5__h.is-boot>span{transform:translateY(120%);opacity:0;}
 
 @media (max-width:768px){
   .about-s5__content{grid-template-columns:1fr;grid-template-rows:auto auto auto;row-gap:16px;}

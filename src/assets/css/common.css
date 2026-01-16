@@ -3,6 +3,9 @@
 /* 보더박스 통일 */
 *, *::before, *::after { box-sizing: border-box;}
 
+/* 다크모드 금지 */
+html{color-scheme: light;}
+
 /* 문서 기본 (root는 16px 유지) */
 html {
   font-size: 100%;             
