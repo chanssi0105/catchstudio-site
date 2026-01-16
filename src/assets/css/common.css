@@ -146,3 +146,16 @@ body, p{font-size: var(--fs-body-md);}
 .sentence-line2{-webkit-line-clamp: 2;}
 .sentence-line3{-webkit-line-clamp: 3;}
 .sentence-line4{-webkit-line-clamp: 4;}
+
+
+
+/* =========================================================
+   Global: micro page fade-in
+   - tiny, fast, non-invasive
+========================================================= */
+html{background:var(--color-white);}
+body{opacity:0;transform:translate3d(0,6px,0);transition:opacity .22s ease, transform .28s cubic-bezier(.2,.8,.2,1);}
+html.is-ready body{opacity:1;transform:none;}
+@media (prefers-reduced-motion: reduce){
+  body{opacity:1;transform:none;transition:none;}
+}

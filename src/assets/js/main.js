@@ -1,3 +1,16 @@
+(() => {
+  const root=document.documentElement;
+  root.classList.add("is-js");
+
+  const prefersReduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(prefersReduce){root.classList.add("is-ready");return;}
+
+  // 첫 페인트 이후에 살짝만 붙여서 깜빡임/FOUC 최소화
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{root.classList.add("is-ready");});});
+})();
+
+
+
 /* =========================================================
    main.js (Header + Overlay + Projects Load More) - CLEAN + Initial Enter
    - is-ready (on load)
