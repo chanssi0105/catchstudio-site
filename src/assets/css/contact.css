@@ -79,10 +79,22 @@ body.is-scrollLocked{padding-right:var(--sbw,0px);}
 /* month input: 완전 커스텀은 불가(브라우저 UI 제한) */
 .c-input[type="month"]{padding-right:46px;}
 
+/* 옵션들을 세로 카드 리스트로 */
+.c-fieldset .c-chip{width:100%;}
+.c-fieldset{display:flex;flex-direction:column;gap:10px;}
 .c-fieldset{border:0;padding:0;margin:0;}
 .c-legend{font-size:var(--fs-body-lg);font-weight:700;margin:0 0 var(--space-3);color:var(--color-black);}
-.c-chip{display:inline-flex;align-items:center;gap:4px;padding:4px;margin-right:8px;cursor:pointer;user-select:none;}
-.c-chip input{accent-color:var(--color-primary);}
+.c-chip{position:relative;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;border:1px solid rgba(11,25,60,.14);background:rgba(11,25,60,.03);cursor:pointer;user-select:none;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;color:var(--color-secondary);font-weight:800;line-height:1.2;}
+.c-chip:hover{transform:translateY(-1px);border-color:rgba(11,25,60,.22);background:rgba(11,25,60,.05);box-shadow:0 10px 24px rgba(11,25,60,.06);}
+
+/* 라디오 숨김(동작 유지) */
+.c-chip>input[type="radio"]{position:absolute;inset:0;opacity:0;pointer-events:none;}
+
+/* 선택 상태 */
+.c-chip:has(>input[type="radio"]:checked){border-color:rgba(73,248,196,.8);background:rgba(73,248,196,.5); box-shadow:0 12px 28px rgba(11,25,60,.10);}
+
+/* 키보드 포커스(접근성) */
+.c-chip:has(>input[type="radio"]:focus-visible){outline:2px solid rgba(11,25,60,.35);outline-offset:2px;}
 
 .c-schedule{margin-top:var(--space-8); padding:var(--space-8); border-radius:8px;background:var(--color-gray200);}
 .c-schedule[aria-hidden="true"]{display:none;}
@@ -104,7 +116,7 @@ body.is-scrollLocked{padding-right:var(--sbw,0px);}
 /* =========================================================
    Buttons (+ Arrow)
 ========================================================= */
-.c-next{margin-top:var(--space-5);display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:8px 20px;border-radius:8px;border:0;background:var(--color-secondary);color:var(--color-white);font-size:var(--fs-body-md);font-weight:800;cursor:pointer;transition:transform .18s ease,background .18s ease,color .18s ease;}
+.c-next{margin-top:var(--space-5);display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:8px 20px;border-radius:999px;border:0;background:var(--color-secondary);color:var(--color-white);font-size:var(--fs-body-md);font-weight:800;cursor:pointer;transition:transform .18s ease,background .18s ease,color .18s ease;}
 .c-next:hover{transform:translateY(-1px);background:var(--color-accent);color:var(--color-secondary);}
 .c-next:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 .c-next .c-arrow{width:14px;height:14px;display:block;}
