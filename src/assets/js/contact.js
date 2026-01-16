@@ -1,15 +1,15 @@
 /* =========================================================
-   contact.js (Clean v1.3) - FULL
+   contact.js (Clean v1.5) - FULL (i18n + dedup/refactor)
    - About hero splitWords 적용(data-split-words)
    - hero: 첫 페인트 후 is-animated 트리거
    - Panel 1개 고정 + Feed 누적 + 클릭 편집
    - Feed 순서: 일정 -> 이메일 -> 이름
    - Edit 후: 원래 작성중이던 단계로 복귀(returnTo)
-   - 라벨 한글화 + Edit -> 수정
    - 버튼 화살표 추가 + 마지막 버튼 primary
    - date 입력: 지난 날짜 선택 불가(min=오늘)
-   - ✅ 페이지 진입 후 몇 초 있다가 본문(폼)으로 자동 스크롤(once, 1.5s, smooth)
-   - ✅ Formspree 전송 시 name/email/schedule hidden 주입(서브미션/메일에 전부 보이게)
+   - ✅ 페이지 진입 후 몇 초 있다가 본문(폼)으로 자동 스크롤(once, smooth)
+   - ✅ Formspree 전송 시 hidden 주입
+   - ✅ KO/EN i18n (documentElement.lang === "en")
 ========================================================= */
 (() => {
   document.documentElement.classList.add("is-js");
@@ -17,6 +17,63 @@
   const $=(s,r=document)=>r.querySelector(s);
   const $$=(s,r=document)=>[...r.querySelectorAll(s)];
   const prefersReduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const isEN=(document.documentElement.lang||"").toLowerCase().startsWith("en");
+
+  const I18N={
+    ko:{
+      keyLabel:{name:"이름", email:"이메일", schedule:"일정", message:"세부사항"},
+      feedEdit:"수정",
+      ariaEdit:(label)=>`${label} 수정`,
+      btnNext:"다음",
+      btnSubmit:"이야기 나누기",
+      btnSending:"보내는 중",
+      btnDone:"보내기 완료",
+      scheduleLegend:"Catch Studio 일정에 맞추어 일정을 조율할 수 있나요?",
+      scheduleYes:"가능해요",
+      scheduleNo:"어려워요",
+      scheduleUnknown:"아직 모르겠어요",
+      scheduleHint:"가능한 일정을 선택해주세요.",
+      scheduleFrom:"시작 일",
+      scheduleTo:"종료 일",
+      msgPlaceholder:"프로젝트명(가칭), 목표, 필요한 범위 등을 편하게 작성해 주세요. (10자 이상 기입)",
+      scheduleAdjustPrefix:"일정 조율",
+      scheduleAdjustYes:"가능",
+      scheduleAdjustNo:"불가",
+      scheduleAdjustUnknown:"미정",
+      modalAria:"문의 접수 완료",
+      modalTitle:"접수 완료",
+      modalDesc:"내용 잘 받았어요. 빠르게 답장드릴게요!",
+      modalCta:"프로젝트 보러가기"
+    },
+    en:{
+      keyLabel:{name:"Name", email:"Email", schedule:"Schedule", message:"Details"},
+      feedEdit:"Edit",
+      ariaEdit:(label)=>`Edit ${label}`,
+      btnNext:"Next",
+      btnSubmit:"Send message",
+      btnSending:"Sending",
+      btnDone:"Sent",
+      scheduleLegend:"Can you align the timeline with Catch Studio’s schedule?",
+      scheduleYes:"Yes, flexible",
+      scheduleNo:"No, fixed dates",
+      scheduleUnknown:"Not sure yet",
+      scheduleHint:"Select the available date range.",
+      scheduleFrom:"Start date",
+      scheduleTo:"End date",
+      msgPlaceholder:"Share a short brief — project name, goals, scope, and anything helpful. (10+ characters)",
+      scheduleAdjustPrefix:"Scheduling",
+      scheduleAdjustYes:"Flexible",
+      scheduleAdjustNo:"Fixed",
+      scheduleAdjustUnknown:"TBD",
+      modalAria:"Message sent",
+      modalTitle:"Message sent",
+      modalDesc:"Got it. I’ll get back to you shortly.",
+      modalCta:"View projects"
+    }
+  };
+
+  const t=isEN?I18N.en:I18N.ko;
 
   const lockScroll = (()=> {
     let y=0;
@@ -133,7 +190,7 @@
     const state={name:"",email:"",schedule_flexible:"unknown",schedule_from:"",schedule_to:"",message:""};
     const done={name:false,email:false,schedule:false,message:false};
 
-    const isMobile = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+    const isMobile=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches;
 
     let active="name";
     let returnTo=null;
@@ -160,18 +217,20 @@
       return order[Math.min(order.length-1,i+1)];
     };
 
-    const keyLabel=(k)=>{
-      if(k==="name") return "이름";
-      if(k==="email") return "이메일";
-      if(k==="schedule") return "일정";
-      return "세부사항";
+    const keyLabel=(k)=>t.keyLabel[k] || t.keyLabel.message;
+
+    const scheduleOk=()=>{
+      if(state.schedule_flexible!=="no") return true;
+      if(!state.schedule_from||!state.schedule_to) return false;
+      if(state.schedule_from>state.schedule_to) return false;
+      return true;
     };
 
     const scheduleText=()=>{
       const flex=state.schedule_flexible;
-      const label=flex==="yes"?"가능":(flex==="no"?"불가":"미정");
+      const label=flex==="yes"?t.scheduleAdjustYes:(flex==="no"?t.scheduleAdjustNo:t.scheduleAdjustUnknown);
       const range=(flex==="no" && state.schedule_from && state.schedule_to) ? ` / ${state.schedule_from} ~ ${state.schedule_to}` : "";
-      return `일정 조율: ${label}${range}`;
+      return `${t.scheduleAdjustPrefix}: ${label}${range}`;
     };
 
     const summaryText=(k)=>{
@@ -181,7 +240,7 @@
       return ((state.message||"").trim().slice(0,80) + (((state.message||"").trim().length>80)?"…":"")) || "";
     };
 
-    // ✅ Formspree에 같이 보낼 hidden input 주입(없으면 생성, 있으면 값 업데이트)
+    // Formspree hidden input 주입
     const ensureHidden=(name,value)=>{
       let el=form.querySelector(`input[type="hidden"][name="${name}"]`);
       if(!el){
@@ -195,7 +254,7 @@
 
     const validateKey=(k,markTouched=true)=>{
       if(k==="name"){
-        const v=(state.name||"");
+        const v=state.name||"";
         const w=fieldWrap($("#c-name",panel));
         if(!v){setStateClass(w,"invalid",false);return false;}
         const ok=isNameValid(v);
@@ -216,13 +275,6 @@
       }
 
       if(k==="schedule"){
-        const ok=(()=>{
-          if(state.schedule_flexible!=="no") return true;
-          if(!state.schedule_from||!state.schedule_to) return false;
-          if(state.schedule_from>state.schedule_to) return false;
-          return true;
-        })();
-
         const from=$("#c-from",panel);
         const to=$("#c-to",panel);
         const wf=fieldWrap(from);
@@ -235,11 +287,11 @@
             setStateClass(wt,"invalid",markTouched);
           }
         }
-        return ok;
+        return scheduleOk();
       }
 
       {
-        const v=(state.message||"");
+        const v=state.message||"";
         const w=fieldWrap($("#c-msg",panel));
         if(!v){setStateClass(w,"invalid",false);return false;}
         const ok=isMsgValid(v);
@@ -251,14 +303,15 @@
     const renderFeed=()=>{
       const order=["schedule","email","name"];
       feed.innerHTML=order.filter(k=>done[k]).map(k=>{
-        return `<div class="feed-item ${active===k?"is-active":""}" data-edit="${k}" role="button" tabindex="0" aria-label="${keyLabel(k)} 수정"><div class="feed-top"><div class="feed-key">${keyLabel(k)}</div><div class="feed-edit">수정</div></div><div class="feed-val">${escapeHtml(summaryText(k))}</div></div>`;
+        const label=keyLabel(k);
+        return `<div class="feed-item ${active===k?"is-active":""}" data-edit="${k}" role="button" tabindex="0" aria-label="${escapeHtml(t.ariaEdit(label))}"><div class="feed-top"><div class="feed-key">${escapeHtml(label)}</div><div class="feed-edit">${escapeHtml(t.feedEdit)}</div></div><div class="feed-val">${escapeHtml(summaryText(k))}</div></div>`;
       }).join("");
     };
 
     const focusFirst=()=>{
       if(isMobile) return;
-      const t=panel.querySelector("input,textarea,button");
-      t && t.focus({preventScroll:true});
+      const tEl=panel.querySelector("input,textarea,button");
+      tEl && tEl.focus({preventScroll:true});
     };
 
     const setActive=(k,scrollIntoView=false)=>{
@@ -302,98 +355,37 @@
       return `${y}-${m}-${day}`;
     };
 
-    const renderPanel=()=>{
-      if(active==="name"){
-        panel.innerHTML=
-          `<div class="c-card">`+
-            `<label class="c-label" for="c-name">이름</label>`+
-            `<div class="c-field" data-field="name">`+
-              `<input class="c-input" id="c-name" name="name" type="text" autocomplete="name" placeholder="이름" required value="${escapeHtml(state.name)}" />`+
-              `<span class="c-status" aria-hidden="true"></span>`+
-            `</div>`+
-            `<button class="c-next" type="button" data-next>다음${ARROW_SVG}</button>`+
-          `</div>`;
-        bindName();
-        return;
-      }
-
-      if(active==="email"){
-        panel.innerHTML=
-          `<div class="c-card">`+
-            `<label class="c-label" for="c-email">이메일</label>`+
-            `<div class="c-field" data-field="email">`+
-              `<input class="c-input" id="c-email" name="email" type="email" autocomplete="email" placeholder="이메일" required value="${escapeHtml(state.email)}" />`+
-              `<span class="c-status" aria-hidden="true"></span>`+
-            `</div>`+
-            `<button class="c-next" type="button" data-next>다음${ARROW_SVG}</button>`+
-          `</div>`;
-        bindEmail();
-        return;
-      }
-
-      if(active==="schedule"){
-        const showExtra=state.schedule_flexible==="no";
-        panel.innerHTML=
-          `<div class="c-card">`+
-            `<fieldset class="c-fieldset">`+
-              `<legend class="c-legend">Catch Studio 일정에 맞추어 일정을 조율할 수 있나요?</legend>`+
-              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="yes" ${state.schedule_flexible==="yes"?"checked":""} />가능해요</label>`+
-              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="no" ${state.schedule_flexible==="no"?"checked":""} />어려워요</label>`+
-              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="unknown" ${state.schedule_flexible==="unknown"?"checked":""} />아직 모르겠어요</label>`+
-              `<div class="c-schedule" data-schedule-extra aria-hidden="${showExtra?"false":"true"}">`+
-                `<p class="c-hint">가능한 일정을 선택해주세요.</p>`+
-                `<div class="c-row">`+
-                  `<div class="c-col">`+
-                    `<label class="c-label" for="c-from">시작 일</label>`+
-                    `<div class="c-field" data-field="from">`+
-                      `<input class="c-input" id="c-from" name="schedule_from" type="date" value="${escapeHtml(state.schedule_from)}" ${showExtra?"required":""} />`+
-                      `<span class="c-status" aria-hidden="true"></span>`+
-                    `</div>`+
-                  `</div>`+
-                  `<div class="c-col">`+
-                    `<label class="c-label" for="c-to">종료 일</label>`+
-                    `<div class="c-field" data-field="to">`+
-                      `<input class="c-input" id="c-to" name="schedule_to" type="date" value="${escapeHtml(state.schedule_to)}" ${showExtra?"required":""} />`+
-                      `<span class="c-status" aria-hidden="true"></span>`+
-                    `</div>`+
-                  `</div>`+
-                `</div>`+
-              `</div>`+
-            `</fieldset>`+
-            `<button class="c-next" type="button" data-next>다음${ARROW_SVG}</button>`+
-          `</div>`;
-        bindSchedule();
-        return;
-      }
-
-      panel.innerHTML=
-        `<div class="c-card">`+
-          `<label class="c-label" for="c-msg">세부사항</label>`+
-          `<div class="c-field" data-field="message">`+
-            `<textarea class="c-textarea" id="c-msg" name="message" rows="6" placeholder="프로젝트명(가칭), 목표, 필요한 범위 등을 편하게 작성해 주세요. (10자 이상 기입)" required>${escapeHtml(state.message)}</textarea>`+
-            `<span class="c-status" aria-hidden="true"></span>`+
-          `</div>`+
-          `<button class="c-next c-next--primary" type="submit" data-submit disabled>이야기 나누기${ARROW_SVG}</button>`+
-        `</div>`;
-      bindMessage();
-    };
-
     const bindNext=(key)=>{
       const btn=$("[data-next]",panel);
       btn?.addEventListener("click",()=>tryCommit(key));
     };
 
-    const bindName=()=>{
-      const input=$("#c-name",panel);
+    const bindTextField=({key,inputSel,normalize,setValidity,validFn,nextBtnSel="[data-next]"})=>{
+      const input=$(inputSel,panel);
       const wrap=fieldWrap(input);
-      const btn=$("[data-next]",panel);
+      const btn=$(nextBtnSel,panel);
 
-      const update=(t=true)=>{
-        state.name=input.value||"";
-        if(!state.name){setStateClass(wrap,"invalid",false);btn.disabled=true;return;}
-        const ok=isNameValid(state.name);
-        setStateClass(wrap,ok?"valid":"invalid",t);
-        btn.disabled=!ok;
+      const read=()=>{
+        const raw=input.value||"";
+        const v=normalize?normalize(raw):raw;
+        state[key]=v;
+        return v;
+      };
+
+      const update=(touched=true)=>{
+        const v=read();
+
+        if(setValidity) setValidity(input,v);
+
+        if(!v){
+          setStateClass(wrap,"invalid",false);
+          if(btn) btn.disabled=true;
+          return;
+        }
+
+        const ok=validFn(v);
+        setStateClass(wrap,ok?"valid":"invalid",touched);
+        if(btn) btn.disabled=!ok;
       };
 
       input.addEventListener("input",()=>update(true));
@@ -404,43 +396,11 @@
         if(e.key==="Enter"){
           e.preventDefault();
           update(true);
-          tryCommit("name");
+          tryCommit(key);
         }
       });
 
-      bindNext("name");
-      update(false);
-    };
-
-    const bindEmail=()=>{
-      const input=$("#c-email",panel);
-      const wrap=fieldWrap(input);
-      const btn=$("[data-next]",panel);
-
-      const update=(t=true)=>{
-        state.email=(input.value||"").trim();
-        if(state.email && !isEmailValid(state.email)) input.setCustomValidity("invalid");
-        else input.setCustomValidity("");
-
-        if(!state.email){setStateClass(wrap,"invalid",false);btn.disabled=true;return;}
-        const ok=isEmailValid(state.email);
-        setStateClass(wrap,ok?"valid":"invalid",t);
-        btn.disabled=!ok;
-      };
-
-      input.addEventListener("input",()=>update(true));
-      input.addEventListener("compositionend",()=>update(true));
-      input.addEventListener("blur",()=>update(true));
-
-      input.addEventListener("keydown",(e)=>{
-        if(e.key==="Enter"){
-          e.preventDefault();
-          update(true);
-          tryCommit("email");
-        }
-      });
-
-      bindNext("email");
+      bindNext(key);
       update(false);
     };
 
@@ -465,16 +425,15 @@
         }
       };
 
-      const update=(t=true)=>{
-        const ok=validateKey("schedule",t);
+      const update=(touched=true)=>{
+        const ok=validateKey("schedule",touched);
         btn.disabled=!ok;
       };
 
       radios.forEach(r=>{
         r.addEventListener("change",()=>{
           state.schedule_flexible=r.value;
-          if(state.schedule_flexible==="no") setExtra(true);
-          else setExtra(false);
+          setExtra(state.schedule_flexible==="no");
           update(true);
         });
       });
@@ -513,13 +472,6 @@
       const wrap=fieldWrap(textarea);
       const btn=$("[data-submit]",panel);
 
-      const scheduleOk=()=>{
-        if(state.schedule_flexible!=="no") return true;
-        if(!state.schedule_from||!state.schedule_to) return false;
-        if(state.schedule_from>state.schedule_to) return false;
-        return true;
-      };
-
       const allOk=()=>{
         return isNameValid(state.name)
           && isEmailValid(state.email)
@@ -527,14 +479,14 @@
           && isMsgValid(state.message);
       };
 
-      const update=(t=true)=>{
+      const update=(touched=true)=>{
         state.message=textarea.value||"";
 
         if(!state.message){
           setStateClass(wrap,"invalid",false);
         }else{
           const ok=isMsgValid(state.message);
-          setStateClass(wrap,ok?"valid":"invalid",t);
+          setStateClass(wrap,ok?"valid":"invalid",touched);
         }
 
         if(btn) btn.disabled=!allOk();
@@ -571,43 +523,135 @@
       openEdit(k);
     });
 
+    const renderPanel=()=>{
+      if(active==="name"){
+        panel.innerHTML=
+          `<div class="c-card">`+
+            `<label class="c-label" for="c-name">${escapeHtml(t.keyLabel.name)}</label>`+
+            `<div class="c-field" data-field="name">`+
+              `<input class="c-input" id="c-name" name="name" type="text" autocomplete="name" placeholder="${escapeHtml(t.keyLabel.name)}" required value="${escapeHtml(state.name)}" />`+
+              `<span class="c-status" aria-hidden="true"></span>`+
+            `</div>`+
+            `<button class="c-next" type="button" data-next>${escapeHtml(t.btnNext)}${ARROW_SVG}</button>`+
+          `</div>`;
+
+        bindTextField({
+          key:"name",
+          inputSel:"#c-name",
+          normalize:(v)=>v,
+          validFn:isNameValid
+        });
+        return;
+      }
+
+      if(active==="email"){
+        panel.innerHTML=
+          `<div class="c-card">`+
+            `<label class="c-label" for="c-email">${escapeHtml(t.keyLabel.email)}</label>`+
+            `<div class="c-field" data-field="email">`+
+              `<input class="c-input" id="c-email" name="email" type="email" autocomplete="email" placeholder="${escapeHtml(t.keyLabel.email)}" required value="${escapeHtml(state.email)}" />`+
+              `<span class="c-status" aria-hidden="true"></span>`+
+            `</div>`+
+            `<button class="c-next" type="button" data-next>${escapeHtml(t.btnNext)}${ARROW_SVG}</button>`+
+          `</div>`;
+
+        bindTextField({
+          key:"email",
+          inputSel:"#c-email",
+          normalize:(v)=>String(v||"").trim(),
+          setValidity:(input,v)=>{
+            if(v && !isEmailValid(v)) input.setCustomValidity("invalid");
+            else input.setCustomValidity("");
+          },
+          validFn:isEmailValid
+        });
+        return;
+      }
+
+      if(active==="schedule"){
+        const showExtra=state.schedule_flexible==="no";
+        panel.innerHTML=
+          `<div class="c-card">`+
+            `<fieldset class="c-fieldset">`+
+              `<legend class="c-legend">${escapeHtml(t.scheduleLegend)}</legend>`+
+              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="yes" ${state.schedule_flexible==="yes"?"checked":""} />${escapeHtml(t.scheduleYes)}</label>`+
+              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="no" ${state.schedule_flexible==="no"?"checked":""} />${escapeHtml(t.scheduleNo)}</label>`+
+              `<label class="c-chip"><input name="schedule_flexible" type="radio" value="unknown" ${state.schedule_flexible==="unknown"?"checked":""} />${escapeHtml(t.scheduleUnknown)}</label>`+
+              `<div class="c-schedule" data-schedule-extra aria-hidden="${showExtra?"false":"true"}">`+
+                `<p class="c-hint">${escapeHtml(t.scheduleHint)}</p>`+
+                `<div class="c-row">`+
+                  `<div class="c-col">`+
+                    `<label class="c-label" for="c-from">${escapeHtml(t.scheduleFrom)}</label>`+
+                    `<div class="c-field" data-field="from">`+
+                      `<input class="c-input" id="c-from" name="schedule_from" type="date" value="${escapeHtml(state.schedule_from)}" ${showExtra?"required":""} />`+
+                      `<span class="c-status" aria-hidden="true"></span>`+
+                    `</div>`+
+                  `</div>`+
+                  `<div class="c-col">`+
+                    `<label class="c-label" for="c-to">${escapeHtml(t.scheduleTo)}</label>`+
+                    `<div class="c-field" data-field="to">`+
+                      `<input class="c-input" id="c-to" name="schedule_to" type="date" value="${escapeHtml(state.schedule_to)}" ${showExtra?"required":""} />`+
+                      `<span class="c-status" aria-hidden="true"></span>`+
+                    `</div>`+
+                  `</div>`+
+                `</div>`+
+              `</div>`+
+            `</fieldset>`+
+            `<button class="c-next" type="button" data-next>${escapeHtml(t.btnNext)}${ARROW_SVG}</button>`+
+          `</div>`;
+
+        bindSchedule();
+        return;
+      }
+
+      panel.innerHTML=
+        `<div class="c-card">`+
+          `<label class="c-label" for="c-msg">${escapeHtml(t.keyLabel.message)}</label>`+
+          `<div class="c-field" data-field="message">`+
+            `<textarea class="c-textarea" id="c-msg" name="message" rows="6" placeholder="${escapeHtml(t.msgPlaceholder)}" required>${escapeHtml(state.message)}</textarea>`+
+            `<span class="c-status" aria-hidden="true"></span>`+
+          `</div>`+
+          `<button class="c-next c-next--primary" type="submit" data-submit disabled>${escapeHtml(t.btnSubmit)}${ARROW_SVG}</button>`+
+        `</div>`;
+
+      bindMessage();
+    };
+
     /* ----------------------------------------------------------
        Submit (TEST MODE + REAL MODE)
-       - 테스트 모드: 네트워크 전송 없음 / UI만
-       - 실전 모드: Formspree fetch 전송
-       - 버튼 카피: 이야기 나누기 -> 보내는 중 -> 보내기 완료
-       - ✅ 제출 직전 state -> hidden 주입해서 Formspree/메일에 전부 보이게
     ---------------------------------------------------------- */
     (() => {
-      const isTestMode=(() => {
-        const qs=new URLSearchParams(location.search);
-        if(qs.get("test")==="1") return true;
-        return false;
-      })();
+      const qs=new URLSearchParams(location.search);
+      const isTestMode=(qs.get("test")==="1");
 
       const DOTS_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="6" cy="11" r="1.8" fill="currentColor"/><circle cx="11" cy="11" r="1.8" fill="currentColor"/><circle cx="16" cy="11" r="1.8" fill="currentColor"/></svg>`;
       const CHECK_SVG=`<svg class="c-arrow" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M9.1 15.3L4.7 10.9l1.4-1.4 3 3 6.8-6.8 1.4 1.4-8.2 8.2z" fill="currentColor"/></svg>`;
 
       const getSubmitBtn=()=>panel.querySelector("[data-submit]");
-      const setBtn=(mode)=>{
+
+      const setBtnState=(mode)=>{
         const btn=getSubmitBtn();
         if(!btn) return;
+
         if(mode==="idle"){
-          btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
+          btn.disabled=false;
+          btn.innerHTML=`${escapeHtml(t.btnSubmit)}${ARROW_SVG}`;
           btn.removeAttribute("aria-busy");
           btn.dataset.submitState="idle";
           return;
         }
+
         if(mode==="busy"){
           btn.disabled=true;
-          btn.innerHTML=`보내는 중${DOTS_SVG}`;
+          btn.innerHTML=`${escapeHtml(t.btnSending)}${DOTS_SVG}`;
           btn.setAttribute("aria-busy","true");
           btn.dataset.submitState="busy";
           return;
         }
+
         if(mode==="done"){
           btn.disabled=true;
-          btn.innerHTML=`보내기 완료${CHECK_SVG}`;
+          btn.innerHTML=`${escapeHtml(t.btnDone)}${CHECK_SVG}`;
           btn.removeAttribute("aria-busy");
           btn.dataset.submitState="done";
         }
@@ -622,16 +666,16 @@
         overlay.setAttribute("data-contact-modal","");
         overlay.setAttribute("role","dialog");
         overlay.setAttribute("aria-modal","true");
-        overlay.setAttribute("aria-label","문의 접수 완료");
+        overlay.setAttribute("aria-label",t.modalAria);
 
         const card=document.createElement("div");
         card.className="contact-modal__card";
 
         card.innerHTML=
-          `<h3 class="contact-modal__title">접수 완료</h3>`+
-          `<p class="contact-modal__desc">내용 잘 받았어요. 빠르게 답장드릴게요!</p>`+
+          `<h3 class="contact-modal__title">${escapeHtml(t.modalTitle)}</h3>`+
+          `<p class="contact-modal__desc">${escapeHtml(t.modalDesc)}</p>`+
           `<div class="contact-modal__actions">`+
-            `<button type="button" data-modal-cta class="c-next c-next--primary">프로젝트 보러가기${ARROW_SVG}</button>`+
+            `<button type="button" data-modal-cta class="c-next c-next--primary">${escapeHtml(t.modalCta)}${ARROW_SVG}</button>`+
           `</div>`;
 
         overlay.appendChild(card);
@@ -639,7 +683,7 @@
 
         card.querySelector("[data-modal-cta]")?.addEventListener("click",()=>{
           lockScroll.off();
-          location.href="/";
+          location.href=isEN?"/en/":"/";
         });
 
         return overlay;
@@ -651,24 +695,14 @@
         overlay.classList.add("is-open");
       };
 
-      const showFail=()=>{
-        const btn=getSubmitBtn();
-        if(!btn) return;
-        btn.disabled=false;
-        btn.innerHTML=`이야기 나누기${ARROW_SVG}`;
-        btn.removeAttribute("aria-busy");
-        btn.dataset.submitState="idle";
+      const fail=()=>{
+        setBtnState("idle");
       };
 
       form.addEventListener("submit", async (e) => {
         const ok0=isNameValid(state.name);
         const ok1=isEmailValid(state.email);
-        const ok2=(()=>{
-          if(state.schedule_flexible!=="no") return true;
-          if(!state.schedule_from||!state.schedule_to) return false;
-          if(state.schedule_from>state.schedule_to) return false;
-          return true;
-        })();
+        const ok2=scheduleOk();
         const ok3=isMsgValid(state.message);
 
         if(!ok0||!ok1||!ok2||!ok3){
@@ -680,9 +714,8 @@
         }
 
         e.preventDefault();
-        setBtn("busy");
+        setBtnState("busy");
 
-        // ✅ 여기서 state를 hidden으로 주입 -> FormData에 같이 들어감
         ensureHidden("name", state.name);
         ensureHidden("email", state.email);
         ensureHidden("schedule_flexible", state.schedule_flexible);
@@ -694,12 +727,12 @@
           const delay=900;
 
           setTimeout(()=>{
-            const fail=Math.random()<FAIL_RATE;
-            if(fail){
-              showFail();
+            const isFail=Math.random()<FAIL_RATE;
+            if(isFail){
+              fail();
               return;
             }
-            setBtn("done");
+            setBtnState("done");
             openModal();
           }, delay);
 
@@ -714,14 +747,14 @@
           });
 
           if(!res.ok){
-            showFail();
+            fail();
             return;
           }
 
-          setBtn("done");
+          setBtnState("done");
           openModal();
         }catch(_){
-          showFail();
+          fail();
         }
       });
     })();
@@ -732,7 +765,7 @@
     (() => {
       if(prefersReduce) return;
 
-      let done=false;
+      let doneOnce=false;
 
       const getHeaderH=()=>{
         const v=getComputedStyle(document.documentElement).getPropertyValue("--header-h").trim();
@@ -757,7 +790,7 @@
       };
 
       const run=async()=>{
-        if(done) return;
+        if(doneOnce) return;
         if(window.scrollY > 10) return;
 
         const target=document.querySelector(".contact-body");
@@ -780,7 +813,7 @@
         let y=window.scrollY + rect.top - headerH - EXTRA;
         y=Math.max(0, Math.min(maxScroll, y));
 
-        done=true;
+        doneOnce=true;
         smoothScrollTo(y, SCROLL_DURATION);
       };
 

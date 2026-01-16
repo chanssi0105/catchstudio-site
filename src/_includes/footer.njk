@@ -1,9 +1,39 @@
 {# src/_includes/footer.njk #}
+{% set __lang = (lang or locale or (page and page.lang) or "") %}
+
+{# __lang 비어있으면 URL로 추정 (Nunjucks-safe) #}
+{% if not __lang %}
+  {% set __url = (page and page.url) or "/" %}
+  {% set __isEnUrl = false %}
+  {% if __url == "/en/" or (__url | slice(0,4)) == "/en/" %}
+    {% set __isEnUrl = true %}
+  {% endif %}
+  {% if __isEnUrl %}
+    {% set __lang = "en" %}
+  {% else %}
+    {% set __lang = "ko" %}
+  {% endif %}
+{% endif %}
+
+{% set __isEn = (__lang == "en") %}
+{% set __base = "" %}
+{% if __isEn %}{% set __base = "/en" %}{% endif %}
+{% set __home = __base ~ "/" %}
+{% set __contact = __base ~ "/contact/" %}
+
+{# CTA 문구 (삼항 제거) #}
+{% set __ctaText = "프로젝트 의뢰하기" %}
+{% set __ctaAria = "프로젝트 의뢰하기" %}
+{% if __isEn %}
+  {% set __ctaText = "Start a project" %}
+  {% set __ctaAria = "Start a project" %}
+{% endif %}
+
 <footer class="site-footer" role="contentinfo">
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-left">
-        <a class="footer-brand" href="/" aria-label="Catch Studio Home">Catch Studio</a>
+        <a class="footer-brand" href="{{ __home }}" aria-label="Catch Studio Home">Catch Studio</a>
 
         <ul class="footer-contact" aria-label="Contact">
           <li class="footer-contact-item">
@@ -26,8 +56,8 @@
         </ul>
       </div>
 
-      <a class="footer-cta" href="/contact/" aria-label="프로젝트 의뢰하기">
-        <span class="footer-cta-text">프로젝트 의뢰하기</span>
+      <a class="footer-cta" href="{{ __contact }}" aria-label="{{ __ctaAria }}">
+        <span class="footer-cta-text">{{ __ctaText }}</span>
         <svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
           <path d="M14.1531 9.62505L9.86564 5.33755C9.69064 5.16255 9.60664 4.95838 9.61364 4.72505C9.62064 4.49172 9.71193 4.28755 9.88752 4.11255C10.0625 3.95213 10.2667 3.86813 10.5 3.86055C10.7333 3.85297 10.9375 3.93697 11.1125 4.11255L16.8875 9.88755C16.975 9.97505 17.0371 10.0698 17.0739 10.1719C17.1106 10.274 17.1284 10.3834 17.1273 10.5C17.1261 10.6167 17.1077 10.7261 17.0721 10.8282C17.0366 10.9303 16.9747 11.025 16.8866 11.1125L11.1116 16.8875C10.9512 17.048 10.7506 17.1282 10.5096 17.1282C10.2687 17.1282 10.0611 17.048 9.88664 16.8875C9.71164 16.7125 9.62414 16.5046 9.62414 16.2637C9.62414 16.0228 9.71164 15.8151 9.88664 15.6407L14.1531 11.375L4.37502 11.3751C4.1271 11.3751 3.91914 11.2911 3.75114 11.123C3.58314 10.9551 3.49943 10.7474 3.50002 10.5001C3.5006 10.2527 3.5846 10.0448 3.75202 9.87618C3.91943 9.70759 4.1271 9.62388 4.37502 9.62505L14.1531 9.62505Z" />
         </svg>
@@ -35,7 +65,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-copy">Copyright 2025 Catch Studio. All rights reserved.</p>
+      <p class="footer-copy">Copyright {{ build.year }} Catch Studio. All rights reserved.</p>
       <p class="footer-tagline">We catch ideas, and protect them too.</p>
     </div>
   </div>

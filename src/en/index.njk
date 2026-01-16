@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+title: "Everything Starts with a Catch"
+description: "Start with Catch Studio."
+canonical: "https://catch-studio.com/en/"
+permalink: /en/
+lang: en
+---
+{% set all = collections.projects %}
+{% set total = all | length %}
+{% set pageSize = 9 %}
+
+<section class="projects-wrap" data-total="{{ total }}" data-page="{{ pageSize }}">
+  <div class="projects-grid" id="projectGrid">
+    {% for p in all %}
+      {% if loop.index0 < pageSize %}
+        {% include "components-cardList.njk" %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="projects-more" id="projectsMore">
+    <button type="button" id="loadMoreBtn" class="projects-more-btn">
+      <span class="projects-more-label">
+        More Project
+        <svg class="icon-plus" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <mask id="mask0" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
+            <rect width="16" height="16" fill="#fff"/>
+          </mask>
+          <g mask="url(#mask0)">
+            <path d="M7.33333 14V8.66667H2V7.33333H7.33333V2H8.66667V7.33333H14V8.66667H8.66667V14H7.33333Z" fill="currentColor"/>
+          </g>
+        </svg>
+      </span>
+      <span class="projects-count" id="countBadge">{{ total }}/{{ total }}</span>
+    </button>
+  </div>
+</section>

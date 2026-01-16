@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="ko">
+{% set __url = page.url or "/" %}
+{% set __isEn = (__url == "/en/") or (__url.startsWith("/en/")) %}
+<html lang="{% if __isEn %}en{% else %}ko{% endif %}">
 <head>
   {% include "head-common.njk" %}
   {% if pageCss %}<link rel="stylesheet" href="{{ pageCss }}" />{% endif %}

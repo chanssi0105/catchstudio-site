@@ -28,3 +28,14 @@ permalink: "404.html"
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    try{
+      const path = location.pathname || "/";
+      if (path.startsWith("/en/") && !path.startsWith("/en/404")) {
+        location.replace("/en/404.html");
+      }
+    }catch(_){}
+  })();
+</script>
