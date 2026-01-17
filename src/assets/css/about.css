@@ -295,6 +295,24 @@ S5 + S56 + S6 (FINAL CSS ONE-BLOCK)
 
 .about-s5__content{will-change: transform;}
 
+/* =========================
+S5 텍스트: 페이드 제거 + 모션은 transform만
+========================= */
+
+/* counter/desc: 기본 opacity 1로 고정 */
+.about-s5__no{opacity:1;transform:none;transition:none;}
+.about-s5__p{opacity:1;transform:none;transition:none;}
+
+/* 타이틀: "위로 올라오는 span 모션" 완전 제거 */
+.about-s5__h{overflow:visible;}
+.about-s5__h>span{display:inline;transform:none;opacity:1;transition:none;}
+.about-s5__slide.is-active .about-s5__h>span{transform:none;opacity:1;}
+.about-s5__slide.is-active .about-s5__h.is-boot>span{transform:none;opacity:1;}
+
+/* JS가 주는 translateX를 잘 받도록(가속) */
+.about-s5__content, .about-s5__no, .about-s5__h, .about-s5__p{will-change:transform;}
+
+
 
 @media(max-width:1920px){
   .about-s5{--s5-gutter: 4vw;}

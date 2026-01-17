@@ -700,9 +700,9 @@
 
       /* ===== 튜닝 ===== */
       const S5_SLIDES=3;
-      const S5_RATIO=0.8;
+      const S5_RATIO=4;
       const COVER_RATIO=0.92;
-      const BG_RATIO=0.55;
+      const BG_RATIO=1.2;
       const RELEASE_RATIO=0.20;
       const MIN_DIST=180;
 
@@ -720,93 +720,223 @@
         wrap.style.height=`${stageH+totalDist}px`;
       };
 
-      /* -------------------------
+            /* -------------------------
          S5
       ------------------------- */
-      const track=s5.querySelector("[data-s5-track]");
-      const slides=track?[...track.querySelectorAll(".about-s5__slide")]:[];
-      const s5Contents=slides.map(s=>s.querySelector(".about-s5__content")).filter(Boolean);
+const track=s5.querySelector("[data-s5-track]");
+const slides=track?[...track.querySelectorAll(".about-s5__slide")]:[];
 
+// ✅ S5 BG
+const s5BgItems=[...s5.querySelectorAll("[data-s5-bg-item]")];
+let s5BgIndex=0;
 
-      // ✅ S5 BG (이름 충돌 방지)
-      const s5BgItems=[...s5.querySelectorAll("[data-s5-bg-item]")];
-      let s5BgIndex=0;
+const setS5Bg=(idx,force=false)=>{
+  if(!s5BgItems.length) return;
+  const next=clamp(idx,0,s5BgItems.length-1);
+  if(!force && next===s5BgIndex) return;
+  s5BgItems.forEach((it,i)=>it.classList.toggle("is-active",i===next));
+  s5BgIndex=next;
+};
 
-      const setS5Bg=(idx,force=false)=>{
-        if(!s5BgItems.length) return;
-        const next=clamp(idx,0,s5BgItems.length-1);
-        if(!force && next===s5BgIndex) return;
-        s5BgItems.forEach((it,i)=>it.classList.toggle("is-active",i===next));
-        s5BgIndex=next;
-      };
+setS5Bg(0,true);
 
-      setS5Bg(0,true);
+if(track && prefersReduce) track.style.transition="none";
 
-      if(track && prefersReduce) track.style.transition="none";
+const btnPrev=s5.querySelector("[data-s5-prev]");
+const btnNext=s5.querySelector("[data-s5-next]");
+const pad2=(n)=>String(n).padStart(2,"0");
+let s5Index=0;
 
+const syncCounter=()=>{
+  const curText=pad2(s5Index+1);
+  const totText=pad2(slides.length||S5_SLIDES);
+  $$("[data-s5-count]",s5).forEach(el=>{
+    const curEl=el.querySelector("[data-s5-cur]");
+    const totEl=el.querySelector("[data-s5-total]");
+    if(curEl) curEl.textContent=curText;
+    if(totEl) totEl.textContent=totText;
+  });
+};
 
+// ✅ 타이틀 라인 래핑(기존 reveal/boot 없음)
+const buildS5TitleLines=()=>{
+  $$("[data-s5-title]",s5).forEach(el=>{
+    if(el.dataset.linesBuilt==="1") return;
 
-      const buildS5TitleSpans=()=>{
-        $("[data-s5-title]",s56) && $$("[data-s5-title]",s56).forEach(el=>{
-          if(el.dataset.built==="1") return;
-          const raw=el.innerHTML.replace(/<br\s*\/?>/gi,"\n");
-          const lines=raw.split("\n").map(s=>s.trim()).filter(Boolean);
-          el.innerHTML=lines.map(line=>`<span>${line}</span>`).join("<br />");
-          $$("span",el).forEach((sp,i)=>sp.style.transitionDelay=`${Math.min(i*90,240)}ms`);
-          el.dataset.built="1";
-        });
-      };
-      buildS5TitleSpans();
+    const raw=el.innerHTML.replace(/<br\s*\/?>/gi,"\n");
+    const lines=raw.split("\n").map(s=>s.trim()).filter(Boolean);
 
-      const btnPrev=s5.querySelector("[data-s5-prev]");
-      const btnNext=s5.querySelector("[data-s5-next]");
-      const pad2=(n)=>String(n).padStart(2,"0");
-      let s5Index=0;
+    el.innerHTML=lines.map((line,i)=>`<span class="s5-line" data-s5-line="${i}">${line}</span>`).join("<br />");
+    el.dataset.linesBuilt="1";
+  });
+};
+buildS5TitleLines();
 
-      const syncCounter=()=>{
-        const curText=pad2(s5Index+1);
-        const totText=pad2(slides.length||S5_SLIDES);
-        $$("[data-s5-count]",s5).forEach(el=>{
-          const curEl=el.querySelector("[data-s5-cur]");
-          const totEl=el.querySelector("[data-s5-total]");
-          if(curEl) curEl.textContent=curText;
-          if(totEl) totEl.textContent=totText;
-        });
-      };
+// ✅ "카운터(01/03)+타이틀"을 한 덩어리로 묶어서 동일 transform(관성) 적용
+const applyS5TextMotion=(()=>{
+  const items=[];
+  let raf=0;
 
-      const bootTitle=(slide)=>{
-        if(prefersReduce) return;
-        const h=slide?.querySelector("[data-s5-title]");
-        if(!h) return;
-        h.classList.add("is-boot");
-        void h.offsetWidth;
-        requestAnimationFrame(()=>h.classList.remove("is-boot"));
-      };
+  const add=(el,alpha)=>{
+    if(!el) return;
+    items.push({el,alpha,k:1,cur:0,tgt:0}); // ✅ k 기본값
+  };
 
-      const showS5=(idx)=>{
-        if(!slides.length || !track) return;
-        const next=clamp(idx,0,slides.length-1);
+  // 덩어리별 도착시간(관성) 차이
+  const ALPHA_HEAD=0.07; // 01/03 + 타이틀 (느리게)
+  const ALPHA_DESC=0.14; // 본문 (빠르게)
 
-        // 기존 active 토글은 유지(타이틀/오버레이 효과용)
-        slides.forEach((s,i)=>s.classList.toggle("is-active",i===next));
+  const ensureBuilt=()=>{
+    if(items.length) return;
 
-        // ✅ 가로 슬라이드 이동 (핵심)
-        track.style.transform=`translate3d(${-next*100}%,0,0)`;
+    slides.forEach(slide=>{
+      const content=slide.querySelector(".about-s5__content") || slide;
 
-        s5Index=next;
-        syncCounter();
-        bootTitle(slides[next]);
-      };
+      const no=slide.querySelector("[data-s5-count]");
+      const title=slide.querySelector("[data-s5-title]");
+      const desc=slide.querySelector("[data-s5-desc]");
 
+      // headWrap: 01/03 + title 강제 결합
+      let headWrap=slide.querySelector("[data-s5-headwrap]");
+      if(!headWrap && (no || title)){
+        headWrap=document.createElement("div");
+        headWrap.setAttribute("data-s5-headwrap","");
 
-      if(slides.length){
-        slides.forEach((s,i)=>s.classList.toggle("is-active",i===0));
-        syncCounter();
-        bootTitle(slides[0]);
+        // title 있으면 title 자리로, 없으면 content 맨 앞
+        if(title && title.parentNode){
+          title.parentNode.insertBefore(headWrap,title);
+        }else{
+          content.insertBefore(headWrap,content.firstChild);
+        }
+
+        if(no) headWrap.appendChild(no);
+        if(title) headWrap.appendChild(title);
       }
 
-      btnPrev && btnPrev.addEventListener("click",(e)=>{e.preventDefault();e.stopPropagation();showS5(s5Index-1);});
-      btnNext && btnNext.addEventListener("click",(e)=>{e.preventDefault();e.stopPropagation();showS5(s5Index+1);});
+      // 기존 transform 잔상 제거 (이중 transform 방지)
+      if(no) no.style.transform="none";
+      if(title) title.style.transform="none";
+      if(desc) desc.style.transform="none";
+      if(content) content.style.transform="none"; // ✅ content는 안 움직임
+
+      // 관성 대상 등록
+      add(headWrap,ALPHA_HEAD);
+      add(desc,ALPHA_DESC);
+    });
+  };
+
+  const loop=()=>{
+    raf=0;
+    const snap=prefersReduce;
+
+    for(const it of items){
+      const eff=it.alpha*(it.k ?? 1); // ✅ k 반영
+      const next=snap ? it.tgt : (it.cur + (it.tgt - it.cur)*eff);
+      it.cur=next;
+      it.el.style.transform=`translate3d(${next}px,0,0)`;
+    }
+
+    if(!snap){
+      raf=requestAnimationFrame(loop);
+    }
+  };
+
+  const start=()=>{
+    if(raf || prefersReduce) return;
+    raf=requestAnimationFrame(loop);
+  };
+
+  const setTargets=(pos)=>{
+    if(!slides.length) return;
+    ensureBuilt();
+
+    const vw=Math.max(320,window.innerWidth||0);
+
+    for(let i=0;i<slides.length;i++){
+      const slide=slides[i];
+      const rel=i-pos;
+
+      const headWrap=slide.querySelector("[data-s5-headwrap]");
+      const desc=slide.querySelector("[data-s5-desc]");
+
+      // -------------------------
+      // 위치(좌표) 계산
+      // -------------------------
+      const prog=clamp01(-rel); // 0→1
+      const late=clamp01((prog-0.35)/0.35); // ✅ 네가 쓰는 late 그대로 유지
+      const xHead=rel*vw*0.75;
+
+      const offset=vw*0;
+      const overshoot=vw*2.6;
+      const xDesc=xHead + offset*(1-prog) - overshoot*late;
+
+      // tgt 반영
+      if(headWrap){
+        const it=items.find(x=>x.el===headWrap);
+        if(it) it.tgt=xHead;
+      }
+      if(desc){
+        const it=items.find(x=>x.el===desc);
+        if(it) it.tgt=xDesc;
+      }
+
+      // -------------------------
+      // ✅✅ 공백 줄이는 "속도 차이" (kOut / kIn) — 여기!
+      // -------------------------
+      const kOut=0.50; // 나가는 슬라이드: 느리게 -> 빨리 사라지는 공백 줄임
+      const kIn=1.65;  // 들어오는 슬라이드: 빠르게 -> 빈 구간 빨리 채움
+
+      if(headWrap){
+        const it=items.find(x=>x.el===headWrap);
+        if(it){
+          if(rel<=0 && rel>=-1) it.k=kOut;
+          else if(rel>=0 && rel<=1) it.k=kIn;
+          else it.k=1;
+        }
+      }
+      if(desc){
+        const it=items.find(x=>x.el===desc);
+        if(it){
+          if(rel<=0 && rel>=-1) it.k=kOut;
+          else if(rel>=0 && rel<=1) it.k=kIn;
+          else it.k=1;
+        }
+      }
+    }
+
+    start();
+  };
+
+  return (pos)=>setTargets(pos);
+})();
+
+const showS5=(idx)=>{
+  if(!slides.length || !track) return;
+  const next=clamp(idx,0,slides.length-1);
+
+  slides.forEach((s,i)=>s.classList.toggle("is-active",i===next));
+  track.style.transform=`translate3d(${-next*100}%,0,0)`;
+
+  s5Index=next;
+  syncCounter();
+  setS5Bg(next);
+
+  // 버튼 이동에도 텍스트 타겟 갱신
+  applyS5TextMotion(next);
+};
+
+// 초기화
+if(slides.length){
+  slides.forEach((s,i)=>s.classList.toggle("is-active",i===0));
+  s5Index=0;
+  syncCounter();
+  setS5Bg(0,true);
+  applyS5TextMotion(0);
+}
+
+btnPrev && btnPrev.addEventListener("click",(e)=>{e.preventDefault();e.stopPropagation();showS5(s5Index-1);});
+btnNext && btnNext.addEventListener("click",(e)=>{e.preventDefault();e.stopPropagation();showS5(s5Index+1);});
+
 
       /* -------------------------
          S6: reveal + bg + theme
@@ -921,13 +1051,13 @@
 
         // ✅ 트랙을 연속적으로 이동 (0, -100%, -200% ...)
         if(track) track.style.transform=`translate3d(${-pos*100}%,0,0)`;
-
+        applyS5TextMotion(pos);
+        
         const active=clamp(Math.round(pos),0,S5_SLIDES-1);
         if(active!==s5Index){
           slides.forEach((s,i)=>s.classList.toggle("is-active",i===active));
           s5Index=active;
           syncCounter();
-          bootTitle(slides[active]);
           setS5Bg(active); // ✅ 이걸로
         }
 
