@@ -700,7 +700,7 @@
 
       /* ===== 튜닝 ===== */
       const S5_SLIDES=3;
-      const S5_RATIO=0.45;
+      const S5_RATIO=0.8;
       const COVER_RATIO=0.92;
       const BG_RATIO=0.55;
       const RELEASE_RATIO=0.20;
@@ -725,6 +725,26 @@
       ------------------------- */
       const track=s5.querySelector("[data-s5-track]");
       const slides=track?[...track.querySelectorAll(".about-s5__slide")]:[];
+      const s5Contents=slides.map(s=>s.querySelector(".about-s5__content")).filter(Boolean);
+
+
+      // ✅ S5 BG (이름 충돌 방지)
+      const s5BgItems=[...s5.querySelectorAll("[data-s5-bg-item]")];
+      let s5BgIndex=0;
+
+      const setS5Bg=(idx,force=false)=>{
+        if(!s5BgItems.length) return;
+        const next=clamp(idx,0,s5BgItems.length-1);
+        if(!force && next===s5BgIndex) return;
+        s5BgItems.forEach((it,i)=>it.classList.toggle("is-active",i===next));
+        s5BgIndex=next;
+      };
+
+      setS5Bg(0,true);
+
+      if(track && prefersReduce) track.style.transition="none";
+
+
 
       const buildS5TitleSpans=()=>{
         $("[data-s5-title]",s56) && $$("[data-s5-title]",s56).forEach(el=>{
@@ -764,13 +784,20 @@
       };
 
       const showS5=(idx)=>{
-        if(!slides.length) return;
+        if(!slides.length || !track) return;
         const next=clamp(idx,0,slides.length-1);
+
+        // 기존 active 토글은 유지(타이틀/오버레이 효과용)
         slides.forEach((s,i)=>s.classList.toggle("is-active",i===next));
+
+        // ✅ 가로 슬라이드 이동 (핵심)
+        track.style.transform=`translate3d(${-next*100}%,0,0)`;
+
         s5Index=next;
         syncCounter();
         bootTitle(slides[next]);
       };
+
 
       if(slides.length){
         slides.forEach((s,i)=>s.classList.toggle("is-active",i===0));
@@ -888,8 +915,23 @@
 
         // S5 scroll-driven
         const pS5=clamp01(t/s5Dist);
-        const slideIdx=Math.min(S5_SLIDES-1,Math.floor(pS5*(S5_SLIDES-1)+1e-6));
-        showS5(slideIdx);
+
+        // ✅ 0~(S5_SLIDES-1) 사이의 "연속 위치"
+        const pos=pS5*(S5_SLIDES-1);
+
+        // ✅ 트랙을 연속적으로 이동 (0, -100%, -200% ...)
+        if(track) track.style.transform=`translate3d(${-pos*100}%,0,0)`;
+
+        const active=clamp(Math.round(pos),0,S5_SLIDES-1);
+        if(active!==s5Index){
+          slides.forEach((s,i)=>s.classList.toggle("is-active",i===active));
+          s5Index=active;
+          syncCounter();
+          bootTitle(slides[active]);
+          setS5Bg(active); // ✅ 이걸로
+        }
+
+
 
         // cover
         const pCover=clamp01((t-s5Dist)/coverDist);

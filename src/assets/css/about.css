@@ -251,10 +251,11 @@ S5 + S56 + S6 (FINAL CSS ONE-BLOCK)
 ========================= */
 .about-s5{position: relative; z-index: 1; width: 100%; height: 100%; background: #000; --s5-gutter: minmax(24px, 6vw);}
 .about-s5__viewport{position: relative; z-index: 0; isolation: isolate; width: 100%; height: 100%; overflow: hidden; touch-action: pan-y; user-select: none;}
-.about-s5__track{position: relative; width: 100%; height: 100%;}
+.about-s5__track{position: relative; width: 100%; height: 100%; display:flex; transform: translate3d(0,0,0); will-change: transform; transition:none;}
 
-.about-s5__slide{position: absolute; inset: 0; height: 100%; opacity: 0; pointer-events: none; transition: opacity 600ms var(--about-reveal-ease);}
+.about-s5__slide{position: relative; inset: auto; flex: 0 0 100%; height: 100%; opacity: 1; pointer-events: auto; transition: none;}
 .about-s5__slide.is-active{opacity: 1; pointer-events: auto;}
+
 
 .about-s5__img{display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.92) contrast(1.05) brightness(.84); user-select: none; -webkit-user-drag: none; -webkit-user-select: none; pointer-events: none;}
 
@@ -281,6 +282,20 @@ S5 + S56 + S6 (FINAL CSS ONE-BLOCK)
 .about-s5__slide.is-active .about-s5__p{opacity: 1; transform: translateY(0);}
 .about-s5__slide.is-active .about-s5__h.is-boot>span{transform: translateY(120%); opacity: 0;}
 
+.about-s5__slide{opacity:1 !important;}
+
+/* S5 bg image layer (fade swap) */
+.about-s5__bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.about-s5__bg-item{position:absolute;inset:0;opacity:0;transition:opacity 600ms var(--about-reveal-ease);will-change:opacity;}
+.about-s5__bg-item.is-active{opacity:1;}
+.about-s5__bg-img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);filter:saturate(.92) contrast(1.05) brightness(.84);}
+
+/* 기존 slide 안 이미지(있다면) 숨김 */
+.about-s5__img{display:none;}
+
+.about-s5__content{will-change: transform;}
+
+
 @media(max-width:1920px){
   .about-s5{--s5-gutter: 4vw;}
 }
@@ -294,6 +309,8 @@ S5 + S56 + S6 (FINAL CSS ONE-BLOCK)
 }
 
 @media(prefers-reduced-motion: reduce){
+  .about-s5__content{transform:none !important;}
+  .about-s5__track{transition:none;}
   .about-s5__slide{transition: none;}
   .about-s5__btn{transition: none;}
   .about-s5__no, .about-s5__p{transition: none; opacity: 1; transform: none;}
