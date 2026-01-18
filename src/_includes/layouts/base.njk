@@ -1,12 +1,15 @@
 <!doctype html>
 {% set __url = page.url or "/" %}
+{% set __isProject = isProject or false %}
 {% set __isEn = (__url == "/en/") or (__url.startsWith("/en/")) %}
 <html lang="{% if __isEn %}en{% else %}ko{% endif %}">
 <head>
   {% include "head-common.njk" %}
   {% if pageCss %}<link rel="stylesheet" href="{{ pageCss }}" />{% endif %}
 </head>
-<body class="{{ bodyClass | default('') }}">
+<body class="{{ bodyClass | default('') }}{% if headerHeroTone %} has-heroTone{% endif %}{% if __isProject %} is-project{% endif %}">
+
+
   {% include "header.njk" %}
 
   <main>
@@ -14,6 +17,10 @@
   </main>
 
   {% include "footer.njk" %}
+  {% if __isProject %}
+    <script src="/assets/js/project-core.js" defer></script>
+  {% endif %}
+
   {% if pageJs %}<script src="{{ pageJs }}" defer></script>{% endif %}
 </body>
 </html>

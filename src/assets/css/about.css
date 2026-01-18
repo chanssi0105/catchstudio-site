@@ -207,6 +207,11 @@ Section 4 : Trust (Accordion)
   .about-s4__acc{width: 727px;}
   .about-s4__title{margin-bottom: 0;}
 }
+@media(max-width:768px){
+  .about-s4__right{width:100%;}
+  .about-s4__acc{width: 100%;}
+  .about-s4__btn{justify-content: space-between}
+}
 
 @media(max-width:520px){
   h2.about-s4__title[data-reveal-title] br{display: none !important;}
@@ -240,10 +245,8 @@ Keep Current Mobile (<=960)
 @media(max-width:48em){
   .about-s4{padding: 0 0 var(--space-section-lg);}
   .about-s4__left{margin-left: 0; column-gap: var(--space-fluid-60);}
-  .about-s4__right{margin-left: 0; padding-top: var(--space-fluid-160); width: auto;}
-  .about-s4__title{margin-bottom: var(--space-fluid-60);}
+  .about-s4__right{margin-left: 0; padding-top: var(--space-fluid-160);}
   .about-s4__kicker{margin: 0 0 var(--space-3);}
-  .about-s4__acc{width: auto;}
 }
 
 /* =========================

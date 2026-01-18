@@ -818,9 +818,9 @@
       };
 
       if(document.readyState==="complete"){
-        setTimeout(run, 120);
+        setTimeout(run, 480);
       }else{
-        window.addEventListener("load", ()=>setTimeout(run, 120), {once:true});
+        window.addEventListener("load", ()=>setTimeout(run, 480), {once:true});
       }
     })();
 

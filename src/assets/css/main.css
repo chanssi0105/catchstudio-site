@@ -1,10 +1,47 @@
 /* =========================
   Site Header
 ========================= */
+/* 기본 페이지: 헤더 높이만큼 확보 */
 body{padding-top: var(--header-h);}
 
-.site-header{--header-bg: #FFFFFF; --header-fg: var(--color-secondary); position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000; padding: 0 4%; background: var(--header-bg); color: var(--header-fg); transition: background .25s ease,color .25s ease,box-shadow .25s ease,backdrop-filter .25s ease;}
+/* 히어로 톤 페이지: 처음부터 padding 고정 (토글 없음) */
+body.has-heroTone{padding-top: 0;}
+
+/* 프로젝트 페이지: padding 변화 없음 (스크롤 중 안정) */
+body.is-project{padding-top: 0;}
+
+/* ✅ ADD: stop Chrome scroll anchoring (prevents handoff jump) */
+body.is-project{overflow-anchor: none;}
+.p-overview, .p-overview__stage, .p-overview__panel, [data-p-stage], [data-overview-anchor]{overflow-anchor: none;}
+
+
+
+.site-header{--header-bg: transparent; --header-fg: var(--color-black); --header-logo: var(--color-primary); position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000; padding: 0 4%; background: var(--header-bg); color: var(--header-fg); transition: background .25s ease,color .25s ease,box-shadow .25s ease,backdrop-filter .25s ease;}
 .site-header__inner{max-width: 100%; margin: 0 auto; height: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center;}
+
+/* =========================================================
+   Header hero tone (project pages)
+   - only BEFORE scroll (no bg state)
+========================================================= */
+.site-header:not(.is-scrolled):not(.is-open)[data-hero-tone="dark"]{--header-fg: var(--color-white);}
+.site-header:not(.is-scrolled):not(.is-open)[data-hero-tone="light"]{--header-fg: var(--color-secondary);}
+.site-header:not(.is-scrolled):not(.is-open)[data-hero-tone="red"]{--header-fg: var(--color-white);}
+
+/* 로고 기본은 항상 header-logo를 따르게 */
+.site-logo{display:inline-flex;align-items:center;color:var(--header-logo);}
+
+/* 프로젝트 페이지(hero-tone)는 "스크롤 전/메뉴 닫힘" 상태에서만 로고가 header-fg를 따라가게 */
+.site-header[data-hero-tone]:not(.is-scrolled):not(.is-open) .site-logo{color: var(--header-fg);}
+
+
+/* red hero exception: Catch accent becomes black ONLY before scroll */
+.site-header:not(.is-scrolled):not(.is-open)[data-hero-tone="red"] .header-prize__accent{color: var(--color-black);}
+
+.site-logo{display:inline-flex;align-items:center;color:var(--header-logo);}
+.site-logo__mark{display:block;width:150px;height:31.25px;}
+.site-logo svg{display:block;width:150px;height:auto;}
+@media(max-width:768px){.site-logo svg{width:120px;}}
+
 
 .catchprize{justify-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; color: inherit; text-decoration: none; font-size: var(--fs-body-xs); line-height: 1; opacity: .92; white-space: nowrap;}
 .catchprize:hover{opacity: 1; text-decoration: underline; text-underline-offset: 3px;}
@@ -43,7 +80,7 @@ body{padding-top: var(--header-h);}
 .header-prize{margin: 0; justify-self: center; text-align: center; font-size: var(--fs-body-xs); line-height: 1; opacity: .9; white-space: nowrap;}
 .header-prize__accent{color: var(--brand-accent); font-weight: 700;}
 
-.hamburger{background: transparent; border: 0; padding: 0; position: relative; display: inline-block; width: 26px; height: 16px; cursor: pointer; line-height: 0; font-size: 0; color: var(--color-secondary);}
+.hamburger{background: transparent; border: 0; padding: 0; position: relative; display: inline-block; width: 26px; height: 16px; cursor: pointer; line-height: 0; font-size: 0; color: inherit;}
 .hamburger span{position: absolute; left: 0; display: block; height: 2px; width: var(--w); background: currentColor; border-radius: 2px; transition: none; transform: translateZ(0);}
 .is-ready .hamburger span{transition: top .25s ease,transform .25s ease,opacity .2s ease,width .25s ease;}
 
@@ -57,12 +94,15 @@ body{padding-top: var(--header-h);}
 .site-header.is-open .hamburger span:nth-child(2){opacity: 0;}
 .site-header.is-open .hamburger span:nth-child(3){top: 7px; transform: rotate(-45deg); --w: 22px;}
 
-.site-header[data-theme="light"]{--header-bg: #FFFFFF; --header-fg: var(--color-secondary); --brand-accent: var(--color-primary);}
+.site-header[data-theme="light"]{--header-bg: transparent; --header-fg: var(--color-black); --header-logo: var(--color-primary); --brand-accent: var(--color-primary);}
 .site-header[data-theme="dark"]{--header-bg: rgba(0,0,0,.10); --header-fg: var(--color-white); --brand-accent: var(--color-primary); box-shadow: none; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);}
 .site-header[data-theme="primary"]{--header-bg: var(--color-primary); --header-fg: var(--color-white); --brand-accent: var(--color-secondary); box-shadow: none;}
 
-.site-header.is-scrolled{--header-bg: rgba(255,255,255,.90); --header-fg: var(--color-secondary); --brand-accent: var(--color-primary); box-shadow: 0 8px 24px rgba(0,0,0,.08); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
-.site-header.is-open{box-shadow: none;}
+.site-header.is-scrolled{--header-bg: rgba(255,255,255,.90); --header-fg: var(--color-black); --header-logo: var(--color-primary); --brand-accent: var(--color-primary); box-shadow: 0 8px 24px rgba(0,0,0,.08); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+.site-header.is-open{--header-bg: rgba(255,255,255,.9); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none;}
+.site-header.is-closing{--header-bg: transparent; transition-delay: .0s;}
+.site-header.is-open.is-scrolled{--header-bg: transparent;}
+
 
 @media(max-width:768px){
   .site-header{padding: 0 6%;}
@@ -74,7 +114,7 @@ body{padding-top: var(--header-h);}
 /* =========================
   Menu Overlay Layout
 ========================= */
-.menu-overlay{position: fixed; top: calc(var(--header-h) - 1px); left: 0; right: 0; bottom: 0; background: rgba(255,255,255,.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: opacity .25s ease; z-index: 900;}
+.menu-overlay{position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: opacity .25s ease; z-index: 900;}
 .site-header.is-open + .menu-overlay{opacity: 1; pointer-events: auto;}
 
 /* 헤더 높이 제외한 영역에서 정렬 */
@@ -143,7 +183,7 @@ body{padding-top: var(--header-h);}
 .p-title{position: absolute; z-index: 2; left: 0; right: 0; bottom: var(--space-4); padding: 0 var(--space-4); text-align: center; font-size: var(--fs-body-md); line-height: var(--lh-150); font-weight: 500; color: var(--color-white); opacity: .92; text-shadow: 0 4px 16px rgba(0,0,0,.45);}
 
 /* category badge (top-left) */
-.p-cat{position:absolute;top:var(--space-4);left:var(--space-4);z-index:2;display:inline-flex;align-items:center;justify-content:center;padding: var(--space-2); border-radius:8px; font-size:var(--fs-body-xs); line-height:1; font-weight:400;letter-spacing:.02em;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 24px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;}
+.p-cat{position:absolute;top:var(--space-4);left:var(--space-4);z-index:2;display:inline-flex;align-items:center;justify-content:center;padding: var(--space-2); border-radius:8px; font-size:var(--fs-body-xs); line-height:1; font-weight:600;letter-spacing:.02em;color: var(--color-white);background: rgba(11, 25, 60, .3);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;}
 
 
 /* hover */
@@ -171,7 +211,7 @@ body{padding-top: var(--header-h);}
 .icon-plus{color: var(--color-primary);}
 
 /* ===================== Footer ===================== */
-.site-footer{background: var(--color-secondary); color: var(--color-white);}
+.site-footer{position: relative; z-index: 2; background: var(--color-secondary); color: var(--color-white);}
 .footer-inner{max-width: 1680px; margin: 0 auto;}
 .footer-top{display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 40px 0 32px; border-bottom: 1px solid var(--color-gray800);}
 .footer-left{display: flex; align-items: center; gap: 18px; min-width: 0;}

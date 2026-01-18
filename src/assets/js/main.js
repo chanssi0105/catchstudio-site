@@ -230,12 +230,25 @@
       if (open) {
         prevTheme = header.getAttribute("data-theme") || baseTheme;
         header.setAttribute("data-theme", "light");
+
+        // ✅ hero tone도 임시로 light 강제 (overlay 배경이 밝아서)
+        header.dataset.prevHeroTone = header.getAttribute("data-hero-tone") || "light";
+        header.setAttribute("data-hero-tone", "light");
+
         scrollLock.on();
       } else {
         header.setAttribute("data-theme", prevTheme || baseTheme);
+
+        // ✅ hero tone 복구
+        const prevHero = header.dataset.prevHeroTone;
+        if (prevHero) header.setAttribute("data-hero-tone", prevHero);
+        header.removeAttribute("data-prev-hero-tone");
+        delete header.dataset.prevHeroTone;
+
         scrollLock.off();
       }
     };
+
 
     setScrolled();
     window.addEventListener("scroll", setScrolled, { passive: true });

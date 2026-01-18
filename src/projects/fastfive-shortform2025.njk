@@ -1,30 +1,166 @@
 ---
 layout: layouts/base.njk
+isProject: true
+pageJs: /assets/js/fastfive.js
+pageCss: /assets/css/projects/fastfive.css
 title: FASTFIVE Short-form Visual Design
 tags: projects
 date: 2025-09-01
 category: Campaign
 thumb: /assets/images/thumbs/fastfive_sf2025.jpg
 permalink: /projects/fastfive-shortform2025/
+headerHeroTone: dark
 ---
-<main class="project">
-  <header class="project-hero">
-    <h1>FASTFIVE <br />Short-form Visual Design</h1>
-    <p>Case Study</p>
-  </header>
 
-  <section class="project-section">
-    <h2>Overview</h2>
-    <p>여기에 요약 텍스트.</p>
+<!-- 공통 -->
+<section class="p-heroFx" data-hero data-hero-tone="dark" aria-label="Project hero">
+  <div class="p-heroFx__bg" aria-hidden="true">
+    <img class="p-heroFx__media" src="/assets/images/projects/fastfive/hero_fastfive.jpg" alt="" loading="eager" decoding="async" />
+    <!-- video class="p-heroFx__media" autoplay muted loop playsinline preload="metadata">
+      <source src="/assets/video/projects/fastfive/hero.mp4" type="video/mp4" />
+    </!-->
+  </div>
+
+  <div class="p-heroFx__inner">
+    <h1 class="p-heroFx__title" data-split-words>
+      <span class="p-heroFx__line">FASTFIVE</span>
+      <span class="p-heroFx__line">Short-form Visual Design</span>
+    </h1>
+  </div>
+</section>
+
+<!-- ✅ 이 spacer가 “처음에는 hero만 보이게” 만들어줌 -->
+<div class="p-heroSpacer" aria-hidden="true"></div>
+
+<!-- ✅ 이제부터는 그냥 일반 스크롤 컨텐츠 -->
+<section class="p-body" aria-label="Project content">
+  <section class="p-overviewCard" aria-label="Overview">
+    <div class="p-overviewCard__inner">
+      <h6 class="p-overviewCard__eyebrow" data-reveal-body>Overview</h6>
+
+      <div class="p-overviewCard__layout">
+        <div class="p-overviewCard__left">
+          <div class="p-overviewCard__desc">
+            <p class="p-overviewCard__bodyBig" data-reveal-body>FASTFIVE의 숏폼 콘텐츠를 위한 비주얼 디자인 프로젝트로, 2025년 9월부터 현재까지 지속적으로 작업하고 있습니다. 1:1과 9:16 비율의 숏폼 포맷에 맞춰 레이아웃 구조, 텍스트 가독성, 주요 시각 요소의 배치를 조정해 각 콘텐츠의 전달력이 명확해지도록 디자인했습니다.</p>
+
+            <p class="p-overviewCard__subTitle" data-reveal-body>FASTFIVE Short-form Visual Design (Ongoing Project)</p>
+
+            <div class="p-overviewMetaGrid" data-reveal-body>
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Client</span>
+                <span class="p-overviewMetaValue">FASTFIVE</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Date</span>
+                <span class="p-overviewMetaValue">2025</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Type</span>
+                <span class="p-overviewMetaValue">Short-form Visual Design</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Role</span>
+                <span class="p-overviewMetaValue">Design</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-overviewCard__brand" aria-hidden="true" data-reveal-body>
+          <span class="p-overviewCard__brandText">
+            <img class="p-overviewCard__brandLogo" src="/assets/images/projects/fastfive/FF_logo.svg" alt="FASTFIVE logo" loading="lazy" decoding="async" />
+          </span>
+        </div>
+      </div>
+
+
+    </div>
   </section>
 
-  <section class="project-section">
-    <h2>Key Visual</h2>
-    <img src="/assets/images/projects/parksystems/kv.jpg" alt="Parksystems Key Visual" loading="lazy" decoding="async">
+  <!-- 여기부터 아래로 프로젝트 본문 섹션들 추가 -->
+  <section class="p-completion-wrap" aria-label="Completion visual experience">
+    <!-- Completion Title -->
+    <article class="p-completion" aria-label="Completion intro">
+      <div class="p-completion__inner">
+        <h6 class="p-completion__eyebrow" data-reveal-title>Completion</h6>
+        <h3 class="p-completion__title" data-reveal-title>숏폼 포맷에 맞춰 정리된 일관된 비주얼 경험</h3>
+        <p class="p-completion__desc" data-reveal-body>
+          숏폼 디자인은 1:1과 9:16 비율의 포맷에 맞춰 레이아웃 구조와 주요 시각 요소를 정리하는 데 집중했습니다.<br />
+          각 비율 환경에서도 콘텐츠의 핵심 메시지가 흐트러지지 않도록 텍스트 가독성과 시선 흐름을 고려해 디자인을 조정했습니다.
+        </p>
+        <span class="p-completion__divider" aria-hidden="true" data-reveal-body></span>
+      </div>
+    </article>
+
+    <!-- Cut Wall -->
+    <article class="p-cutwall" aria-label="Short-form visual cuts">
+      <div class="p-cutwall__inner">
+
+        <div class="p-cutwall__col is-up">
+          <div class="p-cutwall__vp">
+            <div class="p-cutwall__track">
+              <div class="p-cutwall__group" data-cut-group>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut01.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut02.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut03.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut04.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut05.png" alt="" loading="lazy" decoding="async" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-cutwall__col is-down">
+          <div class="p-cutwall__vp">
+            <div class="p-cutwall__track">
+              <div class="p-cutwall__group" data-cut-group>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut06.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut07.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut08.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut09.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut10.png" alt="" loading="lazy" decoding="async" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-cutwall__col is-up">
+          <div class="p-cutwall__vp">
+            <div class="p-cutwall__track">
+              <div class="p-cutwall__group" data-cut-group>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut11.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut12.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut13.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut14.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut15.png" alt="" loading="lazy" decoding="async" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-cutwall__col is-down">
+          <div class="p-cutwall__vp">
+            <div class="p-cutwall__track">
+              <div class="p-cutwall__group" data-cut-group>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut16.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut17.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut18.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut19.png" alt="" loading="lazy" decoding="async" /></div>
+                <div class="p-cut"><img class="p-cut__img" src="/assets/images/projects/fastfive/ff_cut20.png" alt="" loading="lazy" decoding="async" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </article>
   </section>
 
-  <section class="project-section">
-    <h2>Process</h2>
-    <p>여기에 내용.</p>
-  </section>
-</main>
+
+
+
+</section>
+<!-- //공통 -->

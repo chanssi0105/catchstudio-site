@@ -1,0 +1,95 @@
+:root{
+  --p-hero-minh: 100svh;
+  --p-gutter: clamp(16px, 4vw, 40px);
+  --p-max: 1680px;
+  --p-radius: 22px;
+  --p-panel-lift: 14svh;
+  --project-hero-title: clamp(40px, 6vw, 72px);
+  --p-overview-body: clamp(18px, 1.8vw, 26px);
+  --p-overview-meta: clamp(13px, 1.2vw, 16px);
+}
+
+/* =========================
+  Split Words (About/Contact style)
+========================= */
+[data-split-words]{display:block;}
+[data-split-words] .sw{display:inline-block; will-change:transform,opacity; transform:translate3d(0,1.1em,0); opacity:0; transition:transform .9s var(--p-ease,cubic-bezier(.2,.8,.2,1)),opacity .9s var(--p-ease,cubic-bezier(.2,.8,.2,1)); transition-delay:calc(var(--sw-i,0)*55ms);}
+[data-split-words].is-animated .sw{transform:translate3d(0,0,0); opacity:1;}
+
+@media (prefers-reduced-motion: reduce){
+  [data-split-words] .sw{transform:none; opacity:1; transition:none;}
+}
+
+/* =========================
+   HERO (fixed background)
+========================= */
+.p-heroFx{position:fixed; inset:0; z-index:0; overflow:hidden; width:100vw; height:100svh;}
+.p-heroFx__bg{position:absolute; inset:0; width:100%; height:100%;}
+.p-heroFx__media{width:100%; height:100%; object-fit:cover; object-position:50% 50%; display:block; filter:saturate(.95) contrast(.95);}
+.p-heroFx::after{content:""; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.15) 40%, rgba(0,0,0,.25)); pointer-events:none;}
+.p-heroFx__inner{position:relative; z-index:1; height:var(--p-hero-minh); display:grid; place-items:center; padding:calc(var(--header-h) + 24px) var(--p-gutter) 32px; box-sizing:border-box;}
+.p-heroFx__title{margin:0; width:100%; text-align:center; font-size:var(--project-hero-title); font-weight:700; color:var(--color-white); line-height:1.5; letter-spacing:-0.02em;}
+.p-heroFx__line{display:block;}
+
+/* =========================
+   Spacer + Content layer
+========================= */
+.p-heroSpacer{height:100svh;}
+.p-body{position:relative; z-index:1;}
+.p-overviewCard{background:#fff; box-shadow:0 -10px 40px rgba(0,0,0,.18);}
+
+/* =========================
+   Overview (capture layout)
+========================= */
+.p-overviewCard__inner{max-width:var(--p-max); margin:0 auto; padding:var(--space-fluid-100) 0 var(--space-fluid-120);}
+.p-overviewCard__eyebrow{margin:0 0 var(--space-fluid-64); font-size:var(--fs-h6);}
+.p-overviewCard__layout{display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:clamp(28px,6vw,80px); align-items:end;}
+.p-overviewCard__desc{max-width:760px;}
+.p-overviewCard__bodyBig{margin:0; font-size:var(--p-overview-body); line-height:1.8; letter-spacing:-0.01em;}
+.p-overviewCard__subTitle{margin:var(--space-fluid-48) 0; font-family:var(--font-display); font-size:var(--fs-body-lg); line-height:1.6; letter-spacing:-0.01em;}
+
+@media (max-width: 1680px){
+  .p-overviewCard__inner{padding:var(--space-fluid-100) 4% var(--space-fluid-120);}
+}
+
+@media (max-width: 768px){
+  .p-overviewCard__inner{padding:var(--space-fluid-100) 6% var(--space-fluid-120);}
+}
+
+/* =========================
+   Overview Meta (2x2 grid)
+========================= */
+.p-overviewMetaGrid{margin-top:16px; display:grid; grid-template-columns:repeat(2,auto); gap:12px 28px; align-items:center;}
+.p-overviewMetaItem{display:grid; grid-template-columns:max-content 1fr; align-items:center; column-gap:12px;}
+.p-overviewMetaLabel{font-family:var(--font-display); display:inline-flex; align-items:center; justify-content:center; padding:6px 8px; border-radius:4px; background:var(--color-gray300); line-height:1; white-space:nowrap; width:var(--meta-label-w, auto);}
+.p-overviewMetaValue{font-family:var(--font-display); line-height:1; white-space:nowrap;}
+
+@media (max-width: 768px){
+  .p-overviewMetaItem{grid-template-columns:1fr; row-gap:10px; justify-items:start;}
+  .p-overviewMetaGrid{grid-template-columns:1fr; gap:24px;}
+  .p-overviewMetaValue{white-space:normal;}
+}
+
+/* right brand */
+.p-overviewCard__brand{justify-self:end; align-self:end;}
+.p-overviewCard__brandText{display:block; font-weight:700; letter-spacing:-0.02em; font-size:clamp(22px,2.2vw,34px); opacity:.9;}
+
+@media (max-width: 960px){
+  .p-overviewCard__brand{display:none;}
+}
+
+/* =========================
+   Reveal (title vs body)
+========================= */
+[data-reveal-title]{opacity:0; transform:translate3d(0,14px,0); transition:opacity .6s var(--p-ease,cubic-bezier(.2,.8,.2,1)),transform .6s var(--p-ease,cubic-bezier(.2,.8,.2,1)); will-change:opacity,transform;}
+[data-reveal-title].is-revealed{opacity:1; transform:translate3d(0,0,0);}
+[data-reveal-body]{opacity:0; transform:translate3d(0,18px,0); transition:opacity .85s var(--p-ease,cubic-bezier(.2,.8,.2,1)),transform .85s var(--p-ease,cubic-bezier(.2,.8,.2,1)); transition-delay:.08s; will-change:opacity,transform;}
+[data-reveal-body].is-revealed{opacity:1; transform:translate3d(0,0,0);}
+
+/* split-words는 “타이틀류”만 is-animated 붙이면 됨 */
+[data-split-words][data-reveal-title] .sw{transition-duration:.7s; transition-delay:calc(var(--sw-i,0)*35ms);}
+
+@media (prefers-reduced-motion: reduce){
+  [data-reveal-title],[data-reveal-body]{opacity:1; transform:none; transition:none;}
+  [data-split-words] .sw{transform:none; opacity:1; transition:none;}
+}

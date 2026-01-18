@@ -1,0 +1,113 @@
+:root{
+      --cut-radius: 32px;
+      --cut-mask: 160px;
+      --cut-col-h: clamp(760px, 120svh, 2000px);
+      --cut-pad: 24px;
+      --cut-base-px: 0.28;
+      --cut-boost-max: 3.2;
+    }
+
+    /* =========================
+      Completion typography + reveal (project rules)
+    ========================= */
+    .p-completion-wrap{padding:var(--space-section-lg) 0 var(--space-section-xl); background: var(--color-gray100);}
+    .p-completion{padding-bottom: var(--space-fluid-120);}
+    .p-completion__inner{max-width: var(--p-max); margin: 0 auto; padding: var(--space-fluid-120) var(--p-gutter,24px) var(--space-fluid-72);}
+    .p-completion__eyebrow{margin:0; font-size: var(--fs-h6); font-weight: 700; line-height: 1.5; text-align:center;}
+    .p-completion__title{margin: 12px 0 var(--space-fluid-48); font-size: var(--fs-h3); font-weight: 700; letter-spacing: -0.02em; line-height: 1.5; text-align:center;}
+    .p-completion__desc{margin: 0 0 var(--space-fluid-40); font-size: var(--fs-body-xl); font-weight: 400; line-height: 1.8; text-align:center;}
+    .p-completion__divider{display: block; width: 2px; height: clamp(104px,6vw,152px); background: rgba(0,0,0,.7); margin: 0 auto;}
+    .p-completion [data-reveal-title]{opacity: 0; transform: translate3d(0,14px,0); transition: opacity .6s var(--p-ease,cubic-bezier(.2,.8,.2,1)),transform .6s var(--p-ease,cubic-bezier(.2,.8,.2,1)); will-change: opacity,transform;}
+    .p-completion [data-reveal-title].is-revealed{opacity: 1; transform: translate3d(0,0,0);}
+    .p-completion [data-reveal-body]{opacity: 0; transform: translate3d(0,18px,0); transition: opacity .85s var(--p-ease,cubic-bezier(.2,.8,.2,1)),transform .85s var(--p-ease,cubic-bezier(.2,.8,.2,1)); transition-delay: .08s; will-change: opacity,transform;}
+    .p-completion [data-reveal-body].is-revealed{opacity: 1; transform: translate3d(0,0,0);}
+
+    @media (max-width: 1680px){
+      .p-completion{padding:0 4% var(--space-fluid-120);}
+    }
+
+    @media (max-width: 768px){
+      .p-completion{padding:0 6% var(--space-fluid-120);}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .p-completion [data-reveal-title], .p-completion [data-reveal-body]{opacity: 1; transform: none; transition: none;}
+    }
+
+    /* =========================
+      Cut Wall (CSS loop + JS boost)
+      - track 안의 group을 JS가 1회 복제해서 2세트로 만들고
+      - CSS는 -50%까지 계속 이동 (무조건 움직임)
+    ========================= */
+    .p-cutwall{padding:0 0 var(--space-fluid-140);}
+    .p-cutwall__inner{max-width:var(--p-max); margin:0 auto; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); align-items:start; gap:var(--space-fluid-60);}
+
+    .p-cutwall__col{position:relative; overflow:visible; border-radius:var(--cut-radius); height:var(--cut-col-h); padding:0; background:transparent;}
+    .p-cutwall__vp{position:relative; height:100%; border-radius:var(--cut-radius); overflow:hidden;}
+    .p-cutwall__vp::before,.p-cutwall__vp::after{content:""; position:absolute; left:0; right:0; height:var(--cut-mask); z-index:4; pointer-events:none;}
+    
+    /* 1) vp는 배경을 명시 (그라데이션 경계가 깨끗해짐) */
+    .p-cutwall__vp{background: var(--color-gray100);}
+
+    /* 2) 기존 오버레이 방식은 끄기 */
+    .p-cutwall__vp::before,.p-cutwall__vp::after{display:none;}
+
+    /* 3) 진짜로 잘라버리는 마스크 */
+    .p-cutwall__vp{
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        #000 18%,
+        #000 70%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        #000 18%,
+        #000 70%,
+        transparent 100%
+      );
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+
+    @media (max-width: 1680px){
+      .p-cutwall{margin:0 4%;}
+    }
+
+    @media (max-width: 768px){
+      .p-cutwall{margin:0 6%;}
+    }
+
+
+
+    .p-cutwall__track{position:relative; display:flex; flex-direction:column; gap:var(--space-fluid-60); will-change:transform; transform:translate3d(0,0,0);}
+
+    /* group도 gap 유지 */
+    .p-cutwall__group{display:flex; flex-direction:column; gap:var(--space-fluid-60);}
+
+    /* 카드 */
+    .p-cut{display:block; border-radius: var(--cut-radius); overflow: hidden; transform: translate3d(0,0,0); transition: transform .25s ease;}
+    .p-cut:hover{transform:translate3d(0,-2px,0);}
+    .p-cut__img{display:block; width:100%; height:auto;}
+
+    /* ✅ 무조건 움직이는 핵심 (2세트 전제) */
+    @keyframes cutUp{to{transform:translate3d(0,-50%,0);}}
+    @keyframes cutDown{from{transform:translate3d(0,-50%,0);} to{transform:translate3d(0,0,0);}}
+
+    /* 기본 속도(초). JS가 스크롤 시 여기 duration을 더 줄여서 가속 */
+    .p-cutwall__col{--cut-dur:60s;}
+    .p-cutwall__col.is-up .p-cutwall__track{animation:cutUp var(--cut-dur) linear infinite;}
+    .p-cutwall__col.is-down .p-cutwall__track{animation:cutDown var(--cut-dur) linear infinite;}
+
+    @media (max-width: 900px){
+      .p-cutwall__inner{grid-template-columns:repeat(2, minmax(0,1fr));}
+      .p-cutwall__col{height:clamp(680px, 120svh, 2000px);}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .p-cutwall__track{animation:none !important; transform:none !important;}
+    }

@@ -126,7 +126,7 @@
     const arm=()=>{
       if(armed) return;
       armed=true;
-      setTimeout(run,120);
+      setTimeout(run,480);
     };
 
     return {arm,cleanup};

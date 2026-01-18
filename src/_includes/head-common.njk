@@ -152,6 +152,10 @@
 <link rel="stylesheet" href="/assets/css/common.css" />
 <link rel="stylesheet" href="/assets/css/main.css" />
 
+{% if isProject %}
+  <link rel="stylesheet" href="/assets/css/projects/project-base.css" />
+{% endif %}
+
 {% if globalJs is not defined or globalJs %}
 <script defer src="/assets/js/main.js"></script>
 {% endif %}
