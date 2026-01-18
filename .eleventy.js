@@ -6,7 +6,7 @@ module.exports = function (eleventyConfig) {
     lstripBlocks: true
   });
 
-  // Projects collection (tags: "projects" 붙은 콘텐츠를 모음)
+    // Projects collection (all)
   eleventyConfig.addCollection("projects", (collectionApi) => {
     return collectionApi.getFilteredByTag("projects").sort((a, b) => {
       const ad = a.date ? new Date(a.date).getTime() : 0;
@@ -14,6 +14,29 @@ module.exports = function (eleventyConfig) {
       return bd - ad;
     });
   });
+
+  // ✅ Projects (ko)
+  eleventyConfig.addCollection("projects_ko", (collectionApi) => {
+    return collectionApi.getFilteredByTag("projects")
+      .filter((p) => !((p.url || "").startsWith("/en/")))
+      .sort((a, b) => {
+        const ad = a.date ? new Date(a.date).getTime() : 0;
+        const bd = b.date ? new Date(b.date).getTime() : 0;
+        return bd - ad;
+      });
+  });
+
+  // ✅ Projects (en)
+  eleventyConfig.addCollection("projects_en", (collectionApi) => {
+    return collectionApi.getFilteredByTag("projects")
+      .filter((p) => ((p.url || "").startsWith("/en/")))
+      .sort((a, b) => {
+        const ad = a.date ? new Date(a.date).getTime() : 0;
+        const bd = b.date ? new Date(b.date).getTime() : 0;
+        return bd - ad;
+      });
+  });
+
 
   return {
     dir: {

@@ -16,6 +16,7 @@
     {{ content | safe }}
   </main>
 
+  {% if __isProject %}{% include "components-projectNav.njk" %}{% endif %}
   {% include "footer.njk" %}
   {% if __isProject %}
     <script src="/assets/js/project-core.js" defer></script>

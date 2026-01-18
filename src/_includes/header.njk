@@ -1,5 +1,4 @@
 {# src/_includes/header.njk #}
-{% set projectsCount = (collections.projects | length) %}
 
 {# ===== language url mapping (Nunjucks-safe) ===== #}
 {% set rawUrl = page.url or "/" %}
@@ -15,13 +14,13 @@
   {% set url = derived %}
 {% endif %}
 
-{# isEn 판단: url이 /en/ 로 시작하는지 (startsWith 없이) #}
+{# isEn 판단: url이 /en/ 로 시작하는지 #}
 {% set isEn = false %}
 {% if url == "/en/" or (url | slice(0,4)) == "/en/" %}
   {% set isEn = true %}
 {% endif %}
 
-{# koUrl, enUrl 계산 (삼항 없이 if로만) #}
+{# koUrl 계산 #}
 {% set koUrl = url %}
 {% if isEn %}
   {% if url == "/en/" %}
@@ -31,6 +30,7 @@
   {% endif %}
 {% endif %}
 
+{# enUrl 계산 #}
 {% set enUrl = url %}
 {% if not isEn %}
   {% if url == "/" %}
@@ -40,10 +40,16 @@
   {% endif %}
 {% endif %}
 
+{# ===== ✅ 프로젝트 카운트 (언어별) ===== #}
+{% set projectsCount = (collections.projects_ko | length) %}
+{% if isEn %}
+  {% set projectsCount = (collections.projects_en | length) %}
+{% endif %}
+
 <header class="site-header" data-theme="{{ headerTheme | default('light') }}"{% if headerHeroTone %} data-hero-tone="{{ headerHeroTone }}"{% endif %}>
   <div class="site-header__inner">
 
-    <a class="site-logo" href="/" aria-label="Catch Studio home">
+    <a class="site-logo" href="{% if isEn %}/en/{% else %}/{% endif %}" aria-label="Catch Studio home">
       <svg viewBox="0 0 192 40" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_2_94)">
         <g clip-path="url(#clip1_2_94)">
@@ -81,7 +87,7 @@
       <details class="lang" data-lang>
         <summary class="lang__btn" aria-label="Language">
           <span class="lang__label">{% if isEn %}ENG{% else %}KOR{% endif %}</span>
-          <svg class="lang__chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="lang__chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </summary>
         <div class="lang__menu" role="menu">
           <a class="lang__item" role="menuitem" href="{{ koUrl }}"{% if not isEn %} aria-current="page"{% endif %}>KOR</a>
@@ -101,13 +107,18 @@
   <div class="menu-overlay__inner">
     <nav class="menu" aria-label="Site">
       <ul class="menu__list">
-        {# ✅ 여기 링크도 현재 언어에 맞춰야 하니까 url prefix를 붙여줌 #}
+
         {% set navPrefix = "" %}
         {% if isEn %}{% set navPrefix = "/en" %}{% endif %}
 
-        <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/">Projects <span class="menu__badge" aria-hidden="true">{{ projectsCount }}</span></a></li>
+        <li class="menu__item">
+          <a class="menu__link" href="{{ navPrefix }}/">
+            Projects <span class="menu__badge" aria-hidden="true">{{ projectsCount }}</span>
+          </a>
+        </li>
         <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/about/">About</a></li>
         <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/contact/">Contact</a></li>
+
       </ul>
     </nav>
 

@@ -1,0 +1,105 @@
+{# =========================================================
+  Project Nav Bar (40 / 20 / 40) - Nunjucks-safe + Circular
+  - collections.projects_ko / collections.projects_en (sorted desc)
+  - next: older (idx+1), wraps last -> first
+  - prev: newer (idx-1), wraps first -> last
+========================================================= #}
+
+{% set __url = page.url or "/" %}
+
+{# isEn: startsWith 없이 slice로 #}
+{% set __isEn = false %}
+{% if __url == "/en/" or (__url | slice(0,4)) == "/en/" %}
+  {% set __isEn = true %}
+{% endif %}
+
+{# list url #}
+{% set __listUrl = "/" %}
+{% if __isEn %}
+  {% set __listUrl = "/en/" %}
+{% endif %}
+
+{# choose collection #}
+{% set __all = collections.projects_ko %}
+{% if __isEn %}
+  {% set __all = collections.projects_en %}
+{% endif %}
+
+{# total #}
+{% set __len = __all | length %}
+
+{# find current index #}
+{% set __idx = -1 %}
+{% for p in __all %}
+  {% if p.url == __url %}
+    {% set __idx = loop.index0 %}
+  {% endif %}
+{% endfor %}
+
+{# fallback if not found: treat as first #}
+{% if __idx < 0 %}
+  {% set __idx = 0 %}
+{% endif %}
+
+{# compute circular target indices (no ternary) #}
+{% set __nextIdx = __idx + 1 %}
+{% if __nextIdx >= __len %}
+  {% set __nextIdx = 0 %}
+{% endif %}
+
+{% set __prevIdx = __idx - 1 %}
+{% if __prevIdx < 0 %}
+  {% set __prevIdx = __len - 1 %}
+{% endif %}
+
+{# resolve items by walking (safe) #}
+{% set __next = null %}
+{% set __prev = null %}
+{% for p in __all %}
+  {% if loop.index0 == __nextIdx %}
+    {% set __next = p %}
+  {% endif %}
+  {% if loop.index0 == __prevIdx %}
+    {% set __prev = p %}
+  {% endif %}
+{% endfor %}
+
+<nav class="p-navBar" data-project-nav aria-label="Project navigation">
+  <div class="p-navBar__row">
+
+    {# NEXT (left 40%) : arrow first, then meta #}
+    <div class="p-navBar__cell p-navBar__cell--next">
+      <a class="p-navBar__btn p-navBar__btn--next" href="{{ __next.url }}" aria-label="다음 프로젝트">
+        <span class="p-navBar__icon" aria-hidden="true">
+          <svg class="p-navBar__arrow p-navBar__arrow--left" width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><path d="M14.1531 9.62505L9.86564 5.33755C9.69064 5.16255 9.60664 4.95838 9.61364 4.72505C9.62064 4.49172 9.71193 4.28755 9.88752 4.11255C10.0625 3.95213 10.2667 3.86813 10.5 3.86055C10.7333 3.85297 10.9375 3.93697 11.1125 4.11255L16.8875 9.88755C16.975 9.97505 17.0371 10.0698 17.0739 10.1719C17.1106 10.274 17.1284 10.3834 17.1273 10.5C17.1261 10.6167 17.1077 10.7261 17.0721 10.8282C17.0366 10.9303 16.9747 11.025 16.8866 11.1125L11.1116 16.8875C10.9512 17.048 10.7506 17.1282 10.5096 17.1282C10.2687 17.1282 10.0611 17.048 9.88664 16.8875C9.71164 16.7125 9.62414 16.5046 9.62414 16.2637C9.62414 16.0228 9.71164 15.8151 9.88664 15.6407L14.1531 11.375L4.37502 11.3751C4.1271 11.3751 3.91914 11.2911 3.75114 11.123C3.58314 10.9551 3.49943 10.7474 3.50002 10.5001C3.5006 10.2527 3.5846 10.0448 3.75202 9.87618C3.91943 9.70759 4.1271 9.62388 4.37502 9.62505L14.1531 9.62505Z"></path></svg>
+        </span>
+        <span class="p-navBar__meta">
+          {% if __next.data.category %}<span class="p-navBar__cat">{{ __next.data.category }}</span>{% endif %}
+          {% if __next.data.title %}<span class="p-navBar__title">{{ __next.data.title }}</span>{% endif %}
+        </span>
+      </a>
+    </div>
+
+    {# LIST (middle 20%) #}
+    <div class="p-navBar__cell p-navBar__cell--list">
+        <a class="p-navBar__btn p-navBar__btn--list" href="{{ __listUrl }}" aria-label="{% if __isEn %}Back to projects{% else %}프로젝트 목록{% endif %}">
+            <span class="p-navBar__listText">{% if __isEn %}Back to projects{% else %}목록으로 돌아가기{% endif %}</span>
+        </a>
+    </div>
+
+
+    {# PREV (right 40%) : meta first, then arrow #}
+    <div class="p-navBar__cell p-navBar__cell--prev">
+      <a class="p-navBar__btn p-navBar__btn--prev" href="{{ __prev.url }}" aria-label="이전 프로젝트">
+        <span class="p-navBar__meta">
+          {% if __prev.data.category %}<span class="p-navBar__cat">{{ __prev.data.category }}</span>{% endif %}
+          {% if __prev.data.title %}<span class="p-navBar__title">{{ __prev.data.title }}</span>{% endif %}
+        </span>
+        <span class="p-navBar__icon" aria-hidden="true">
+          <svg class="p-navBar__arrow p-navBar__arrow--right" width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><path d="M14.1531 9.62505L9.86564 5.33755C9.69064 5.16255 9.60664 4.95838 9.61364 4.72505C9.62064 4.49172 9.71193 4.28755 9.88752 4.11255C10.0625 3.95213 10.2667 3.86813 10.5 3.86055C10.7333 3.85297 10.9375 3.93697 11.1125 4.11255L16.8875 9.88755C16.975 9.97505 17.0371 10.0698 17.0739 10.1719C17.1106 10.274 17.1284 10.3834 17.1273 10.5C17.1261 10.6167 17.1077 10.7261 17.0721 10.8282C17.0366 10.9303 16.9747 11.025 16.8866 11.1125L11.1116 16.8875C10.9512 17.048 10.7506 17.1282 10.5096 17.1282C10.2687 17.1282 10.0611 17.048 9.88664 16.8875C9.71164 16.7125 9.62414 16.5046 9.62414 16.2637C9.62414 16.0228 9.71164 15.8151 9.88664 15.6407L14.1531 11.375L4.37502 11.3751C4.1271 11.3751 3.91914 11.2911 3.75114 11.123C3.58314 10.9551 3.49943 10.7474 3.50002 10.5001C3.5006 10.2527 3.5846 10.0448 3.75202 9.87618C3.91943 9.70759 4.1271 9.62388 4.37502 9.62505L14.1531 9.62505Z"></path></svg>
+        </span>
+      </a>
+    </div>
+
+  </div>
+</nav>

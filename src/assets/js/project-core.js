@@ -312,3 +312,73 @@
   // 폰트 로딩/리사이즈 대응
   if (!prefersReduce) window.addEventListener("resize", () => rafSet(), { passive: true });
 })();
+
+
+(() => {
+  const root=document.documentElement;
+  const isProject=document.body.classList.contains("is-project");
+  if(!isProject) return;
+
+  const $=(s,r=document)=>r.querySelector(s);
+
+  const baseNav=$("[data-project-nav]");
+  if(!baseNav) return;
+
+  /* =========================
+     Tuning
+     - show when scroll progress passes this
+     - 0.40 = 중반쯤 느낌
+  ========================= */
+  const SHOW_AT=0.40;
+
+  // build sticky container + clone
+  const stickyWrap=document.createElement("div");
+  stickyWrap.className="p-navSticky";
+
+  const clone=baseNav.cloneNode(true);
+  clone.removeAttribute("data-project-nav"); // hook stays only on base
+  stickyWrap.appendChild(clone);
+  document.body.appendChild(stickyWrap);
+
+  let baseInView=false;
+
+  // hide sticky when base nav is on screen (footer area)
+  const io=new IntersectionObserver((entries) => {
+    for(const e of entries){
+      if(e.target===baseNav) baseInView=!!e.isIntersecting;
+    }
+    update();
+  }, {root:null, threshold:0.01});
+  io.observe(baseNav);
+
+  const getProgress=() => {
+    const docH=Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    const vh=window.innerHeight || 1;
+    const max=Math.max(1, docH - vh);
+    const y=window.scrollY || window.pageYOffset || 0;
+    return y / max;
+  };
+
+  const setVisible=(v) => stickyWrap.classList.toggle("is-visible", !!v);
+
+  let raf=0;
+  const update=() => {
+    const p=getProgress();
+    const shouldShow=(p >= SHOW_AT) && !baseInView;
+    setVisible(shouldShow);
+  };
+
+  const onScroll=() => {
+    if(raf) return;
+    raf=requestAnimationFrame(() => {
+      raf=0;
+      update();
+    });
+  };
+
+  window.addEventListener("scroll", onScroll, {passive:true});
+  window.addEventListener("resize", onScroll, {passive:true});
+
+  // initial
+  update();
+})();
