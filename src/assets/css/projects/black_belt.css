@@ -64,7 +64,7 @@ Hero side characters (parallax only)
 .p-optTitle{margin-bottom: var(--space-fluid-120);}
 .p-optTitle__inner{max-width:var(--p-1280); margin:0 auto; padding:0 4%; text-align:center; display:grid; justify-items:center;}
 .p-optTitle__eyebrow{font-size:var(--fs-h6); margin:0 0 var(--space-3); color:var(--color-black);}
-.p-optTitle__title{font-size:var(--fs-h3); line-height:1.5; margin:0 0 var(--space-fluid-48); color:var(--color-black); max-width:34ch;}
+.p-optTitle__title{font-size:var(--fs-h3); line-height:1.5; margin:0 0 var(--space-fluid-48); color:var(--color-black);}
 .p-optTitle__body{font-size:var(--fs-body-lg); line-height:var(--lh-180); margin:0; color:var(--color-gray700); max-width:72ch;}
 .p-optTitle__rule{width: 2px; height: clamp(104px, 6vw, 152px); background:rgba(0,0,0,.7); margin:var(--space-fluid-44) 0 0;}
 
