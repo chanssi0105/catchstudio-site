@@ -1,30 +1,141 @@
 ---
 layout: layouts/base.njk
+isProject: true
+pageJs: /assets/js/adobe_summit2025.js
+pageCss: /assets/css/projects/adobe_summit2025.css
 title: Adobe Summit 2025 Digital Marketing
 tags: projects
 date: 2024-12-21
 category: Campaign
 thumb: /assets/images/thumbs/adobe-summit-2025.jpg
 permalink: /projects/adobe-summit-2025/
+headerHeroTone: red
 ---
-<main class="project">
-  <header class="project-hero">
-    <h1>Adobe Summit 2025 <br />Digital Marketing</h1>
-    <p>Case Study</p>
-  </header>
+<!-- 공통 -->
+<section class="p-heroFx" data-hero data-hero-tone="dark" aria-label="Project hero">
+  <div class="p-heroFx__bg" aria-hidden="true">
+    <img class="p-heroFx__media" src="/assets/images/projects/adobe_summit2025/hero_adobe.jpg" alt="" loading="eager" decoding="async" />
+    <!-- video class="p-heroFx__media" autoplay muted loop playsinline preload="metadata">
+      <source src="/assets/video/projects/fastfive/hero.mp4" type="video/mp4" />
+    </!-->
+  </div>
 
-  <section class="project-section">
-    <h2>Overview</h2>
-    <p>여기에 요약 텍스트.</p>
+  <div class="p-heroFx__inner">
+    <h1 class="p-heroFx__title" data-split-words>
+      <span class="p-heroFx__line">Adobe Summit 2025</span>
+      <span class="p-heroFx__line">Digital Marketing</span>
+    </h1>
+  </div>
+</section>
+
+<!-- ✅ 이 spacer가 “처음에는 hero만 보이게” 만들어줌 -->
+<div class="p-heroSpacer" aria-hidden="true"></div>
+
+<!-- ✅ 이제부터는 그냥 일반 스크롤 컨텐츠 -->
+<section class="p-body" aria-label="Project content">
+  <section class="p-overviewCard" aria-label="Overview">
+    <div class="p-overviewCard__inner">
+      <h6 class="p-overviewCard__eyebrow" data-reveal-body>Overview</h6>
+
+      <div class="p-overviewCard__layout">
+        <div class="p-overviewCard__left">
+          <div class="p-overviewCard__desc">
+            <p class="p-overviewCard__bodyBig" data-reveal-body>AI·데이터 기반 운영 구조를 시각적으로 재해석하고, 일관된 디자인 시스템과 사용자 여정을 고려한 UX 흐름으로 재구성했습니다. 콘텐츠 탐색–참여–전환까지 자연스럽게 연결되는 인터랙션을 설계해 마케팅 효율과 브랜드 경험을 동시에 강화했습니다.</p>
+
+            <p class="p-overviewCard__subTitle" data-reveal-body>Adobe Summit Korea 2025 Digital Marketing Experience (Landing Page)</p>
+
+            <div class="p-overviewMetaGrid">
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Client</span>
+                <span class="p-overviewMetaValue">Adobe Korea</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Date</span>
+                <span class="p-overviewMetaValue">2025</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Type</span>
+                <span class="p-overviewMetaValue">Event Landing / Digital Marketing Experience</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Role</span>
+                <span class="p-overviewMetaValue">UX/UI Design, Web Publishing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-overviewCard__brand" aria-hidden="true" data-reveal-body>
+          <span class="p-overviewCard__brandText">
+            <img class="p-overviewCard__brandLogo" src="/assets/images/projects/adobe_summit2025/logo_adobe.png" alt="Adobe Summit logo" loading="lazy" decoding="async" />
+          </span>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+  
+  <!-- 여기부터 아래로 프로젝트 본문 섹션들 추가 -->
+
+  <style>
+    /* =========================
+      Proposal
+    ========================= */
+    .p-proposal{background:var(--color-gray100);}
+    .p-proposal__inner{max-width:var(--p-max); margin:0 auto; padding:var(--space-section-lg) 0 var(--space-section-xl);}
+
+    .p-secHead{max-width:var(--p-1280); margin:0 auto var(--space-section-md);}
+    .p-secHead__eyebrow{margin:0 0 var(--space-4); font-size:var(--fs-h6); font-weight:700; line-height:var(--lh-150); font-family:var(--font-display); text-align:center;}
+    .p-secHead__title{margin:0 0 var(--space-fluid-40); font-size:var(--fs-h3); font-weight:700; line-height:1.25; letter-spacing:-0.02em; font-family:var(--font-display); text-align:center;}
+    .p-secHead__desc{margin:0 0 var(--space-fluid-44); font-size:var(--fs-body-xl); line-height:var(--lh-180); letter-spacing:-0.01em; text-align:center;}
+
+    .p-proposal__hero{max-width:var(--p-max); margin:0; overflow:hidden; box-shadow:0 18px 50px rgba(0,0,0,.10);}
+    .p-proposal__heroImg{width:100%; height:auto; display:block;}
+
+    .p-proposalGrid{margin-top:var(--space-fluid-64); display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:clamp(12px, 2vw, 24px);}
+    .p-proposalCard{margin:0; border-radius:clamp(14px, 1.2vw, 18px); overflow:hidden; background:var(--color-gray100); box-shadow:0 14px 36px rgba(0,0,0,.08);}
+    .p-proposalCard__img{width:100%; height:auto; display:block;}
+
+    .p-completion__divider{display: block; width: 2px; height: clamp(104px,6vw,152px); background: rgba(0,0,0,.7); margin: 0 auto;}
+
+    @media (max-width: 1680px){
+      .p-proposal__inner{padding:var(--space-section-lg) 4% var(--space-section-lg);}
+    }
+
+    @media (max-width: 960px){
+      .p-proposalGrid{grid-template-columns:repeat(2, minmax(0,1fr));}
+    }
+
+    @media (max-width: 768px){
+      .p-proposal__inner{padding:var(--space-section-md) 6% var(--space-section-md);}
+      .p-proposalGrid{grid-template-columns:1fr;}
+    }
+  </style>
+
+  <section class="p-proposal" aria-label="Proposal">
+    <div class="p-proposal__inner">
+      <header class="p-secHead">
+        <h6 class="p-secHead__eyebrow" data-reveal-title>Proposal</h6>
+        <h3 class="p-secHead__title" data-reveal-title>키 비주얼을 웹 경험으로 확장한 랜딩 디자인 컨셉</h3>
+        <p class="p-secHead__desc" data-reveal-body>Global Web KV 가이드를 웹 UI에 맞게 재해석하고, Landing 목적에 최적화된 구조와 시각 언어로 확장했습니다. <br />한 페이지 내에서 이어지는 직선적인 플로우를 설계하여 사용자가 부담 없이 행사 정보를 파악하고 참여 행동으로 자연스럽게 연결되도록 했습니다.</p>
+        <span class="p-completion__divider is-revealed" aria-hidden="true" data-reveal-body></span>
+      </header>
+
+      <figure class="p-proposal__hero" data-reveal-body>
+        <picture>
+          <source media="(max-width: 768px)" srcset="/assets/images/projects/adobe_summit2025/proposal_img_mo.png" />
+          <img class="p-proposal__heroImg" src="/assets/images/projects/adobe_summit2025/proposal_img_pc.png" alt="Proposal key visual" loading="lazy" decoding="async" />
+        </picture>
+      </figure>
+
+    </div>
   </section>
 
-  <section class="project-section">
-    <h2>Key Visual</h2>
-    <img src="/assets/images/projects/adobe-summit-2025/kv.jpg" alt="Adobe Summit Key Visual" loading="lazy" decoding="async">
-  </section>
 
-  <section class="project-section">
-    <h2>Process</h2>
-    <p>여기에 내용.</p>
-  </section>
-</main>
+
+</section>
+<!-- //공통 -->

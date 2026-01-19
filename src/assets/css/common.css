@@ -16,7 +16,6 @@ html{color-scheme: light;}
 html{font-size: 100%; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable;}
 
 body{margin:0;min-height:100dvh;line-height:1.5;color:#000;background:#fff;letter-spacing:-0.2px;word-break:keep-all;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:var(--font-body);}
-html,body{overflow-x:hidden;}
 
 /* 미디어(반응형 기본) */
 img, picture, video, canvas, svg{display: block; max-inline-size: 100%; block-size: auto;}
@@ -161,3 +160,5 @@ html.is-ready body{opacity:1;transform:none;}
 @media (prefers-reduced-motion: reduce){
   body{opacity:1;transform:none;transition:none;}
 }
+
+body.is-project{overflow-x: clip;}

@@ -1,30 +1,95 @@
 ---
 layout: layouts/base.njk
+isProject: true
+pageJs: /assets/js/parksystems.js
+pageCss: /assets/css/projects/parksystems.css
 title: Parksystems Website Renewal
 tags: projects
 date: 2025-01-10
 category: Web
 thumb: /assets/images/thumbs/parksystems.jpg
 permalink: /projects/parksystems/
+headerHeroTone: dark
 ---
-<main class="project">
-  <header class="project-hero">
-    <h1>Parksystems <br />Website Renewal</h1>
-    <p>Case Study</p>
-  </header>
 
-  <section class="project-section">
-    <h2>Overview</h2>
-    <p>여기에 요약 텍스트.</p>
+<style>
+  .p-heroFx.p-Wrap__media::after{content:""; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.9), rgba(0,0,0,.7) 15%, rgba(0,0,0,.9) 85%, rgba(0,0,0,1)); pointer-events:none; z-index:1;}
+</style>
+<!-- 공통 -->
+<section class="p-heroFx p-Wrap__media" data-hero data-hero-tone="dark" aria-label="Project hero">
+  <div class="p-heroFx__bg" aria-hidden="true">
+    <video class="p-heroFx__media" autoplay muted loop playsinline preload="metadata">
+      <source src="/assets/images/projects/parksystems/hero_parksystems.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <div class="p-heroFx__inner">
+    <h1 class="p-heroFx__title" data-split-words>
+      <span class="p-heroFx__line">Parksystems</span>
+      <span class="p-heroFx__line">Website Renewal</span>
+    </h1>
+  </div>
+</section>
+
+<!-- ✅ 이 spacer가 “처음에는 hero만 보이게” 만들어줌 -->
+<div class="p-heroSpacer" aria-hidden="true"></div>
+
+<style>
+  .p-park .p-overviewCard{background: var(--color-black)}
+  .p-park .p-overviewCard__eyebrow, .p-park .p-overviewCard__layout{color: var(--color-white)}
+  .p-overviewMetaLabel{background: var(--color-gray600);}
+</style>
+
+<!-- ✅ 이제부터는 그냥 일반 스크롤 컨텐츠 -->
+<section class="p-body p-park" aria-label="Project content">
+  <section class="p-overviewCard" aria-label="Overview">
+    <div class="p-overviewCard__inner">
+      <h6 class="p-overviewCard__eyebrow" data-reveal-body>Overview</h6>
+
+      <div class="p-overviewCard__layout">
+        <div class="p-overviewCard__left">
+          <div class="p-overviewCard__desc">
+            <p class="p-overviewCard__bodyBig" data-reveal-body>복잡했던 정보 구조를 단순하고 직관적으로 재정리하고, 일관된 디자인 시스템과 반응형 UI를 적용하여 사용자 경험을 최적화하는 데 초점을 맞췄습니다. 또한, 운영 효율성을 고려해 백엔드 콘텐츠 관리 체계까지 함께 개선하며, 프론트엔드와 운영 환경 모두에서 균형 있는 개선을 이끌어냈습니다.</p>
+
+            <p class="p-overviewCard__subTitle" data-reveal-body>Global Website Renewal & AEM Publishing for UX/UI Experience</p>
+
+            <div class="p-overviewMetaGrid">
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Client</span>
+                <span class="p-overviewMetaValue">Park Systems</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Date</span>
+                <span class="p-overviewMetaValue">2024</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Type</span>
+                <span class="p-overviewMetaValue">Website Renewal (Corporate Website)</span>
+              </div>
+
+              <div class="p-overviewMetaItem" data-reveal-body>
+                <span class="p-overviewMetaLabel">Role</span>
+                <span class="p-overviewMetaValue">UI Design (with UX Consideration), Front-end Publishing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-overviewCard__brand" aria-hidden="true" data-reveal-body>
+          <span class="p-overviewCard__brandText">
+            <img class="p-overviewCard__brandLogo" src="/assets/images/projects/parksystems/logo_parksystems.svg" alt="Parksystems logo" loading="lazy" decoding="async" />
+          </span>
+        </div>
+      </div>
+
+
+    </div>
   </section>
 
-  <section class="project-section">
-    <h2>Key Visual</h2>
-    <img src="/assets/images/projects/parksystems/kv.jpg" alt="Parksystems Key Visual" loading="lazy" decoding="async">
-  </section>
+  <!-- 여기부터 아래로 프로젝트 본문 섹션들 추가 -->
 
-  <section class="project-section">
-    <h2>Process</h2>
-    <p>여기에 내용.</p>
-  </section>
-</main>
+
+</section>
+<!-- //공통 -->

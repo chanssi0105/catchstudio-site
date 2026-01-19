@@ -689,9 +689,12 @@
       const s6=s56?.querySelector("[data-s6]");
       if(!s56||!wrap||!stage||!s5||!s6) return;
 
+      // ✅ 이미 바인딩 된 경우: 첫 바인딩 때 저장해둔 updater만 호출
       if(s56.dataset.bound==="1"){
-        // 이미 바인딩 됐으면 업데이트만
-        requestAnimationFrame(()=>requestAnimationFrame(update));
+        const fn=s56.__s56Update;
+        if(typeof fn==="function"){
+          requestAnimationFrame(()=>requestAnimationFrame(fn));
+        }
         return;
       }
       s56.dataset.bound="1";
@@ -1084,6 +1087,7 @@ btnNext && btnNext.addEventListener("click",(e)=>{e.preventDefault();e.stopPropa
         if(inBG) startJitter();
         else stopJitter();
       }
+      s56.__s56Update=update;
 
       const onScroll=()=>{
         if(ticking) return;
