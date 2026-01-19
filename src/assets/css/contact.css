@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 :root{
-  --about-hero-title: clamp(48px, 10vw, 140px);
+  --about-hero-title: clamp(3rem, 10vw, 8.75rem);
   --about-reveal-ease: cubic-bezier(.2,.8,.2,1);
   --about-max-wide: 1800px;
   --about-gutter-wide: clamp(4%, 3.2vw, 60px);
@@ -21,7 +21,7 @@ body.is-scrollLocked{padding-right: var(--sbw,0px);}
 .contact-modal{position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(0,0,0,.8);}
 .contact-modal.is-open{display: flex;}
 .contact-modal__card{width: min(370px,100%); border-radius: 18px; background: #fff; padding: var(--space-10); text-align: center; box-shadow: 0 24px 80px rgba(0,0,0,.18);}
-.contact-modal__title{margin: 0 0 var(--space-3); font-size: clamp(18px, 1.6vw, 26px); font-weight: 700; color: var(--color-black);}
+.contact-modal__title{margin: 0 0 var(--space-3); font-size: clamp(1.125rem, 1.6vw, 1.625rem); font-weight: 700; color: var(--color-black);}
 .contact-modal__desc{margin: 0 0 var(--space-fluid-40); line-height: 1.55; color: #666;}
 .contact-modal__actions{display: flex; gap: 10px; justify-content: center;}
 
@@ -33,7 +33,7 @@ body.is-scrollLocked{padding-right: var(--sbw,0px);}
 ========================================================= */
 .contact-hero{min-height: calc(100svh - var(--header-h)); display: flex; align-items: flex-end; padding: 0 0 var(--space-fluid-60); background: var(--color-white);}
 .contact-hero__inner{width: 100%; padding-top: calc(var(--header-h) + var(--space-12));}
-.contact-hero__eyebrow{margin-top: 0; margin-left: .8%; font-size: clamp(18px,2.4vw,20px); font-weight: 700; letter-spacing: .02em; color: var(--color-black); margin-bottom: var(--space-3);}
+.contact-hero__eyebrow{margin-top: 0; margin-left: .8%; font-size: var(--fs-h6); font-weight: 700; letter-spacing: .02em; color: var(--color-black); margin-bottom: var(--space-3);}
 .contact-hero__title{font-size: var(--about-hero-title); line-height: 1.13; letter-spacing: -0.02em; font-weight: 900; color: var(--color-black); text-transform: uppercase; margin: 0;}
 .contact-hero__title .w{display: inline-block; overflow: hidden; vertical-align: bottom;}
 .contact-hero__title .w>i{display: inline-block; transform: translateY(120%); opacity: 0; will-change: transform,opacity; transition: transform 700ms var(--about-reveal-ease),opacity 700ms var(--about-reveal-ease);}
@@ -138,7 +138,7 @@ body.is-scrollLocked{padding-right: var(--sbw,0px);}
 
 .assist-bubble{position: absolute; top: 14px; left: 14px; width: 56px; height: 56px; border-radius: 18px; background: #fff; border: 1px solid rgba(11,25,60,.10); box-shadow: 0 10px 24px rgba(11,25,60,.08); display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--color-secondary);}
 .assist-bubble::after{content: ""; position: absolute; left: 16px; bottom: -10px; width: 14px; height: 14px; background: #fff; border-left: 1px solid rgba(11,25,60,.10); border-bottom: 1px solid rgba(11,25,60,.10); transform: rotate(45deg);}
-.assist-q,.assist-e{position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; line-height: 1; letter-spacing: -0.02em;}
+.assist-q,.assist-e{position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.625rem; line-height: 1; letter-spacing: -0.02em;}
 .assist-q{opacity: 1; animation: bubbleSwapQ 3.2s ease-in-out infinite;}
 .assist-e{opacity: 0; animation: bubbleSwapE 3.2s ease-in-out infinite;}
 @keyframes bubbleSwapQ{0%,55%{opacity: 1; transform: scale(1);}70%,100%{opacity: 0; transform: scale(.96);}}

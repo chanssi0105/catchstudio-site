@@ -1,7 +1,7 @@
 /* project-hero-effects.js (CLEAN)
    - Hero title: split(옵션) + enter anim + fade + parallax
    - Reveal: title/body 분리 리빌 (1회)
-   - Mobile: 진입 시 Overview로 자동 스크롤 (매번 실행 / 유저 조작 시 취소)
+   - Mobile: 진입 시 Overview로 자동 스크롤 (히어로에서 시작할 때만 / 유저 조작 시 취소)
 */
 (() => {
   const root=document.documentElement;
@@ -177,11 +177,11 @@
   })();
 
   /* =========================================================
-     4) Mobile Auto-Scroll to Overview (ALWAYS ON ENTER)
+     4) Mobile Auto-Scroll to Overview (HERO-ONLY)
      - mobile only (<=768px)
      - load + pageshow(bfcache)
-     - cancels on user intent
-     - respects prefers-reduced-motion
+     - cancels on user intent + scroll restoration
+     - runs ONLY when actually starting at hero top
   ========================================================= */
   const mobileAutoScroll=(()=>{
     const isMobile=()=>window.matchMedia&&window.matchMedia("(max-width: 768px)").matches;
@@ -198,6 +198,17 @@
     const getTargetTop=(el)=>{
       const y=window.scrollY||window.pageYOffset||0;
       return Math.max(0,Math.round(el.getBoundingClientRect().top+y-headerH()-8));
+    };
+
+    // ✅ "진짜로 히어로에서 시작한 상태"인지 확인
+    const isAtHeroStart=()=>{
+      const hero=document.querySelector("[data-hero]");
+      if(!hero) return false;
+      const r=hero.getBoundingClientRect();
+
+      // hero가 화면 상단 근처에 걸려있고,
+      // hero의 아래쪽이 아직 화면 아래쪽까지 충분히 남아있으면 (hero 구간)
+      return (r.top <= 16) && (r.bottom >= Math.min(window.innerHeight, 420));
     };
 
     const smoothScrollTo=(targetY,duration,isCancelled)=>{
@@ -226,8 +237,11 @@
       // 스크롤 잠금(메뉴/모달 등) 상태면 중단
       if(root.classList.contains("is-scrollLocked")||document.body.classList.contains("is-scrollLocked")) return;
 
-      // 유저가 이미 내려간 상태면 중단
+      // ✅ 유저가 이미 내려간 상태면 중단
       if((window.scrollY||0)>10) return;
+
+      // ✅ 히어로에서 시작한 경우에만 실행 (중간구역 새로고침 오판 방지)
+      if(!isAtHeroStart()) return;
 
       const overview=pickOverview();
       if(!overview) return;
@@ -241,6 +255,8 @@
         window.removeEventListener("wheel",cancel,opt);
         window.removeEventListener("keydown",cancel);
         window.removeEventListener("mousedown",cancel);
+        window.removeEventListener("scroll",cancel,opt);     // ✅ 추가: 스크롤 복원도 취소로 처리
+        window.removeEventListener("touchmove",cancel,opt);  // ✅ 추가
       };
 
       const cancel=()=>{cancelled=true; cleanup();};
@@ -250,9 +266,18 @@
       window.addEventListener("keydown",cancel);
       window.addEventListener("mousedown",cancel);
 
+      // ✅ 스크롤 복원/레이아웃 변동으로 생기는 scroll도 cancel 트리거로
+      window.addEventListener("scroll",cancel,opt);
+      window.addEventListener("touchmove",cancel,opt);
+
       // 레이아웃 안정화 후 실행
       setTimeout(()=>{
         if(isCancelled()) return;
+
+        // ✅ 실행 직전에 다시 체크 (복원된 스크롤이면 여기서 걸러짐)
+        if((window.scrollY||0)>10) return;
+        if(!isAtHeroStart()) return;
+
         const y=getTargetTop(overview);
         smoothScrollTo(y,DURATION,isCancelled);
         setTimeout(cleanup,Math.max(700,DURATION+300));
@@ -314,6 +339,9 @@
 })();
 
 
+/* =========================================================
+   Project Nav Sticky Clone
+========================================================= */
 (() => {
   const root=document.documentElement;
   const isProject=document.body.classList.contains("is-project");

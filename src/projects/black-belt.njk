@@ -1,30 +1,235 @@
 ---
 layout: layouts/base.njk
+isProject: true
+lang: en
+pageJs: /assets/js/black_belt.js
+pageCss: /assets/css/projects/black_belt.css
 title: Black Belt Center Leaflet Design
 tags: projects
 date: 2025-10-01
 category: Branding
 thumb: /assets/images/thumbs/black-belt.jpg
 permalink: /projects/blackbelt-center/
+headerHeroTone: dark
 ---
-<main class="project">
-  <header class="project-hero">
-    <h1>Black Belt Center<br />Grand Open Leaflet Design</h1>
-    <p>Case Study</p>
-  </header>
 
-  <section class="project-section">
-    <h2>Overview</h2>
-    <p>여기에 요약 텍스트.</p>
+<!-- 공통 -->
+<section class="p-heroFx" data-hero data-hero-tone="dark" aria-label="Project hero">
+  <div class="p-heroFx__bg" aria-hidden="true">
+    <img class="p-heroFx__media" src="/assets/images/projects/blackbelt/hero_blackbelt.jpg" alt="" loading="eager" decoding="async" />
+    <!-- video class="p-heroFx__media" autoplay muted loop playsinline preload="metadata">
+      <source src="/assets/video/projects/fastfive/hero.mp4" type="video/mp4" />
+    </!-->
+  </div>
+
+  <div class="p-heroFx__char p-heroFx__char--left" data-hero-char="left" aria-hidden="true"><img class="p-heroFx__charImg" src="/assets/images/projects/blackbelt/hero_char_left.png" alt="" loading="eager" decoding="async" /></div>
+  <div class="p-heroFx__char p-heroFx__char--right" data-hero-char="right" aria-hidden="true"><img class="p-heroFx__charImg" src="/assets/images/projects/blackbelt/hero_char_right.png" alt="" loading="eager" decoding="async" /></div>
+
+  <div class="p-heroFx__inner">
+    <h1 class="p-heroFx__title" data-split-words>
+      <span class="p-heroFx__line">Black Belt Center</span>
+      <span class="p-heroFx__line">Grand Open Leaflet Design</span>
+    </h1>
+  </div>
+</section>
+
+<!-- ✅ 이 spacer가 “처음에는 hero만 보이게” 만들어줌 -->
+<div class="p-heroSpacer" aria-hidden="true"></div>
+
+<!-- ✅ 이제부터는 그냥 일반 스크롤 컨텐츠 -->
+<section class="p-body" aria-label="Project content">
+  <section class="p-overviewCard" aria-label="Overview">
+    <div class="p-overviewCard__inner">
+      <h6 class="p-overviewCard__eyebrow" data-reveal-body>Overview</h6>
+
+      <div class="p-overviewCard__layout">
+        <div class="p-overviewCard__left">
+          <div class="p-overviewCard__desc">
+            <p class="p-overviewCard__bodyBig" data-reveal-body>블랙벨트센터 태권도장의 개관 홍보를 위한 오프라인 전단지 리뉴얼 프로젝트입니다. <br />학부모를 주요 타겟으로 설정하고, 개관 소식의 명확한 전달과 신뢰 형성을 중심으로 정보 위계와 시선 흐름을 재구성했습니다. 행사성 메시지와 교육 신뢰 요소의 균형을 고려해 브랜드 인상과 상담 문의로 자연스럽게 이어질 수 있도록 설계했습니다.</p>
+
+            <p class="p-overviewCard__subTitle" data-reveal-body>Black Belt Center Leaflet Design</p>
+
+            <div class="p-overviewMetaGrid" data-reveal-body>
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Client</span>
+                <span class="p-overviewMetaValue">Black Belt Center 수내점</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Date</span>
+                <span class="p-overviewMetaValue">2025</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Type</span>
+                <span class="p-overviewMetaValue">Offline Promotional Leaflet Design</span>
+              </div>
+
+              <div class="p-overviewMetaItem">
+                <span class="p-overviewMetaLabel">Role</span>
+                <span class="p-overviewMetaValue">Design</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-overviewCard__brand" aria-hidden="true" data-reveal-body>
+          <span class="p-overviewCard__brandText">
+            <img class="p-overviewCard__brandLogo" src="/assets/images/projects/blackbelt/black_belt_logo.png" alt="Black Belt" loading="lazy" decoding="async" />
+          </span>
+        </div>
+      </div>
+
+
+    </div>
   </section>
 
-  <section class="project-section">
-    <h2>Key Visual</h2>
-    <img src="/assets/images/projects/parksystems/kv.jpg" alt="Parksystems Key Visual" loading="lazy" decoding="async">
+  <!-- 여기부터 아래로 프로젝트 본문 섹션들 추가 -->
+  <section class="p-sec" aria-label="Section: Context">
+    <div class="p-sec__inner">
+      <div class="p-sec__copy">
+        <h6 class="p-sec__eyebrow" data-reveal-title>Problem</h6>
+        <h3 class="p-sec__title" data-reveal-title>디자인 기준 없이 구성된 초기 전단지 초안</h3>
+        <p class="p-sec__body" data-reveal-body>
+          초안에는 개관 정보와 프로그램 내용이 모두 포함되어 있었지만, 디자인 기준이나 정보 위계가 정리 되지 않은 상태로 어떤 메시지를 우선적으로 전달해야 하는지 명확하지 않았습니다. 이에 따라 전단지의 목적을 명확히 정의하고, 핵심 메시지와 상담 유도 흐름을 중심으로 구성과 시선 흐름을 새롭게 설계할 필요가 있었습니다.
+        </p>
+      </div>
+
+      <figure class="p-sec__media" data-reveal-body>
+        <img class="p-sec__img" src="/assets/images/projects/blackbelt/section_01.jpg" alt="" />
+      </figure>
+    </div>
+    <div class="p-sec__fade" aria-hidden="true"></div>
   </section>
 
-  <section class="project-section">
-    <h2>Process</h2>
-    <p>여기에 내용.</p>
-  </section>
-</main>
+  <section class="p-options" aria-label="Options">
+    <article class="p-optTitle" aria-label="Options title">
+      <div class="p-optTitle__inner">
+        <h6 class="p-optTitle__eyebrow" data-reveal-title>Process</h6>
+        <h3 class="p-optTitle__title" data-reveal-title>서로 다른 방향성을 가진 전단지 시안 제안</h3>
+        <p class="p-optTitle__body" data-reveal-body>전단지의 목적과 타겟을 기준으로 메시지 강조 방식과 비주얼 접근이 다른 3가지 방향의 시안을 설계했습니다. <br />각 시안은 정보 배치와 시선 흐름에 차이를 두어 구성되었으며, 개관 인지와 상담 유도에 적합한 방향을 검토했습니다.</p>
+        <span class="p-optTitle__rule" aria-hidden="true" data-reveal-body></span>
+      </div>
+    </article>
+
+    <article class="p-optItem p-optItem--a" aria-label="Option A">
+      <div class="p-optItem__inner">
+        <h6 class="p-optItem__label" data-reveal-title>Option A</h6>
+
+        <figure class="p-optItem__hero" data-reveal-body>
+          <img class="p-optItem__heroImg" src="/assets/images/projects/blackbelt/option_a_hero.jpg" alt="Option A leaflet hero" loading="lazy" decoding="async" />
+        </figure>
+
+        <div class="p-optItem__grid" data-reveal-body>
+          <div class="p-optItem__col">
+            <p>개관 일정, 교육 프로그램, 운영 시간, 상담 문의 등 전단지에 포함되어야 할 모든 정보를 빠짐없이 전달하는 것을 최우선으로 고려한 시안입니다.</p>
+            <p>정보의 양이 많은 오프라인 전단지 특성을 감안해, 각 요소가 서로 경쟁하지 않도록 텍스트 위계와 레이아웃 구조를 중심으로 화면을 구성했습니다.</p>
+            <p>헤드라인, 보조 문구, 상세 정보의 역할을 명확히 나누고 전단지를 처음 접하는 상황에서도 자연스럽게 위에서 아래로 읽히도록 시선 흐름을 설계했습니다.</p>
+          </div>
+
+          <div class="p-optItem__col">
+            <p>사진 영역은 프로그램 이해를 돕는 보조 요소로 활용해 텍스트 정보의 전달을 방해하지 않도록 배치했으며, 정보 탐색 과정에서 혼란이 생기지 않도록 전체 구성을 안정적인 구조로 정리했습니다.</p>
+            <p class="p-optItem__strong">Option A는 정보 전달의 명확성과 가독성을 가장 우선시한 방향으로, 전단지의 기본적인 역할을 충실히 수행하는 보수적이고 안정적인 해답을 제시하는 시안입니다.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="p-optItem p-optItem--b" aria-label="Option B">
+      <div class="p-optItem__inner">
+        <h6 class="p-optItem__label" data-reveal-title>Option B</h6>
+
+        <figure class="p-optItem__hero" data-reveal-body>
+          <img class="p-optItem__heroImg" src="/assets/images/projects/blackbelt/option_b_hero.jpg" alt="Option B leaflet hero" loading="lazy" decoding="async" />
+        </figure>
+
+        <div class="p-optItem__grid" data-reveal-body>
+          <div class="p-optItem__col">
+            <p>Grand Open 일정과 개관 소식을 가장 빠르고 강하게 인지시키는 데 초점을 둔 시안입니다.</p>
+            <p>대형 헤드라인과 컬러 대비를 적극적으로 활용해 전단지를 처음 접하는 순간 ‘개관 행사’라는 메시지가 즉각적으로 인식되도록 구성했습니다. 시각적 임팩트를 우선순위에 두고, 불필요한 정보 노출을 최소화해 짧은 노출 시간에도 핵심 메시지가 각인되도록 설계 했습니다.</p>
+          </div>
+
+          <div class="p-optItem__col">
+            <p>비주얼 요소는 행사 분위기와 역동성을 강조하는 방향으로 배치해 전단지 자체가 하나의 이벤트 공지처럼 인식되도록 했으며, 행사 일정과 브랜드명을 중심으로 시선이 빠르게 집중되는 구조를 만들었습니다.</p>
+            <p class="p-optItem__strong">Option B는 행사 인지와 주목도를 최우선으로 고려한 방향으로, 전단지를 통해 ‘개관 소식을 알리는 것’에 가장 직접적으로 반응하는 시안입니다.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="p-optItem p-optItem--c" aria-label="Option C">
+      <div class="p-optItem__inner">
+        <h6 class="p-optItem__label" data-reveal-title>Option C</h6>
+
+        <figure class="p-optItem__hero" data-reveal-body>
+          <img class="p-optItem__heroImg" src="/assets/images/projects/blackbelt/option_c_hero.jpg" alt="Option C leaflet hero" loading="lazy" decoding="async" />
+        </figure>
+
+        <div class="p-optItem__grid" data-reveal-body>
+          <div class="p-optItem__col">
+            <p>개관 인지와 교육 신뢰 요소를 동시에 전달하는 것을 목표로, 행사성 메시지와 정보 요소의 균형을 고려해 설계한 시안입니다.</p>
+            <p>상단에는 Grand Open 메시지를 명확하게 배치해  개관 소식을 즉각적으로 인지할 수 있도록 하고, 중앙 영역에는 교육 방향성과 실제 활동 이미지를 단계적으로 구성해 태권도장의 성격과 신뢰도를 자연스럽게 전달하도록 했습니다.</p>
+          </div>
+
+          <div class="p-optItem__col">
+            <p>일러스트 요소를 활용해 시각적 친근감을 더함으로써 타겟 연령층과 학부모 모두에게 부담 없이 다가갈 수 있도록 했으며, 전단지를 처음 접한 이후 인지 → 이해 → 상담 문의로 이어지는 흐름을 기준으로 전체 레이아웃과 시선 이동을 정리했습니다.</p>
+            <p class="p-optItem__strong">Option C는 정보 전달의 안정성과 행사 인지의 주목도를 함께 고려한 방향으로, 오프라인 배포 환경에서 가장 균형 잡힌 커뮤니케이션을 목표로 한 시안입니다.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+</section>
+
+<section class="bb-flow" aria-label="Before and result comparison">
+  <div class="bb-flow__inner">
+
+    <!-- Before -->
+    <article class="bb-flowBlock bb-flowBlock--before" aria-label="Before">
+      <div class="bb-flowLabel" aria-hidden="true">Before</div>
+      <figure class="bb-flowBlock__media">
+        <img src="/assets/images/projects/blackbelt/before.jpg" alt="Before leaflet" loading="lazy" decoding="async" />
+      </figure>
+    </article>
+
+    <!-- Result / Options -->
+    <article class="bb-flowBlock bb-flowBlock--result" aria-label="Result options">
+      <div class="bb-opt3d" data-opt3d>
+        <div class="bb-opt3d__container" data-opt3d-container>
+          <div class="bb-opt3d__slide" data-opt3d-slide aria-label="Option A"><div class="bb-opt3d__cap">Option A</div><img src="/assets/images/projects/blackbelt/option_a.jpg" alt="Option A leaflet" loading="lazy" decoding="async" /></div>
+          <div class="bb-opt3d__slide" data-opt3d-slide aria-label="Option B"><div class="bb-opt3d__cap">Option B</div><img src="/assets/images/projects/blackbelt/option_b.jpg" alt="Option B leaflet" loading="lazy" decoding="async" /></div>
+          <div class="bb-opt3d__slide" data-opt3d-slide aria-label="Option C"><div class="bb-opt3d__cap">Option C</div><img src="/assets/images/projects/blackbelt/option_c.jpg" alt="Option C leaflet" loading="lazy" decoding="async" /></div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="p-completion" aria-label="Completion">
+  <div class="p-completion__top">
+    <div class="p-completion__bg" aria-hidden="true"></div>
+
+    <div class="p-completion__inner">
+      <div class="p-completion__copy">
+        <h6 class="p-completion__eyebrow" data-reveal-title>Completion</h6>
+        <h3 class="p-completion__title" data-reveal-title>오프라인 배포 환경을 고려한 최종 전단지 디자인</h3>
+        <div class="p-completion__body" data-reveal-body>
+          <p>이번 전단지 디자인은 개관 인지, 교육 신뢰 형성, 상담 문의로 이어지는 흐름을 하나의 구조로 정리하는 데 집중했습니다.</p>
+          <p>Grand Open 메시지를 중심으로 시선을 빠르게 집중시키고, 교육 방향성과 실제 활동 이미지를 단계적으로 배치해 태권도장의 성격과 가치를 자연스럽게 전달하도록 구성했습니다.</p>
+          <p>오프라인 환경에서도 정보가 명확히 인지될 수 있도록 레이아웃과 시선 흐름을 정리해, 전단지를 접한 이후 상담 문의로 이어질 수 있는 결과물을 구현했습니다.</p>
+        </div>
+      </div>
+
+      <!-- ✅ boundary overlap -->
+      <img class="p-completion__mock" src="/assets/images/projects/blackbelt/completion_img.png" alt="" loading="lazy" decoding="async" />
+    </div>
+  </div>
+
+  <!-- ✅ spacer only -->
+  <div class="p-completion__bottom" aria-hidden="true"></div>
+</section>
+
+
+
+
+</section>
+<!-- //공통 -->

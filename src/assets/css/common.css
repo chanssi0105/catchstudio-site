@@ -16,7 +16,7 @@ html{color-scheme: light;}
 html{font-size: 100%; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable;}
 
 body{margin:0;min-height:100dvh;line-height:1.5;color:#000;background:#fff;letter-spacing:-0.2px;word-break:keep-all;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:var(--font-body);}
-
+html,body{overflow-x:hidden;}
 
 /* 미디어(반응형 기본) */
 img, picture, video, canvas, svg{display: block; max-inline-size: 100%; block-size: auto;}
@@ -64,17 +64,18 @@ table{border-collapse: collapse; border-spacing: 0;}
   --color-transparent: transparent;
 
   /* ===== Font size (fluid) — root 16px 기준 ===== */
-  --fs-display: clamp(3.5rem, 3.2vw + 2.6rem, 5rem);
-  --fs-h1: clamp(3.25rem, 2.8vw + 2.4rem, 4.5rem);
-  --fs-h2: clamp(2.5rem, 2vw + 1.8rem, 3.25rem);
-  --fs-h3: clamp(1.875rem, 1.2vw + 1.6rem, 2.25rem);
-  --fs-h6: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem);
+  --fs-display: clamp(3.5rem, 3.2vw + 2.6rem, 5rem);      /* 56px ~ 80px (mid: 41.6px + 3.2vw) */
+  --fs-h1: clamp(3.25rem, 2.8vw + 2.4rem, 4.5rem);        /* 52px ~ 72px (mid: 38.4px + 2.8vw) */
+  --fs-h2: clamp(2.5rem, 2vw + 1.8rem, 3.25rem);          /* 40px ~ 52px (mid: 28.8px + 2vw) */
+  --fs-h3: clamp(1.875rem, 1.2vw + 1.6rem, 2.25rem);      /* 30px ~ 36px (mid: 25.6px + 1.2vw) */
+  --fs-h6: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem);      /* 18px ~ 20px (mid: 16px + 0.6vw) */
 
-  --fs-body-xl: clamp(1.375rem, 0.9vw + 1.1rem, 1.625rem);
-  --fs-body-lg: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem);
-  --fs-body-md: clamp(0.9375rem, 0.4vw + 0.85rem, 1rem);
-  --fs-body-sm: clamp(0.8125rem, 0.35vw + 0.75rem, 0.875rem);
-  --fs-body-xs: clamp(0.75rem, 0.25vw + 0.7rem, 0.8125rem);
+  --fs-body-xl: clamp(1.375rem, 0.9vw + 1.1rem, 1.625rem);/* 22px ~ 26px (mid: 17.6px + 0.9vw) */
+  --fs-body-lg: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem); /* 18px ~ 20px (mid: 16px + 0.6vw) */
+  --fs-body-md: clamp(0.9375rem, 0.4vw + 0.85rem, 1rem);  /* 15px ~ 16px (mid: 13.6px + 0.4vw) */
+  --fs-body-sm: max(13px, clamp(0.8125rem, 0.35vw + 0.75rem, 0.875rem)); /* 13px ~ 14px (mid: 12px + 0.35vw) */
+  --fs-body-xs: max(12px, clamp(0.75rem, 0.25vw + 0.7rem, 0.8125rem));   /* 12px ~ 13px (mid: 11.2px + 0.25vw) */
+
 
   /* ===== Line-height ratio (150 /160 /170 /180) ===== */
   --lh-150: 1.5;
@@ -101,13 +102,15 @@ table{border-collapse: collapse; border-spacing: 0;}
   --space-section-lg: clamp(120px, 8vw + 40px, 180px);
   --space-section-xl: clamp(160px, 10vw + 60px, 240px);
   --space-fluid-40: clamp(24px, 2.5vw, 40px);
+  --space-fluid-44: clamp(28px, 2.5vw, 44px);
   --space-fluid-48: clamp(32px, 2.5vw, 48px);
-  --space-fluid-60: clamp(32px, 3.5vw, 60px);
-  --space-fluid-64: clamp(36px, 3.5vw, 64px);
-  --space-fluid-80: clamp(40px, 5vw, 80px);
-  --space-fluid-100: clamp(56px, 6.5vw, 100px);
-  --space-fluid-120: clamp(76px, 6.5vw, 120px);
-  --space-fluid-160: clamp(80px, 10vw, 160px);
+  --space-fluid-52: clamp(36px, 2.5vw, 52px);
+  --space-fluid-60: clamp(40px, 3.5vw, 60px);
+  --space-fluid-64: clamp(44px, 3.5vw, 64px);
+  --space-fluid-80: clamp(56px, 5vw, 80px);
+  --space-fluid-100: clamp(64px, 6.5vw, 100px);
+  --space-fluid-120: clamp(72px, 6.5vw, 120px);
+  --space-fluid-160: clamp(88px, 10vw, 160px);
 
   /* ===== header height ===== */
   --header-h: 70px;
@@ -127,15 +130,11 @@ table{border-collapse: collapse; border-spacing: 0;}
 }
 
 /* 브레이크포인트(모바일 퍼스트) — em 단위(사용자 확대 대응) */
-@media(min-width:30em){
+@media (max-width: 1280px){
+  html{font-size:15px;}
 }
-@media(min-width:48em){
-}
-@media(min-width:64em){
-}
-@media(min-width:80em){
-}
-@media(min-width:96em){
+@media (max-width: 768px){
+  html{font-size:14px;}
 }
 
 /* ===================== 타이포 =========================================== */
