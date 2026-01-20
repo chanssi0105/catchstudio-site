@@ -19,7 +19,7 @@
 .p-completion__divider{display: block; width: 2px; height: clamp(104px,6vw,152px); background: rgba(0,0,0,.7); margin: 0 auto;}
 
 @media (max-width: 1680px){
-    .p-proposal__inner{padding:var(--space-section-lg) 4% var(--space-section-lg);}
+    .p-proposal__inner{padding:var(--space-section-lg) 4% var(--space-section-xl);}
 }
 
 @media (max-width: 960px){
@@ -27,7 +27,7 @@
 }
 
 @media (max-width: 768px){
-    .p-proposal__inner{padding:var(--space-section-md) 6% var(--space-section-md);}
+    .p-proposal__inner{padding:var(--space-section-lg) 6% var(--space-section-xl);}
     .p-proposalGrid{grid-template-columns:1fr;}
 }
 

@@ -91,5 +91,348 @@ headerHeroTone: dark
   <!-- 여기부터 아래로 프로젝트 본문 섹션들 추가 -->
 
 
+  <style>
+    /* =========================
+        Proposal
+    ========================= */
+    .p-proposal{background:var(--color-gray100);}
+    .p-proposal__inner{max-width:var(--p-max); margin:0 auto; padding:var(--space-section-lg) 0 var(--space-section-xl);}
+
+    .p-secHead{max-width:var(--p-1280); margin:0 auto var(--space-section-md);}
+    .p-secHead__eyebrow{margin:0 0 var(--space-4); font-size:var(--fs-h6); font-weight:700; line-height:var(--lh-150); font-family:var(--font-display); text-align:center;}
+    .p-secHead__title{margin:0 0 var(--space-fluid-40); font-size:var(--fs-h3); font-weight:700; line-height:1.25; letter-spacing:-0.02em; font-family:var(--font-display); text-align:center;}
+    .p-secHead__desc{margin:0 0 var(--space-fluid-44); font-size:var(--fs-body-xl); line-height:var(--lh-180); letter-spacing:-0.01em; text-align:center;}
+
+    .p-proposal__hero{max-width:var(--p-max); margin:0; overflow:hidden; box-shadow:0 18px 50px rgba(0,0,0,.10);}
+    .p-proposal__heroImg{width:100%; height:auto; display:block;}
+
+    .p-proposalGrid{margin-top:var(--space-fluid-64); display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:clamp(12px, 2vw, 24px);}
+    .p-proposalCard{margin:0; border-radius:clamp(14px, 1.2vw, 18px); overflow:hidden; background:var(--color-gray100); box-shadow:0 14px 36px rgba(0,0,0,.08);}
+    .p-proposalCard__img{width:100%; height:auto; display:block;}
+
+    .p-completion__divider{display: block; width: 2px; height: clamp(104px,6vw,152px); background: rgba(0,0,0,.7); margin: 0 auto;}
+
+    @media (max-width: 1680px){
+        .p-proposal__inner{padding:var(--space-section-lg) 4% var(--space-section-xl);}
+    }
+
+    @media (max-width: 960px){
+        .p-proposalGrid{grid-template-columns:repeat(2, minmax(0,1fr));}
+    }
+
+    @media (max-width: 768px){
+        .p-proposal__inner{padding:var(--space-section-lg) 4% var(--space-section-xl);}
+        .p-proposalGrid{grid-template-columns:1fr;}
+    }
+  </style>
+
+  <section class="p-proposal" aria-label="Proposal">
+    <div class="p-proposal__inner">
+      <header class="p-secHead">
+        <h6 class="p-secHead__eyebrow" data-reveal-title>Proposal</h6>
+        <h3 class="p-secHead__title" data-reveal-title>제품 경험을 직관적으로 전달하는 컨셉 디자인</h3>
+        <p class="p-secHead__desc" data-reveal-body>초기 제안 단계에서 여러 방향성을 탐색하며, Park Systems의 브랜드 아이덴티티와 글로벌 톤앤매너를 반영한 시안을 제시했습니다. 특히 제품 중심의 정보 전달력 강화와 사용자 친화적인 탐색 경험을 핵심 목표로 설정하고, 메인 비주얼과 제품 라인업을 직관적인 구조로 배치하여 브랜드 신뢰성과 기술력을 효과적으로 드러내고자 했습니다.</p>
+        <span class="p-completion__divider is-revealed" aria-hidden="true" data-reveal-body></span>
+      </header>
+
+      <figure class="p-proposal__hero" data-reveal-body>
+        <picture>
+          <source media="(max-width: 768px)" srcset="/assets/images/projects/parksystems/proposal_img_mo.png" />
+          <img class="p-proposal__heroImg" src="/assets/images/projects/parksystems/proposal_img_pc.png" alt="Proposal key visual" loading="lazy" decoding="async" />
+        </picture>
+      </figure>
+
+    </div>
+  </section>
+
+
+
+
+
+
+  <!-- =========================
+  Design System
+========================= -->
+<style>
+  :root{
+    --ps-ds-padX:4%;
+
+    --ps-ds-gap:clamp(32px,2.4vw,64px);
+    --ps-ds-muted:rgba(0,0,0,.64);
+
+    --ps-primary:#00AEE6;
+    --ps-primaryLight:#DFF4FB;
+    --ps-secondary:#2A3554;
+    --ps-tertiary:#003A82;
+
+    --ps-g100:#EEEEEE;
+    --ps-g200:#DDDDDD;
+    --ps-g300:#CCCCCC;
+    --ps-g400:#BBBBBB;
+    --ps-g500:#AAAAAA;
+    --ps-g600:#999999;
+    --ps-g700:#888888;
+    --ps-g800:#666666;
+    --ps-g900:#444444;
+    --ps-g1000:#222222;
+  }
+
+  @media (min-width:1920px){
+    :root{
+      --ps-ds-padX:120px;
+    }
+  }
+
+  @media (max-width:768px){
+    :root{
+      --ps-ds-padX:6%;
+    }
+  }
+
+  .p-ds{background:var(--color-white); color:var(--color-black);}
+  .p-ds__inner{max-width:calc(var(--p-max) + (var(--ps-ds-padX) * 2)); margin:0 auto; padding:var(--space-section-lg) var(--ps-ds-padX) var(--space-section-xl);}
+  .p-ds__lead{margin-bottom: var(--space-section-xl);}
+  .p-ds__eyebrow{margin:0 0 var(--space-3); font-size:var(--fs-h6); font-weight:700; line-height:var(--lh-150); font-family:var(--font-display);}
+  .p-ds__title{margin:0 0 var(--space-fluid-48); font-size:var(--fs-h3); font-weight:700; line-height:var(--lh-150); letter-spacing:-0.02em; font-family:var(--font-display);}
+  .p-ds__desc{margin:0; font-size:var(--fs-body-xl); line-height:var(--lh-180); letter-spacing:-0.01em; color:var(--color-black);}
+
+  .p-dsBlock{margin-top: var(--space-section-xl);}
+  .p-dsBlock__label{margin:0 0 var(--space-fluid-48); font-size:var(--fs-h6); font-weight:700; letter-spacing:-0.01em; color: var(--color-black);}
+
+  /* Typography */
+  .p-dsType{display:flex; flex-direction:column; gap:var(--ps-ds-gap); margin-bottom:var(--space-section-xl);}
+
+  .p-dsTypeRow{
+    display:grid;
+    grid-template-columns:minmax(520px,1.15fr) 180px minmax(420px,1fr);
+    column-gap:var(--ps-ds-gap);
+    align-items:start;
+  }
+
+  .p-dsTypeWord{margin:0; font-size:clamp(52px,4.6vw,88px); line-height:1.0; letter-spacing:-0.02em; font-family:var(--font-display); white-space:nowrap;}
+  .p-dsTypeMeta{margin:0; font-size:var(--fs-body-lg); line-height:1.35; color:var(--color-gray700); white-space:nowrap;}
+  .p-dsTypeMeta strong{display:block; font-weight:700;}
+  .p-dsTypeSample{margin:0; font-size:var(--fs-body-lg); line-height:1.5; color:var(--color-gray500); word-break:keep-all;}
+
+  .p-dsTypeRow--regular .p-dsTypeWord{font-weight:400;}
+  .p-dsTypeRow--medium .p-dsTypeWord{font-weight:500;}
+  .p-dsTypeRow--bold .p-dsTypeWord{font-weight:700;}
+
+  /* ✅ 겹침 방지 구간: Meta를 Word 아래로 내림 (2행 구조) */
+  @media (max-width:1240px){
+    .p-dsTypeRow{
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      grid-template-areas:
+        "word sample"
+        "meta sample";
+      row-gap:12px;
+      column-gap:var(--ps-ds-gap);
+    }
+    .p-dsTypeWord{grid-area:word; white-space:nowrap;}
+    .p-dsTypeMeta{grid-area:meta; white-space:nowrap;}
+    .p-dsTypeSample{grid-area:sample;}
+  }
+
+  /* ✅ 모바일: 1컬럼 스택 */
+  @media (max-width:768px){
+    .p-dsTypeRow{
+      grid-template-columns:1fr;
+      grid-template-areas:
+        "word"
+        "meta"
+        "sample";
+      row-gap:10px;
+    }
+    .p-dsTypeWord{font-size:clamp(40px,12vw,58px);}
+  }
+
+  /* Color */
+  .p-dsColorCard{width:100%; overflow:hidden; background:#fff;}
+
+  /* ✅ 1680 이상: 픽셀 고정 (1320 + 360) */
+  @media (min-width:1680px){
+    .p-dsColorCard{display:grid; grid-template-columns:1320px 360px; gap:0;}
+    .p-dsColorLeft{display:grid; grid-template-columns:repeat(3,440px); grid-template-rows:repeat(2,250px); gap:0;}
+    .p-dsColorRight{display:grid; grid-template-columns:repeat(2,180px); grid-template-rows:repeat(5,100px); gap:0;}
+    .p-dsSwatch{width:440px; height:250px; aspect-ratio:auto;}
+    .p-dsGrayChip{width:180px; height:100px; aspect-ratio:auto;}
+  }
+
+  /* ✅ 1680 미만: 비율로 같이 줄어듦 (11:3, gap 0) */
+  @media (max-width:1679px){
+    .p-dsColorCard{display:grid; grid-template-columns:78.5714% 21.4286%; gap:0;} /* 1320/1680, 360/1680 */
+    .p-dsColorLeft{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+    .p-dsColorRight{display:grid; grid-template-columns:repeat(2,1fr); gap:0;}
+    .p-dsSwatch{aspect-ratio:440/250;}
+    .p-dsGrayChip{aspect-ratio:180/100;}
+  }
+
+  .p-dsSwatch{display:flex; align-items:center; justify-content:center; text-align:center; margin:0; padding:18px; font-size:12px; line-height:1.35; letter-spacing:-0.01em;}
+  .p-dsSwatch strong{display:block; font-size:13px; font-weight:700;}
+  .p-dsSwatch span{display:block; opacity:.9;}
+
+  .p-dsSwatch--p{background:var(--ps-primary); color:#fff;}
+  .p-dsSwatch--pl{background:var(--ps-primaryLight); color:rgba(0,0,0,.78);}
+  .p-dsSwatch--s{background:var(--ps-secondary); color:#fff;}
+  .p-dsSwatch--t{background:var(--ps-tertiary); color:#fff;}
+  .p-dsSwatch--w{background:#fff; color:rgba(0,0,0,.78);}
+  .p-dsSwatch--b{background:#000; color:#fff;}
+
+  .p-dsGrayChip{display:flex; align-items:center; justify-content:center; margin:0; font-size:12px; font-weight:600; letter-spacing:-0.01em;}
+  /* Gray colors */
+  .p-dsGrayChip[data-g="100"]{background:var(--ps-g100); color:rgba(0,0,0,.78);}
+  .p-dsGrayChip[data-g="200"]{background:var(--ps-g200); color:rgba(0,0,0,.78);}
+  .p-dsGrayChip[data-g="300"]{background:var(--ps-g300); color:rgba(0,0,0,.78);}
+  .p-dsGrayChip[data-g="400"]{background:var(--ps-g400); color:rgba(0,0,0,.78);}
+  .p-dsGrayChip[data-g="500"]{background:var(--ps-g500); color:rgba(0,0,0,.78);}
+  .p-dsGrayChip[data-g="600"]{background:var(--ps-g600); color:#fff;}
+  .p-dsGrayChip[data-g="700"]{background:var(--ps-g700); color:#fff;}
+  .p-dsGrayChip[data-g="800"]{background:var(--ps-g800); color:#fff;}
+  .p-dsGrayChip[data-g="900"]{background:var(--ps-g900); color:#fff;}
+  .p-dsGrayChip[data-g="1000"]{background:var(--ps-g1000); color:#fff;}
+
+  /* 모바일 스택 및 비율 조정 */
+  @media (max-width: 960px) {
+    .p-dsColorCard {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    /* 좌측 메인 컬러 영역: 2열 배치, 너비 50%씩 */
+    .p-dsColorLeft {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      width: 100%;
+    }
+
+    /* 우측 그레이 영역: 2열 배치, 너비 50%씩 */
+    .p-dsColorRight {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      width: 100%;
+    }
+
+    /* 상단 메인 스와치: 자연스러운 높이 유지 (글자 겹침 방지) */
+    .p-dsSwatch {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 80px; /* 메인 컬러는 정보량이 많아 최소 높이 지정 */
+      aspect-ratio: auto !important; 
+    }
+
+    /* 그레이 칩: 요청한 대로 높이 50px 고정 */
+    .p-dsGrayChip {
+      width: 100% !important;
+      height: 50px !important; /* 정확히 50px로 고정 */
+      aspect-ratio: auto !important;
+    }
+  }
+
+
+
+
+  /* Grid (image as BG, left fixed / right clipped) */
+  .p-dsGridWrap{background:var(--color-white);}
+  /* Grid System (IMG + clip) */
+  .p-dsGridViz{--ps-gridW:1861px; width:100%; overflow:hidden; border-top:1px solid var(--ps-ds-line);}
+  .p-dsGridImg{width:100%; min-width:1016px; max-width:var(--ps-gridW) !important; height:auto; display:block; margin-left:auto;}
+
+
+  /* ✅ Grid: 오른쪽 padding 무시하고 끝까지 붙이기 */
+.p-dsGridWrap{position:relative;}
+.p-dsGridViz{margin-right:calc(var(--ps-ds-padX) * -1); width:calc(100% + var(--ps-ds-padX));}
+
+  /* ✅ 모바일: 가로 고정값을 낮춰서 높이도 비율대로 줄어듦(잘림 없음) */
+  @media (max-width:768px){
+    .p-dsGridViz{--ps-gridW:1200px;}
+  }
+  @media (max-width:480px){
+    .p-dsGridViz{--ps-gridW:980px;}
+  }
+
+</style>
+
+<section class="p-ds" aria-label="Design System">
+  <div class="p-ds__inner">
+    <div class="p-ds__lead">
+      <h6 class="p-ds__eyebrow" data-reveal-title>Design System</h6>
+      <h3 class="p-ds__title" data-reveal-title>일관성과 균형을 담아낸 디자인 시스템</h3>
+      <p class="p-ds__desc" data-reveal-body>타이포그래피, 컬러, 그리드 시스템을 하나의 흐름으로 정리하여 브랜드의 신뢰감과 사용성을 동시에 강화했습니다. 글로벌 환경에서도 안정적인 가독성을 제공하는 Pretendard를 중심으로, 충분한 여백과 모듈형 그리드를 적용해 심플하고 균형 잡힌 레이아웃을 구현했습니다. 전체적인 톤앤매너는 블루와 뉴트럴 그레이로 글로벌 신뢰감을 강조했고, 포인트 컬러는 아쿠아 계열을 사용해 브랜드에 활기를 불어넣었습니다.</p>
+    </div>
+
+    <div class="p-dsBlock" aria-label="Typography">
+      <h6 class="p-dsBlock__label" data-reveal-title>Typography</h6>
+
+      <div class="p-dsType">
+        <div class="p-dsTypeRow p-dsTypeRow--regular" data-reveal-body>
+          <p class="p-dsTypeWord">PARKSYSTEMS</p>
+          <p class="p-dsTypeMeta"><strong>Pretendard</strong>Regular</p>
+          <p class="p-dsTypeSample">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz<br />가나다라마바사아자차카타파하 각괄핥값같갚갛<br />1234567890 !@#$%^&amp;*()_+-=</p>
+        </div>
+
+        <div class="p-dsTypeRow p-dsTypeRow--medium" data-reveal-body>
+          <p class="p-dsTypeWord">PARKSYSTEMS</p>
+          <p class="p-dsTypeMeta"><strong>Pretendard</strong>Medium</p>
+          <p class="p-dsTypeSample">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz<br />가나다라마바사아자차카타파하 각괄핥값같갚갛<br />1234567890 !@#$%^&amp;*()_+-=</p>
+        </div>
+
+        <div class="p-dsTypeRow p-dsTypeRow--bold" data-reveal-body>
+          <p class="p-dsTypeWord">PARKSYSTEMS</p>
+          <p class="p-dsTypeMeta"><strong>Pretendard</strong>Bold</p>
+          <p class="p-dsTypeSample">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz<br />가나다라마바사아자차카타파하 각괄핥값같갚갛<br />1234567890 !@#$%^&amp;*()_+-=</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-dsBlock" aria-label="Color">
+      <h6 class="p-dsBlock__label" data-reveal-title>Color</h6>
+
+      <div class="p-dsColorCard" data-reveal-body>
+        <div class="p-dsColorLeft" aria-label="Main colors + Mono">
+          <div class="p-dsSwatch p-dsSwatch--p"><div><strong>Primary</strong><span>#00AEE6</span></div></div>
+          <div class="p-dsSwatch p-dsSwatch--pl"><div><strong>Primary Light</strong><span>#DFF4FB</span></div></div>
+          <div class="p-dsSwatch p-dsSwatch--w"><div><strong>White</strong><span>#FFFFFF</span></div></div>
+
+          <div class="p-dsSwatch p-dsSwatch--s"><div><strong>Secondary</strong><span>#2A3554</span></div></div>
+          <div class="p-dsSwatch p-dsSwatch--t"><div><strong>Tertiary</strong><span>#003A82</span></div></div>
+          <div class="p-dsSwatch p-dsSwatch--b"><div><strong>Black</strong><span>#000000</span></div></div>
+        </div>
+
+        <div class="p-dsColorRight" aria-label="Gray scale">
+          <div class="p-dsGrayChip" data-g="100">Gray 100</div>
+          <div class="p-dsGrayChip" data-g="600">Gray 600</div>
+          <div class="p-dsGrayChip" data-g="200">Gray 200</div>
+          <div class="p-dsGrayChip" data-g="700">Gray 700</div>
+          <div class="p-dsGrayChip" data-g="300">Gray 300</div>
+          <div class="p-dsGrayChip" data-g="800">Gray 800</div>
+          <div class="p-dsGrayChip" data-g="400">Gray 400</div>
+          <div class="p-dsGrayChip" data-g="900">Gray 900</div>
+          <div class="p-dsGrayChip" data-g="500">Gray 500</div>
+          <div class="p-dsGrayChip" data-g="1000">Gray 1000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-dsBlock p-dsGridWrap" aria-label="Grid System">
+      <h6 class="p-dsBlock__label" data-reveal-title>Grid System</h6>
+      <div class="p-dsGridViz" data-reveal-body>
+        <img class="p-dsGridImg" src="/assets/images/projects/parksystems/ds_grid_1280.png" alt="Grid system" loading="lazy" decoding="async" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
 </section>
 <!-- //공통 -->
