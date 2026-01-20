@@ -286,3 +286,20 @@ Option Item (A / B / C common)
 @media (max-width: 520px){
   .p-completion{--mockW:min(100%);}
 }
+
+
+/* =========================
+  FIX: mobile right blank (horizontal overflow)
+  - scope only to completion section (no global html/body)
+========================= */
+.p-completion-wrap{overflow-x:clip;}
+.p-completion{overflow-x:clip;}
+.p-completion__top{overflow-x:clip;}
+.p-completion__bottom{overflow-x:clip;}
+
+@supports not (overflow: clip){
+  .p-completion-wrap{overflow-x:hidden;}
+  .p-completion{overflow-x:hidden;}
+  .p-completion__top{overflow-x:hidden;}
+  .p-completion__bottom{overflow-x:hidden;}
+}

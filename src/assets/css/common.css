@@ -160,5 +160,3 @@ html.is-ready body{opacity:1;transform:none;}
 @media (prefers-reduced-motion: reduce){
   body{opacity:1;transform:none;transition:none;}
 }
-
-body.is-project{overflow-x: clip;}
