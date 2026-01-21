@@ -171,8 +171,8 @@
 /* --- RED BG area (only this has red) --- */
 .p-completionBg{height:calc(var(--bgH) + var(--bgH-extra, 0px)); background:var(--comp-bg); position:relative; overflow:hidden; color:#fff; z-index: 1;}
 .p-completionBg__inner{max-width:var(--p-max); margin:0 auto; height:100%; padding:var( --space-section-lg) 0 0; position:relative; z-index:3;}
-.p-completionBg__eyebrow{margin:0 0 10px; font-size:var(--fs-h6); font-weight:700; line-height:var(--lh-150); font-family:var(--font-display); opacity:.95;}
-.p-completionBg__title{margin:0 0 18px; font-size:var(--fs-h3); font-weight:700; line-height:1.22; letter-spacing:-0.02em; font-family:var(--font-display);}
+.p-completionBg__eyebrow{margin:0 0 var(--space-3); font-size:var(--fs-h6); font-weight:700; line-height:var(--lh-150); font-family:var(--font-display); opacity:.95;}
+.p-completionBg__title{margin:0 0 var(--space-fluid-48); font-size:var(--fs-h3); font-weight:700; line-height:1.5; letter-spacing:-0.02em; font-family:var(--font-display);}
 .p-completionBg__desc{margin:0; font-size:var(--fs-body-xl); line-height:var(--lh-180); letter-spacing:-0.01em; opacity:.92; text-wrap:pretty;}
 
 /* ribbons (split) */
@@ -242,6 +242,12 @@
 .p-masonry__item{overflow:hidden; background:var(--color-white); break-inside:avoid; margin:0 0 var(--space-fluid-120); box-shadow:0 18px 44px rgba(0,0,0,.14); transform:translateZ(0);}
 .p-masonry__img{width:100%; height:auto; display:block;}
 
+
+
+@media (max-width:960px){
+    .p-masonry__cols{columns:1;}
+    .p-masonry__inner{padding:23% var(--m-padX) var(--space-section-xl);}
+}
 
 @media (max-width:768px){
     .p-masonry__cols{columns:1;}
@@ -328,3 +334,5 @@ overflow: hidden; /* 혹시 모를 가로 스크롤 방지 */
     .p-1312__grid > * { transform: none !important; }
     .p-handBg__hand { margin-top: -30vw; } /* 모바일에서 겹침 정도 조정 */
 }
+
+body.is-project{overflow-x:clip; overflow-x:hidden;}
