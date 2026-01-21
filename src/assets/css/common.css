@@ -115,19 +115,6 @@ table{border-collapse: collapse; border-spacing: 0;}
   --header-h: 70px;
 }
 
-/* 다크모드 */
-@media(prefers-color-scheme: dark){
-  :root{
-    --color-primary: #DC152A;
-    --color-secondary: #fff;
-    --color-white: #000;
-    --color-black: #fff;
-    --color-gray100: #1a1a1a;
-    --color-gray200: #2a2a2a;
-    --color-gray300: #3a3a3a;
-  }
-}
-
 /* 브레이크포인트(모바일 퍼스트) — em 단위(사용자 확대 대응) */
 @media (max-width: 1280px){
   html{font-size:15px;}
