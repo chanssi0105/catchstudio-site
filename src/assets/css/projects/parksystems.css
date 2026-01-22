@@ -76,9 +76,9 @@ Design System (Park DS) tokens
 .p-dsTypeMeta{margin: 0; font-size: var(--fs-body-lg); line-height: 1.35; color: var(--color-gray700); white-space: nowrap;}
 .p-dsTypeMeta strong{display: block; font-weight: 700;}
 .p-dsTypeSample{margin: 0; font-size: var(--fs-body-lg); line-height: 1.5; color: var(--color-gray500); word-break: keep-all;}
-.p-dsTypeRow--regular .p-dsTypeWord{font-weight: 400;}
-.p-dsTypeRow--medium .p-dsTypeWord{font-weight: 500;}
-.p-dsTypeRow--bold .p-dsTypeWord{font-weight: 700;}
+.p-dsTypeRow--regular .p-dsTypeWord, .p-dsTypeRow--regular .p-dsTypeMeta, .p-dsTypeRow--regular .p-dsTypeSample{font-weight: 400;}
+.p-dsTypeRow--medium .p-dsTypeWord, .p-dsTypeRow--medium .p-dsTypeMeta, .p-dsTypeRow--medium .p-dsTypeSample{font-weight: 600;}
+.p-dsTypeRow--bold .p-dsTypeWord, .p-dsTypeRow--bold .p-dsTypeMeta, .p-dsTypeRow--bold .p-dsTypeSample{font-weight: 700;}
 
 @media(max-width:1240px){
   .p-dsTypeRow{grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-areas: "word sample" "meta sample"; row-gap: 12px; column-gap: var(--ps-ds-gap);;}
