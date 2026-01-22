@@ -8,7 +8,6 @@ eleventyExcludeFromCollections: true
   {% if page.url and not page.data.noindex %}
   <url>
     <loc>https://catch-studio.com{{ page.url }}</loc>
-    <lastmod>{{ page.date | date: "%Y-%m-%d" }}</lastmod>
   </url>
   {% endif %}
 {% endfor %}
