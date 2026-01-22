@@ -1,149 +1,151 @@
 @charset "UTF-8";
 
-:root{
-  --font-display: "Montserrat", "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", sans-serif;
-  --font-body: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", sans-serif;
-}
-
-
 /* 보더박스 통일 */
-*, *::before, *::after{box-sizing: border-box;}
-
-/* 다크모드 금지 */
-html{color-scheme: light;}
-
-/* 문서 기본 (root는 16px 유지) */
-html{font-size: 100%; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable;}
-
-body{margin:0;min-height:100dvh;line-height:1.5;color:#000;background:#fff;letter-spacing:-0.2px;word-break:keep-all;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:var(--font-body);}
-
-/* 미디어(반응형 기본) */
-img, picture, video, canvas, svg{display: block; max-inline-size: 100%; block-size: auto;}
-i{font-style: normal;}
-
-/* 폼/인터랙션 최소 리셋 */
-input, button, textarea, select{font: inherit; color: inherit;}
-button{border: 0; background: transparent; cursor: pointer;}
-a{color: var(--color-secondary); text-decoration: none;}
-a:focus-visible, button:focus-visible, [tabindex]:focus-visible{outline: 2px solid var(--color-secondary); outline-offset: 2px;}
-
-/* 리스트/테이블 최소화 */
-ul, ol{margin: 0; padding: 0; list-style: none;}
-table{border-collapse: collapse; border-spacing: 0;}
-
-/* 기본 마진 정리 */
-:where(h1, h2, h3, h4, p, figure, blockquote){margin: 0;}
-
-/* 모션 감소 선호 */
-@media(prefers-reduced-motion: reduce){
-  *{animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;}
-}
+*,*::before,*::after{box-sizing: border-box;}
 
 /* ===================== 디자인 토큰 ====================================== */
 :root{
+  --font-display:"Montserrat","Pretendard",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo",sans-serif;
+  --font-body:"Pretendard",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo",sans-serif;
+
   /* Brand Colors */
-  --color-primary: #DC152A;
-  --color-secondary: #0B193C;
-  --color-accent: #49F8C4;
+  --color-primary:#DC152A;
+  --color-secondary:#0B193C;
+  --color-accent:#49F8C4;
 
   /* Base */
-  --color-black: #000000;
-  --color-white: #FFFFFF;
+  --color-black:#000000;
+  --color-white:#FFFFFF;
 
   /* Gray Scale */
-  --color-gray100: #F9FAFB;
-  --color-gray200: #F3F4F6;
-  --color-gray300: #E6E6E6;
-  --color-gray400: #8991A4;
-  --color-gray500: #696E7D;
-  --color-gray600: #4B5563;
-  --color-gray700: #374151;
-  --color-gray800: #202E56;
+  --color-gray100:#F9FAFB;
+  --color-gray200:#F3F4F6;
+  --color-gray300:#E6E6E6;
+  --color-gray400:#8991A4;
+  --color-gray500:#696E7D;
+  --color-gray600:#4B5563;
+  --color-gray700:#374151;
+  --color-gray800:#202E56;
 
-  --color-transparent: transparent;
+  --color-transparent:transparent;
 
   /* ===== Font size (fluid) — root 16px 기준 ===== */
-  --fs-display: clamp(3.5rem, 3.2vw + 2.6rem, 5rem);      /* 56px ~ 80px (mid: 41.6px + 3.2vw) */
-  --fs-h1: clamp(3.25rem, 2.8vw + 2.4rem, 4.5rem);        /* 52px ~ 72px (mid: 38.4px + 2.8vw) */
-  --fs-h2: clamp(2.5rem, 2vw + 1.8rem, 3.25rem);          /* 40px ~ 52px (mid: 28.8px + 2vw) */
-  --fs-h3: clamp(1.875rem, 1.2vw + 1.6rem, 2.25rem);      /* 30px ~ 36px (mid: 25.6px + 1.2vw) */
-  --fs-h6: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem);      /* 18px ~ 20px (mid: 16px + 0.6vw) */
+  --fs-display:clamp(3.5rem,3.2vw + 2.6rem,5rem);
+  --fs-h1:clamp(3.25rem,2.8vw + 2.4rem,4.5rem);
+  --fs-h2:clamp(2.5rem,2vw + 1.8rem,3.25rem);
+  --fs-h3:clamp(1.875rem,1.2vw + 1.6rem,2.25rem);
+  --fs-h6:clamp(1.125rem,0.6vw + 1.0rem,1.25rem);
 
-  --fs-body-xl: clamp(1.375rem, 0.9vw + 1.1rem, 1.625rem);/* 22px ~ 26px (mid: 17.6px + 0.9vw) */
-  --fs-body-lg: clamp(1.125rem, 0.6vw + 1.0rem, 1.25rem); /* 18px ~ 20px (mid: 16px + 0.6vw) */
-  --fs-body-md: clamp(0.9375rem, 0.4vw + 0.85rem, 1rem);  /* 15px ~ 16px (mid: 13.6px + 0.4vw) */
-  --fs-body-sm: max(13px, clamp(0.8125rem, 0.35vw + 0.75rem, 0.875rem)); /* 13px ~ 14px (mid: 12px + 0.35vw) */
-  --fs-body-xs: max(12px, clamp(0.75rem, 0.25vw + 0.7rem, 0.8125rem));   /* 12px ~ 13px (mid: 11.2px + 0.25vw) */
-
+  --fs-body-xl:clamp(1.375rem,0.9vw + 1.1rem,1.625rem);
+  --fs-body-lg:clamp(1.125rem,0.6vw + 1.0rem,1.25rem);
+  --fs-body-md:clamp(0.9375rem,0.4vw + 0.85rem,1rem);
+  --fs-body-sm:max(13px,clamp(0.8125rem,0.35vw + 0.75rem,0.875rem));
+  --fs-body-xs:max(12px,clamp(0.75rem,0.25vw + 0.7rem,0.8125rem));
 
   /* ===== Line-height ratio (150 /160 /170 /180) ===== */
-  --lh-150: 1.5;
-  --lh-160: 1.6;
-  --lh-170: 1.7;
-  --lh-180: 1.8;
-  --lh-body-lg: clamp(1.7, 0.5vw + 1.6, 1.9);
-  --lh-body-md: clamp(1.6, 0.4vw + 1.5, 1.8);
+  --lh-150:1.5;
+  --lh-160:1.6;
+  --lh-170:1.7;
+  --lh-180:1.8;
+  --lh-body-lg:clamp(1.7,0.5vw + 1.6,1.9);
+  --lh-body-md:clamp(1.6,0.4vw + 1.5,1.8);
 
   /* ===== Space (base) ===== */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-15: 60px;
-  --space-30: 120px;
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:20px;
+  --space-6:24px;
+  --space-8:32px;
+  --space-10:40px;
+  --space-12:48px;
+  --space-15:60px;
+  --space-30:120px;
 
-  --space-section-md: clamp(80px, 5vw + 30px, 120px);
-  --space-section-lg: clamp(120px, 8vw + 40px, 180px);
-  --space-section-xl: clamp(160px, 10vw + 60px, 240px);
-  --space-fluid-40: clamp(24px, 2.5vw, 40px);
-  --space-fluid-44: clamp(28px, 2.5vw, 44px);
-  --space-fluid-48: clamp(32px, 2.5vw, 48px);
-  --space-fluid-52: clamp(36px, 2.5vw, 52px);
-  --space-fluid-60: clamp(40px, 3.5vw, 60px);
-  --space-fluid-64: clamp(44px, 3.5vw, 64px);
-  --space-fluid-80: clamp(56px, 5vw, 80px);
-  --space-fluid-100: clamp(64px, 6.5vw, 100px);
-  --space-fluid-120: clamp(72px, 6.5vw, 120px);
-  --space-fluid-160: clamp(88px, 10vw, 160px);
+  --space-section-md:clamp(80px,5vw + 30px,120px);
+  --space-section-lg:clamp(120px,8vw + 40px,180px);
+  --space-section-xl:clamp(160px,10vw + 60px,240px);
+
+  --space-fluid-40:clamp(24px,2.5vw,40px);
+  --space-fluid-44:clamp(28px,2.5vw,44px);
+  --space-fluid-48:clamp(32px,2.5vw,48px);
+  --space-fluid-52:clamp(36px,2.5vw,52px);
+  --space-fluid-60:clamp(40px,3.5vw,60px);
+  --space-fluid-64:clamp(44px,3.5vw,64px);
+  --space-fluid-72:clamp(52px,4.25vw,72px);
+  --space-fluid-80:clamp(56px,5vw,80px);
+  --space-fluid-100:clamp(64px,6.5vw,100px);
+  --space-fluid-120:clamp(72px,6.5vw,120px);
+  --space-fluid-140:clamp(80px,8.5vw,140px);
+  --space-fluid-160:clamp(88px,10vw,160px);
+  
 
   /* ===== header height ===== */
-  --header-h: 70px;
+  --header-h:70px;
+
+  /* ===== layout width ===== */
+  --layout-max-1280:1280px;
+  --layout-max-1680:1680px;
+  --layout-max-1920:1920px;
+
+  /* ===== global horizontal padding ===== */
+  --padX-desktop:clamp(4vw,6.25vw,120px);
+  --padX-mobile:6%;
 }
+
+/* 다크모드 금지 + 문서 기본 */
+html{color-scheme: light; font-size: 100%; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; background: var(--color-white);}
+body{margin: 0; min-height: 100dvh; line-height: 1.5; color: #000; background: #fff; letter-spacing: -0.2px; word-break: keep-all; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-family: var(--font-body); opacity: 0; transform: translate3d(0,6px,0); transition: opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1);}
+html.is-ready body{opacity: 1; transform: none;}
+
+/* 미디어(반응형 기본) */
+img,picture,video,canvas,svg{display: block; max-inline-size: 100%; block-size: auto;}
+i{font-style: normal;}
+
+/* 폼/인터랙션 최소 리셋 */
+input,button,textarea,select{font: inherit; color: inherit;}
+button{border: 0; background: transparent; cursor: pointer;}
+a{color: var(--color-secondary); text-decoration: none;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline: 2px solid var(--color-secondary); outline-offset: 2px;}
+
+/* 리스트/테이블 최소화 */
+ul,ol{margin: 0; padding: 0; list-style: none;}
+table{border-collapse: collapse; border-spacing: 0;}
+
+/* 기본 마진 정리 */
+:where(h1,h2,h3,h4,p,figure,blockquote){margin: 0;}
 
 /* 브레이크포인트(모바일 퍼스트) — em 단위(사용자 확대 대응) */
-@media (max-width: 1280px){
-  html{font-size:15px;}
-}
-@media (max-width: 768px){
-  html{font-size:14px;}
-}
+@media(max-width:1280px){html{font-size: 15px;}}
+@media(max-width:768px){html{font-size: 14px;}}
 
 /* ===================== 타이포 =========================================== */
-h1,h2,h3,h4,h5,h6{font-family:var(--font-display);line-height:1.2;font-weight:700;}
-body, p{font-size: var(--fs-body-md);}
+h1,h2,h3,h4,h5,h6{font-family: var(--font-display); line-height: 1.2; font-weight: 700;}
+body,p{font-size: var(--fs-body-md);}
 
 /* ===================== 유틸 ============================================= */
 /* 줄임(멀티라인) */
 .sentence-line1{overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-.sentence-line2, .sentence-line3, .sentence-line4{display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;}
+.sentence-line2,.sentence-line3,.sentence-line4{display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;}
 .sentence-line2{-webkit-line-clamp: 2;}
 .sentence-line3{-webkit-line-clamp: 3;}
 .sentence-line4{-webkit-line-clamp: 4;}
 
-
-
-/* =========================================================
-   Global: micro page fade-in
-   - tiny, fast, non-invasive
-========================================================= */
-html{background:var(--color-white);}
-body{opacity:0;transform:translate3d(0,6px,0);transition:opacity .22s ease, transform .28s cubic-bezier(.2,.8,.2,1);}
-html.is-ready body{opacity:1;transform:none;}
-@media (prefers-reduced-motion: reduce){
-  body{opacity:1;transform:none;transition:none;}
+/* 모션 감소 선호 */
+@media(prefers-reduced-motion: reduce){
+  *{animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;}
+  body{opacity: 1; transform: none; transition: none;}
 }
+
+
+/* ===================== layout utils ===================================== */
+.l-container{max-width:var(--layout-max-1680); margin:0 auto; padding-left:var(--padX-desktop); padding-right:var(--padX-desktop);}
+@media(max-width:768px){.l-container{padding-left:var(--padX-mobile); padding-right:var(--padX-mobile);}}
+
+/* full-bleed section (background spans viewport) */
+.l-full{width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);}
+
+/* full-bleed + inner container */
+.l-full__inner{max-width:var(--layout-max-1680); margin:0 auto; padding-left:var(--padX-desktop); padding-right:var(--padX-desktop);}
+@media(max-width:768px){.l-full__inner{padding-left:var(--padX-mobile); padding-right:var(--padX-mobile);}}
