@@ -49,7 +49,7 @@
 <header class="site-header" data-theme="{{ headerTheme | default('light') }}"{% if headerHeroTone %} data-hero-tone="{{ headerHeroTone }}"{% endif %}>
   <div class="site-header__inner">
 
-    <a class="site-logo" href="{% if isEn %}/en/{% else %}/{% endif %}" aria-label="Catch Studio home">
+    <a class="site-logo" href="{% if __isEn %}/en/{% else %}/{% endif %}" aria-label="Catch Studio home">
       <svg viewBox="0 0 192 40" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_2_94)">
         <g clip-path="url(#clip1_2_94)">
