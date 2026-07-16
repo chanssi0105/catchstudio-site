@@ -1,5 +1,13 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+  eleventyConfig.addPassthroughCopy("quiz.html");
+  eleventyConfig.addPassthroughCopy("quiz2_1.html");
+  eleventyConfig.addPassthroughCopy("quiz2_2.html");
+  eleventyConfig.addPassthroughCopy("quiz4.html");
+  eleventyConfig.addPassthroughCopy("sounds");
+  eleventyConfig.addPassthroughCopy({
+    "assets/images/favicon-quiz.png": "assets/images/favicon-quiz.png"
+  });
 
   eleventyConfig.setNunjucksEnvironmentOptions({
     trimBlocks: true,
