@@ -1,5 +1,6 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+  eleventyConfig.addPassthroughCopy("illustrator-ready-export");
   eleventyConfig.addPassthroughCopy("quiz.html");
   eleventyConfig.addPassthroughCopy("quiz2_1.html");
   eleventyConfig.addPassthroughCopy("quiz2_2.html");
