@@ -11,29 +11,10 @@
   i18n helpers (KO root + EN /en)
 ========================= #}
 {% set url = page.url or "/" %}
-{% set isEn = false %}
-{% if url == "/en/" or url.startsWith("/en/") %}
-  {% set isEn = true %}
-{% endif %}
-
-{# KO/EN path 계산 (삼항 제거) #}
-{% set koPath = url %}
-{% if isEn %}
-  {% if url == "/en/" %}
-    {% set koPath = "/" %}
-  {% else %}
-    {% set koPath = (url | replace("/en/","/")) %}
-  {% endif %}
-{% endif %}
-
-{% set enPath = url %}
-{% if not isEn %}
-  {% if url == "/" %}
-    {% set enPath = "/en/" %}
-  {% else %}
-    {% set enPath = "/en" ~ url %}
-  {% endif %}
-{% endif %}
+{% set languagePaths = url | languagePaths %}
+{% set isEn = languagePaths.isEn %}
+{% set koPath = languagePaths.ko %}
+{% set enPath = languagePaths.en %}
 
 {% set LOCALE = (site and site.locale) or "ko_KR" %}
 {% if isEn %}
@@ -41,13 +22,15 @@
 {% endif %}
 
 {# title #}
-{% set pageTitle = SITE_NAME %}
+{% set pageTitle = "Catch Studio(캐치 스튜디오) | 웹사이트·브랜드·캠페인 디자인 스튜디오" %}
 {% if site and site.defaultTitle %}
   {% set pageTitle = site.defaultTitle %}
 {% endif %}
 {% if title %}
   {% set pageTitle = SITE_NAME ~ " | " ~ title %}
 {% endif %}
+
+{% if seoTitle %}{% set pageTitle = seoTitle %}{% endif %}
 
 {# description #}
 {% set pageDesc = "Catch Studio 포트폴리오" %}
@@ -76,7 +59,7 @@
 {# OG 이미지 절대경로화 (JS indexOf 제거, slice로 안전 처리) #}
 {% set ogImgAbs = "" %}
 {% if ogImg %}
-  {% if (ogImg | slice(0,4)) == "http" %}
+  {% if ogImg.startsWith("http") %}
     {% set ogImgAbs = ogImg %}
   {% else %}
     {% set ogImgAbs = SITE_URL ~ ogImg %}
@@ -162,3 +145,4 @@
 
 <meta name="google-site-verification" content="a7UBLHCuWw5ByyizcyUTnhjww2oG5R2cEPNWn356Y1k" />
 <meta name="naver-site-verification" content="dc95db41b48aedd1a1983435317b3159b5806a61" />
+<script type="application/ld+json">{{ page | structuredData(site, services, title, description, isProject, caseStudy, thumb) | safe }}</script>

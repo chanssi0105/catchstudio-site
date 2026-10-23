@@ -1,9 +1,8 @@
 <a class="p-card" href="{{ p.url }}">
-  <img class="p-thumb" src="{{ p.data.thumb }}" alt="{{ p.data.title }}" loading="lazy" decoding="async">
-
-  {% if p.data.category %}
-    <span class="p-cat">{{ p.data.category }}</span>
-  {% endif %}
-
+  <picture>
+    <source type="image/webp" srcset="{{ p.data.thumb | replace('.jpg', '.webp') }}">
+    <img class="p-thumb" src="{{ p.data.thumb }}" alt="{{ p.data.title }}" width="{{ thumbnails[p.data.thumb].width }}" height="{{ thumbnails[p.data.thumb].height }}" loading="{% if loop.index0 < 3 %}eager{% else %}lazy{% endif %}"{% if loop.first %} fetchpriority="high"{% endif %} decoding="async">
+  </picture>
+  {% if p.data.category %}<span class="p-cat">{{ p.data.category }}</span>{% endif %}
   <span class="p-title">{{ p.data.title }}</span>
 </a>

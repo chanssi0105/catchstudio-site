@@ -3,11 +3,18 @@ permalink: /sitemap.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{% for page in collections.all %}
-  {% if page.url and not page.data.noindex %}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+{% for entry in collections.all %}
+  {% if entry.url and not entry.data.noindex %}
   <url>
-    <loc>https://catch-studio.com{{ page.url }}</loc>
+    <loc>{{ site.url }}{{ entry.url }}</loc>
+    <lastmod>{{ entry.data.date | sitemapDate }}</lastmod>
+    {% set paths = entry.url | languagePaths %}
+    {% if collections.all | hasUrl(paths.ko) and collections.all | hasUrl(paths.en) %}
+    <xhtml:link rel="alternate" hreflang="ko" href="{{ site.url }}{{ paths.ko }}" />
+    <xhtml:link rel="alternate" hreflang="en" href="{{ site.url }}{{ paths.en }}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ paths.ko }}" />
+    {% endif %}
   </url>
   {% endif %}
 {% endfor %}

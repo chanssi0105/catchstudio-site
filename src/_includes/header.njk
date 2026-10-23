@@ -1,44 +1,8 @@
-{# src/_includes/header.njk #}
-
-{# ===== language url mapping (Nunjucks-safe) ===== #}
-{% set rawUrl = page.url or "/" %}
-{% set input = page.inputPath or "" %}
-
-{# inputPath -> route 추정 (src/about/index.njk -> /about/) #}
-{% set derived = input | replace("src","") | replace(".njk","") | replace("/index","/") %}
-{% if derived == "" %}{% set derived = "/" %}{% endif %}
-
-{# page.url이 '/'로 떨어지는 케이스 대비해서 derived를 우선 사용 #}
-{% set url = rawUrl %}
-{% if not rawUrl or rawUrl == "/" %}
-  {% set url = derived %}
-{% endif %}
-
-{# isEn 판단: url이 /en/ 로 시작하는지 #}
-{% set isEn = false %}
-{% if url == "/en/" or (url | slice(0,4)) == "/en/" %}
-  {% set isEn = true %}
-{% endif %}
-
-{# koUrl 계산 #}
-{% set koUrl = url %}
-{% if isEn %}
-  {% if url == "/en/" %}
-    {% set koUrl = "/" %}
-  {% else %}
-    {% set koUrl = (url | replace("/en/","/")) %}
-  {% endif %}
-{% endif %}
-
-{# enUrl 계산 #}
-{% set enUrl = url %}
-{% if not isEn %}
-  {% if url == "/" %}
-    {% set enUrl = "/en/" %}
-  {% else %}
-    {% set enUrl = "/en" ~ url %}
-  {% endif %}
-{% endif %}
+{% set languagePaths = page.url | languagePaths %}
+{# Preserve main's menu presentation; only language-switch destinations change. #}
+{% set isEn = (page.url == "/en/") %}
+{% set koUrl = languagePaths.ko %}
+{% set enUrl = languagePaths.en %}
 
 {# ===== ✅ 프로젝트 카운트 (언어별) ===== #}
 {% set projectsCount = (collections.projects_ko | length) %}

@@ -1,28 +1,14 @@
 ---
 layout: layouts/base.njk
 title: Projects
+description: "Catch Studio(캐치 스튜디오)의 웹사이트 리뉴얼·퍼블리싱, 오프라인 전단지, 숏폼 비주얼 디자인 사례를 모았습니다. 각 프로젝트에서 고객사와 작업 종류, 역할을 확인하세요."
 ---
-
-{% set all = collections.projects %}
+{% set all = collections.projects_ko %}
 {% set total = all | length %}
-{% set pageSize = 9 %}
-{% set initial = all | slice(0, pageSize) %}
-
-<section class="projects-wrap" data-total="{{ total }}" data-page="{{ pageSize }}">
+<section class="projects-wrap" data-total="{{ total }}" data-page="{{ total }}">
   <div class="projects-grid" id="projectGrid">
-    {% for p in initial %}
+    {% for p in all %}
       {% include "components-cardList.njk" %}
     {% endfor %}
   </div>
-
-  {% if total > pageSize %}
-  <div class="projects-more">
-    <button type="button" id="loadMoreBtn" class="projects-more-btn">
-      <span class="projects-more-label">More Project</span>
-      <span class="projects-count" id="countBadge">{{ initial | length }}/{{ total }}</span>
-    </button>
-  </div>
-  {% endif %}
 </section>
-
-<script src="/assets/js/projects-loadmore.js" defer></script>

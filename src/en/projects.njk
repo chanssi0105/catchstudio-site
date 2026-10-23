@@ -1,0 +1,16 @@
+---
+layout: layouts/base.njk
+title: Projects
+description: "Explore Catch Studio projects in website renewal, web publishing, promotional leaflets and short-form visual design, with client details and roles."
+permalink: /en/projects/
+lang: en
+---
+{% set all = collections.projects_en %}
+{% set total = all | length %}
+<section class="projects-wrap" data-total="{{ total }}" data-page="{{ total }}">
+  <div class="projects-grid" id="projectGrid">
+    {% for p in all %}
+      {% include "components-cardList.njk" %}
+    {% endfor %}
+  </div>
+</section>

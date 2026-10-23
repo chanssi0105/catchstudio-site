@@ -1,0 +1,80 @@
+[
+  {
+    "id": "digital",
+    "name": {
+      "ko": "디지털 경험 디자인",
+      "en": "Digital Experience Design"
+    },
+    "description": {
+      "ko": "비즈니스의 목적과 메시지를 사용자 경험으로 정리합니다. 웹사이트와 서비스의 구조를 재정비하고, 핵심 가치가 명확하게 전달되도록 디지털 환경을 설계하고 구현합니다.",
+      "en": "I turn business goals and messages into clear, usable experiences. From website structure to detail, I design and build digital experiences that communicate core values clearly."
+    },
+    "fits": {
+      "ko": [
+        "웹사이트와 서비스의 구조를 재정비할 때",
+        "핵심 가치가 명확하게 전달되는 웹사이트가 필요할 때",
+        "디자인 의도를 반영한 퍼블리싱이 필요할 때"
+      ],
+      "en": [
+        "Reorganizing a website or service structure",
+        "Communicating core values through a website",
+        "Publishing a website with its design intent intact"
+      ]
+    },
+    "categories": [
+      "Web"
+    ],
+    "relatedCampaigns": true
+  },
+  {
+    "id": "brand",
+    "name": {
+      "ko": "브랜드·오프라인 경험",
+      "en": "Brand & Offline Experience"
+    },
+    "description": {
+      "ko": "화면 밖에서도 브랜드 경험이 이어지도록 디자인합니다. 인쇄물과 오프라인 매체의 특성을 고려해 브랜드의 인상을 정리하고, 온·오프라인 전반에서 일관된 시각 언어를 유지합니다.",
+      "en": "Brand experience should continue beyond the screen. I design print and offline materials with their media in mind, keeping the visual language consistent across digital and physical touchpoints."
+    },
+    "fits": {
+      "ko": [
+        "인쇄물에서 브랜드의 인상을 정리할 때",
+        "오프라인 홍보물의 정보 위계를 재정비할 때",
+        "온·오프라인에서 일관된 시각 언어가 필요할 때"
+      ],
+      "en": [
+        "Defining a brand impression in print",
+        "Reorganizing information in offline promotional materials",
+        "Maintaining a consistent visual language across media"
+      ]
+    },
+    "categories": [
+      "Branding",
+      "Print"
+    ]
+  },
+  {
+    "id": "communication",
+    "name": {
+      "ko": "비즈니스·커뮤니케이션 디자인",
+      "en": "Strategic Business & Communication"
+    },
+    "description": {
+      "ko": "복잡한 정보를 이해하기 쉬운 흐름으로 정리합니다. 소개 자료, 제안서, 발표용 문서처럼 전달 목적이 분명한 콘텐츠를 중심으로 구조와 메시지가 명확한 비주얼 자료를 완성합니다.",
+      "en": "I turn complex information into a story people can follow. For company introductions, proposals and presentation documents, I organize structure and visual messages to make decisions clearer."
+    },
+    "fits": {
+      "ko": [
+        "소개 자료의 핵심 메시지를 정리할 때",
+        "제안서의 정보 구조가 복잡할 때",
+        "발표용 문서를 이해하기 쉬운 흐름으로 구성할 때"
+      ],
+      "en": [
+        "Clarifying the key message of an introduction",
+        "Organizing complex proposal information",
+        "Structuring a presentation into a clear flow"
+      ]
+    },
+    "categories": []
+  }
+]
