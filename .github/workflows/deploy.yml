@@ -44,3 +44,27 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $CF_DISTRIBUTION_ID \
             --paths "/*"
+
+      - name: Notify IndexNow
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          urls = [node.text for node in ET.parse("dist/sitemap.xml").getroot().findall("{*}url/{*}loc")]
+          payload = {
+              "host": "catch-studio.com",
+              "key": "3aac8acab19f917768dd101a94ef9a70",
+              "keyLocation": "https://catch-studio.com/3aac8acab19f917768dd101a94ef9a70.txt",
+              "urlList": urls,
+          }
+          Path("indexnow-payload.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+          PY
+          curl --silent --show-error --fail-with-body \
+            --connect-timeout 10 --max-time 30 \
+            --header "Content-Type: application/json; charset=utf-8" \
+            --data-binary @indexnow-payload.json \
+            --write-out '\nIndexNow HTTP status: %{http_code}\n' \
+            https://api.indexnow.org/indexnow

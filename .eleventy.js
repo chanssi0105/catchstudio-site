@@ -8,6 +8,7 @@ module.exports = function (eleventyConfig) {
     if (!value) return buildDate;
     return new Date(value).toISOString().slice(0, 10);
   });
+  eleventyConfig.addPassthroughCopy({ "src/3aac8acab19f917768dd101a94ef9a70.txt": "3aac8acab19f917768dd101a94ef9a70.txt" });
   eleventyConfig.addPassthroughCopy({ "src/robots.txt": "robots.txt" });
   eleventyConfig.addPassthroughCopy({ "src/llms.txt": "llms.txt" });
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
