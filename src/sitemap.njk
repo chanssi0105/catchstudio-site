@@ -9,8 +9,8 @@ eleventyExcludeFromCollections: true
   <url>
     <loc>{{ site.url }}{{ entry.url }}</loc>
     <lastmod>{{ entry.data.date | sitemapDate }}</lastmod>
-    {% set paths = entry.url | languagePaths %}
-    {% if collections.all | hasUrl(paths.ko) and collections.all | hasUrl(paths.en) %}
+    {% set paths = entry.url | languagePaths(collections.all) %}
+    {% if paths.hasEn and collections.all | hasUrl(paths.ko) and collections.all | hasUrl(paths.en) %}
     <xhtml:link rel="alternate" hreflang="ko" href="{{ site.url }}{{ paths.ko }}" />
     <xhtml:link rel="alternate" hreflang="en" href="{{ site.url }}{{ paths.en }}" />
     <xhtml:link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ paths.ko }}" />

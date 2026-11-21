@@ -1,7 +1,9 @@
-function languagePaths(url = "/") {
+function languagePaths(url = "/", entries) {
   const isEn = url.startsWith("/en/");
   const ko = isEn ? url.slice(3) : url;
-  return { isEn, ko, en: `/en${ko}` };
+  const translated = `/en${ko}`;
+  const hasEn = entries ? entries.some(entry => entry.url === translated) : ko !== "/services/";
+  return { isEn, ko, en: hasEn ? translated : "/en/", hasEn };
 }
 
 function serialize(value) {
@@ -15,7 +17,7 @@ function website(site, inLanguage) {
   };
 }
 
-function structuredData(page, site, services, title, description, isProject, caseStudy, thumb) {
+function structuredData(page, site, services, title, description, isProject, caseStudy, thumb, servicePage) {
   const paths = languagePaths(page.url);
   const lang = paths.isEn ? "en" : "ko";
   const language = paths.isEn ? "en" : "ko-KR";
@@ -47,6 +49,19 @@ function structuredData(page, site, services, title, description, isProject, cas
     itemListElement: items.map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item }))
   });
   const home = [lang === "en" ? "Home" : "홈", `${base}${paths.isEn ? "/en/" : "/"}`];
+  if ((page.url === "/services/" || page.url === "/en/services/") && servicePage) {
+    graph.push({ "@type": "Organization", "@id": orgId, name: site.name,
+      url: `${base}/`, logo: base + site.logo });
+    graph.push(...servicePage.services.map(service => ({
+      "@type": "Service", "@id": `${url}#${service.id}`,
+      name: service.name, description: service.description.replace(/\n/g, " "),
+      url: `${url}#svc-${service.id}`, provider: { "@id": orgId }
+    })));
+    graph.push({ "@type": "FAQPage", "@id": `${url}#faq`,
+      mainEntity: servicePage.faq.map(item => ({ "@type": "Question", name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer } })) });
+    graph.push(breadcrumb([home, [lang === "en" ? "Services" : "서비스", url]]));
+  }
   if (isProject && caseStudy) {
     graph.push({
       "@type": "CreativeWork", "@id": `${url}#work`, name: title, description,

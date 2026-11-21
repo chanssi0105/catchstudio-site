@@ -11,7 +11,7 @@
   i18n helpers (KO root + EN /en)
 ========================= #}
 {% set url = page.url or "/" %}
-{% set languagePaths = url | languagePaths %}
+{% set languagePaths = url | languagePaths(collections.all) %}
 {% set isEn = languagePaths.isEn %}
 {% set koPath = languagePaths.ko %}
 {% set enPath = languagePaths.en %}
@@ -97,7 +97,7 @@
 <link rel="canonical" href="{{ canonicalUrl }}" />
 
 <link rel="alternate" hreflang="ko" href="{{ SITE_URL ~ koPath }}" />
-<link rel="alternate" hreflang="en" href="{{ SITE_URL ~ enPath }}" />
+{% if languagePaths.hasEn %}<link rel="alternate" hreflang="en" href="{{ SITE_URL ~ enPath }}" />{% endif %}
 <link rel="alternate" hreflang="x-default" href="{{ SITE_URL ~ koPath }}" />
 
 {% if noindex %}
@@ -145,4 +145,4 @@
 
 <meta name="google-site-verification" content="a7UBLHCuWw5ByyizcyUTnhjww2oG5R2cEPNWn356Y1k" />
 <meta name="naver-site-verification" content="dc95db41b48aedd1a1983435317b3159b5806a61" />
-<script type="application/ld+json">{{ page | structuredData(site, services, title, description, isProject, caseStudy, thumb) | safe }}</script>
+<script type="application/ld+json">{{ page | structuredData(site, services, title, description, isProject, caseStudy, thumb, servicePage) | safe }}</script>

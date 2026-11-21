@@ -1,4 +1,4 @@
-{% set languagePaths = page.url | languagePaths %}
+{% set languagePaths = page.url | languagePaths(collections.all) %}
 {# Preserve main's menu presentation; only language-switch destinations change. #}
 {% set isEn = (page.url == "/en/") %}
 {% set koUrl = languagePaths.ko %}
@@ -80,6 +80,7 @@
             Projects <span class="menu__badge" aria-hidden="true">{{ projectsCount }}</span>
           </a>
         </li>
+        <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/services/">Services</a></li>
         <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/about/">About</a></li>
         <li class="menu__item"><a class="menu__link" href="{{ navPrefix }}/contact/">Contact</a></li>
 
