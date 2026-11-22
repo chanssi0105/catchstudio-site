@@ -7,9 +7,9 @@
 
 {% set __url = page.url or "/" %}
 
-{# isEn: startsWith 없이 slice로 #}
+{# isEn: front matter lang 우선, 없으면 URL 앞부분으로 판별 (slice 필터는 문자열을 자르지 못해 /en/projects/를 국문으로 오판하던 문제 수정) #}
 {% set __isEn = false %}
-{% if __url == "/en/" or (__url | slice(0,4)) == "/en/" %}
+{% if lang == "en" or __url == "/en/" or __url.startsWith("/en/") %}
   {% set __isEn = true %}
 {% endif %}
 
