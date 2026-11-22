@@ -1,5 +1,16 @@
 @charset "UTF-8";
 
+/* Pretendard 웹폰트 선언 — head-common.njk에서 미리 불러오는 파일과 같은 주소.
+   이 선언이 없으면 Pretendard를 설치하지 않은 방문자는 시스템 글꼴로 보인다. */
+@font-face{
+  font-family:"Pretendard";
+  src:url("/assets/fonts/pretendard/PretendardVariable.woff2") format("woff2-variations"),
+      url("/assets/fonts/pretendard/PretendardVariable.woff2") format("woff2");
+  font-weight:45 920;
+  font-style:normal;
+  font-display:swap;
+}
+
 /* 보더박스 통일 */
 *,*::before,*::after{box-sizing: border-box;}
 
