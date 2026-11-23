@@ -13,17 +13,33 @@
   const pieceHeights=[914,541,594,226,380],starts=[[.22,.52,-2],[.5,.3,-1.5],[.78,.26,2.5],[.5,.67,1],[.78,.75,2]];
   const regions=[[0,480],[480,1110],[1180,1600],[1640,2960]];
   let frame=0,vh=innerHeight,navHeight=0,headerHeight=70,resizeTimer=0,lastScroll=0,prevY=scrollY,prevTime=performance.now(),boost=0,bandOffset=0,geometry={},wallCols=[],visibleBand=false,visibleWall=false,resizeObserver;
-  const progress=el=>{const r=el.getBoundingClientRect();return clamp(-r.top/Math.max(1,r.height-vh));};
+  const progress=el=>{const r=el.getBoundingClientRect(),top=mobile.matches?parseFloat(el.firstElementChild.style.getPropertyValue('--te-stage-top'))||0:0;return clamp((top-r.top)/Math.max(1,r.height-vh));};
   const revealProgress=(el,start=.85)=>{const r=el.getBoundingClientRect();return clamp((vh*start-r.top)/Math.max(1,vh*(start-.5)));};
   const clock=(p,count,dwell)=>{const slot=Math.min(count-1e-7,clamp(p)*count),index=Math.floor(slot),local=slot-index;return{index,local,moving:index<count-1&&local>=dwell,t:ease(clamp((local-dwell)/(1-dwell)))}};
   const visible=el=>{const r=el.getBoundingClientRect();return r.bottom>0&&r.top<vh;};
   const request=()=>{if(!frame)frame=requestAnimationFrame(update);};
   const connector=(x,y,a,b)=>`M ${x} ${y} C ${(x+a)/2} ${y}, ${(x+a)/2} ${b}, ${a} ${b}`;
   const measure=()=>{
-    vh=reduce.matches?innerHeight:$('.te-assembleStage').clientHeight;
+    vh=reduce.matches?innerHeight:assembly.clientHeight/2.6;
     navHeight=nav?nav.offsetHeight:0;
     headerHeight=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h'))||70;
     page.style.setProperty('--te-nav-height',`${navHeight}px`);
+    const available=vh-headerHeight-navHeight;
+    const sizeStage=(stage,height)=>{stage.style.setProperty('--te-stage-height',`${height}px`);stage.style.setProperty('--te-stage-top',`${Math.max(headerHeight,headerHeight+(available-height)/2)}px`);};
+    if(mobile.matches&&!reduce.matches){
+      sizeStage($('.te-assembleStage'),Math.min(available-16,Math.min(480,canvas.clientWidth-48)*914/700+48));
+      const stage=$('.te-manuscriptStage');stage.classList.remove('te-fit-small','te-fit-short');
+      stage.style.setProperty('--te-block-width','100%');
+      const paperTop=$('.te-paperLabel').offsetTop+$('.te-paperLabel').offsetHeight+parseFloat(getComputedStyle($('.te-paperLabel')).marginBottom);
+      stage.style.setProperty('--te-paper-content-top',`${paperTop}px`);
+      const getSize=()=>{const ph=Math.max(...papers.map(e=>e.scrollHeight))+paperTop+20,bh=Math.max(...blocks.map(e=>e.offsetHeight));return {ph,bh,height:ph+50+bh};};
+      let size=getSize();
+      if(size.height>available-16){stage.classList.add('te-fit-small');size=getSize();}
+      if(size.height>available-16){stage.style.setProperty('--te-block-width',`${Math.max(0,manCanvas.clientWidth-32)}px`);size=getSize();}
+      if(size.height>available-16){stage.classList.add('te-fit-short');size=getSize();}
+      paper.style.height=`${size.ph}px`;manCanvas.style.setProperty('--te-paper-height',`${size.ph}px`);papers.forEach(e=>e.dataset.fit='1');
+      sizeStage(stage,size.height);
+    }
     const W=canvas.clientWidth,H=canvas.clientHeight;
     const finalW=Math.min(mobile.matches?210:270,(H-16)*700/2655,mobile.matches?W*.54:270),finalH=2655*finalW/700;
     geometry={W,H,finalW,finalH,top:Math.max(0,(H-finalH)/2),left:mobile.matches?24:(W-finalW)/2};
@@ -33,15 +49,15 @@
     let initialW=Math.min(480,W-48),initialPositions=[];
     page.classList.remove('te-compactCaptions');
     if(!mobile.matches&&!reduce.matches){
-      const columns=[[0],[1,3],[2,4]],shifts=[0,-H*.04,H*.02],gap=innerWidth*.04;
-      const limit=Math.min(520,innerWidth*.27,(W-gap*2-48)/3);
+      const columns=[[0],[1,3],[2,4]],shifts=[0,-H*.04,H*.02],gutter=parseFloat(getComputedStyle($('.te-readerStage')).paddingLeft),gap=Math.min(W*.04,16);
+      const limit=Math.min(520,W*.27,(W-gap*2-2*gutter)/3);
       const layout=w=>{
         page.style.setProperty('--te-piece-caption-width',`${w}px`);
         const origin=canvas.getBoundingClientRect();
         const boxes=pieces.map((el,i)=>{
           el.style.width=`${w}px`;el.style.left='0px';el.style.top='0px';el.style.transform=`rotate(${starts[i][2]}deg)`;
           const image=$('img',el).getBoundingClientRect(),cap=$('figcaption',el).getBoundingClientRect();
-          return {top:Math.min(image.top,cap.top)-origin.top,bottom:Math.max(image.bottom,cap.bottom)-origin.top};
+          return {top:Math.min(image.top,cap.top)-origin.top,bottom:Math.max(image.bottom,cap.bottom)-origin.top,left:Math.min(image.left,cap.left)-origin.left,right:Math.max(image.right,cap.right)-origin.left};
         });
         const heights=columns.map(indices=>indices.reduce((sum,i)=>sum+boxes[i].bottom-boxes[i].top,0)+(indices.length-1)*28);
         const upper=Math.min(...heights.map((height,col)=>shifts[col]-height/2));
@@ -51,7 +67,8 @@
           let y=center+shifts[col]-heights[col]/2;
           indices.forEach(i=>{positions[i]={x:(W-(3*w+2*gap))/2+col*(w+gap),y:y-boxes[i].top};y+=boxes[i].bottom-boxes[i].top+28;});
         });
-        return {fits:lower-upper<=H,positions};
+        const left=Math.min(...boxes.map((b,i)=>b.left+positions[i].x)),right=Math.max(...boxes.map((b,i)=>b.right+positions[i].x));
+        return {fits:lower-upper<=H-24&&left>=gutter+20&&right<=W-gutter-20,positions};
       };
       // Wrapping can remove a whole line as width grows, so the fit is not monotonic.
       const fit=()=>{
@@ -68,16 +85,7 @@
       initialPositions=layout(initialW).positions;
     }
     geometry.initialW=initialW;geometry.initialPositions=initialPositions;
-    if(mobile.matches){
-      const heights=papers.map(el=>el.scrollHeight);
-      const natural=Math.max(...heights)+81;
-      const available=$('.te-manuscriptStage').clientHeight-headerHeight-navHeight-48;
-      const blockHeight=Math.max(...blocks.map(b=>b.scrollHeight));
-      const paperH=Math.min(natural,Math.max(180,available-blockHeight-60));
-      paper.style.height=reduce.matches?'':`${paperH}px`;
-      manCanvas.style.setProperty('--te-paper-height',`${paperH}px`);
-      papers.forEach(el=>{const scale=Math.min(1,(paperH-81)/Math.max(1,el.scrollHeight));el.style.transformOrigin='top left';el.dataset.fit=String(scale);});
-    }else{
+    if(!mobile.matches){
       paper.style.height='';
       manCanvas.style.transform='';
       const available=$('.te-manuscriptStage').clientHeight-headerHeight-navHeight-48;
@@ -94,9 +102,19 @@
         connections.append(group);
       });
     }
-    $$('.te-twinCol').forEach(col=>$$('.te-twinCaption',col).forEach(cap=>cap.style.top=mobile.matches?'':`${Number(cap.dataset.y)*col.clientWidth/700}px`));
-    cardsWrap.style.setProperty('--te-card-height',`${Math.max(...readerCards.map(c=>c.offsetHeight))}px`);
-    if(!reduce.matches)$$('.te-event:not(.is-open) .te-eventClip').forEach(el=>el.style.height=`${el.clientWidth*300/700}px`);
+    const twin=$('.te-twin'),cols=$$('.te-twinCol'),outside=(twin.clientWidth-(cols[0].clientWidth*2+parseFloat(getComputedStyle(twin).columnGap||40)))/2-40;
+    twin.classList.toggle('te-twin--below',!mobile.matches&&outside<240);
+    twin.style.setProperty('--te-twin-caption-width',`${clamp(outside-24,220,340)}px`);
+    if(!mobile.matches&&!twin.classList.contains('te-twin--below')&&$$('.te-twinCaption p').some(el=>el.offsetHeight/parseFloat(getComputedStyle(el).lineHeight)>4.05))twin.classList.add('te-twin--below');
+    cols.forEach(col=>$$('.te-twinCaption',col).forEach(cap=>cap.style.top=mobile.matches||twin.classList.contains('te-twin--below')?'':`${Number(cap.dataset.y)*col.clientWidth/700}px`));
+    cardsWrap.style.removeProperty('--te-card-height');
+    const cardHeight=Math.max(...readerCards.map(c=>c.scrollHeight));
+    cardsWrap.style.setProperty('--te-card-height',`${cardHeight}px`);
+    if(mobile.matches&&!reduce.matches){
+      const appHeight=Math.min(650,available-cardHeight-32-16-16);
+      $('.te-readerStage').style.setProperty('--te-app-height',`${appHeight}px`);
+      sizeStage($('.te-readerStage'),appHeight+cardHeight+32+16);
+    }
     wallCols=$$('.te-wallGrid--'+(mobile.matches?'mobile':'desktop')+' .te-wall__col').map(el=>({el,track:$('.te-wall__track',el),height:$('.te-wall__group',el).offsetHeight,offset:0,speed:Number(el.dataset.speed),down:el.classList.contains('is-down')}));
     request();
   };
@@ -197,25 +215,18 @@
   $$('[data-te-enter]').forEach(el=>enterObserver.observe(el));
   const motionObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.target===band)visibleBand=e.isIntersecting;if(e.target===wall)visibleWall=e.isIntersecting;});request();});
   motionObserver.observe(band);motionObserver.observe(wall);
-  const unfold=el=>{
-    if(el.classList.contains('is-open')||reduce.matches)return;
-    const clip=$('.te-eventClip',el),full=$('.te-mail',clip).offsetHeight;
-    clip.style.transition='height 1.2s cubic-bezier(.2,.8,.2,1)';
-    clip.style.height=`${full}px`;
-    const done=()=>{clip.style.height='auto';el.classList.add('is-open');clip.removeEventListener('transitionend',done);};
-    clip.addEventListener('transitionend',done);
-    setTimeout(done,1300);
-  };
   let eventObserver;
   const observeEvents=()=>{
     if(eventObserver)eventObserver.disconnect();
-    eventObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;eventObserver.unobserve(e.target);if(mobile.matches)unfold(e.target);else $$('.te-event',e.target).forEach((el,i)=>setTimeout(()=>unfold(el),i*150));}),{rootMargin:mobile.matches?'-45% 0px -45% 0px':'0px 0px -20% 0px'});
+    eventObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;eventObserver.unobserve(e.target);const items=mobile.matches?[e.target]:$$('.te-event',e.target);items.forEach((el,i)=>{el.style.setProperty('--te-event-delay',`${mobile.matches?0:i*.15}s`);el.classList.add('is-open');});}),{rootMargin:'0px 0px -20% 0px'});
     $$(mobile.matches?'.te-event':'.te-eventRow').forEach(el=>eventObserver.observe(el));
   };
   const queueMeasure=()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(performance.now()-lastScroll<160){queueMeasure();return;}measure();},180);};
   const applyMode=()=>{
     page.classList.toggle('te-motion',!reduce.matches);
     $$('.te-piece,.te-piece figcaption,.te-endCaption,.te-paper,.te-paperBlock,.te-block,.te-manuscriptCanvas,.te-twinCol,.te-twinCaption,.te-app,.te-readerViewport .te-mail,.te-readerHighlight,.te-readerCard,.te-readerCards,.te-mock,.te-mock img,.te-followupMail,.te-wall__track,.te-bandTrack,.te-eventClip').forEach(el=>el.removeAttribute('style'));
+    $$('.te-assembleStage,.te-manuscriptStage,.te-readerStage,.te-twin').forEach(el=>el.removeAttribute('style'));
+    $('.te-manuscriptStage').classList.remove('te-fit-small','te-fit-short');
     $$('.te-readerCard').forEach(el=>el.removeAttribute('aria-hidden'));
     $$('.te-event').forEach(el=>{if(reduce.matches)el.classList.add('is-open');});
     measure();observeEvents();
