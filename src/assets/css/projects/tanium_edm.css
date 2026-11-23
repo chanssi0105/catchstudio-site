@@ -154,6 +154,8 @@
 .te-motion .te-event.is-open .te-eventOpen,.te-motion .te-event.is-open figcaption{opacity:1;transform:none}
 @media(min-width:769px){
  .te-app{max-width:calc(100% - 420px - 4vw)}
+ /* 넓은 화면에서 메일 앱과 설명 카드 묶음이 왼쪽으로 쏠리지 않게 가운데로 모은다(빛 번짐 중심도 가운데) */
+ .te-readerStage{justify-content:center;background:radial-gradient(ellipse at 50% 55%,#1c2a6b55,transparent 60%)}
  .te-twinCaption{width:var(--te-twin-caption-width,220px)}
  .te-twin--below .te-twinCaption{position:relative;inset:auto!important;text-align:left;width:100%;margin-top:24px}
  .te-twin--below .te-twinCaption::before,.te-twin--below .te-twinCaption::after{display:none}
