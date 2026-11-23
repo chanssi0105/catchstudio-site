@@ -13,7 +13,7 @@
   const pieceHeights=[914,541,594,226,380],starts=[[.22,.52,-2],[.5,.3,-1.5],[.78,.26,2.5],[.5,.67,1],[.78,.75,2]];
   const regions=[[0,480],[480,1110],[1180,1600],[1640,2960]];
   let frame=0,vh=innerHeight,navHeight=0,headerHeight=70,resizeTimer=0,lastScroll=0,prevY=scrollY,prevTime=performance.now(),boost=0,bandOffset=0,geometry={},wallCols=[],visibleBand=false,visibleWall=false,resizeObserver;
-  const progress=el=>{const r=el.getBoundingClientRect(),top=mobile.matches?parseFloat(el.firstElementChild.style.getPropertyValue('--te-stage-top'))||0:0;return clamp((top-r.top)/Math.max(1,r.height-vh));};
+  const progress=el=>{const r=el.getBoundingClientRect();return clamp(-r.top/Math.max(1,r.height-vh));};
   const revealProgress=(el,start=.85)=>{const r=el.getBoundingClientRect();return clamp((vh*start-r.top)/Math.max(1,vh*(start-.5)));};
   const clock=(p,count,dwell)=>{const slot=Math.min(count-1e-7,clamp(p)*count),index=Math.floor(slot),local=slot-index;return{index,local,moving:index<count-1&&local>=dwell,t:ease(clamp((local-dwell)/(1-dwell)))}};
   const visible=el=>{const r=el.getBoundingClientRect();return r.bottom>0&&r.top<vh;};
@@ -25,7 +25,8 @@
     headerHeight=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h'))||70;
     page.style.setProperty('--te-nav-height',`${navHeight}px`);
     const available=vh-headerHeight-navHeight;
-    const sizeStage=(stage,height)=>{stage.style.setProperty('--te-stage-height',`${height}px`);stage.style.setProperty('--te-stage-top',`${Math.max(headerHeight,headerHeight+(available-height)/2)}px`);};
+    // Keep the sticky box viewport-sized; center only its content inside it.
+    const sizeStage=(stage,height)=>{const top=Math.max(headerHeight,headerHeight+(available-height)/2);stage.style.setProperty('--te-stage-height',`${height}px`);stage.style.setProperty('--te-content-top',`${top}px`);stage.style.setProperty('--te-content-bottom',`${vh-top-height}px`);};
     if(mobile.matches&&!reduce.matches){
       sizeStage($('.te-assembleStage'),Math.min(available-16,Math.min(480,canvas.clientWidth-48)*914/700+48));
       const stage=$('.te-manuscriptStage');stage.classList.remove('te-fit-small','te-fit-short');

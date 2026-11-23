@@ -159,7 +159,10 @@
  .te-twin--below .te-twinCaption::before,.te-twin--below .te-twinCaption::after{display:none}
 }
 @media(max-width:768px){
- .te-motion .te-assembleStage,.te-motion .te-manuscriptStage,.te-motion .te-readerStage{top:var(--te-stage-top,var(--header-h,70px));height:var(--te-stage-height);min-height:0;padding-top:0;padding-bottom:0;overflow:visible}
+ .te-motion .te-assembleStage,.te-motion .te-manuscriptStage,.te-motion .te-readerStage{top:0;height:100svh;min-height:0;padding-top:var(--te-content-top,var(--header-h,70px));padding-bottom:var(--te-content-bottom,var(--te-nav-height));overflow:hidden}
+ .te-motion .te-assembleStage{background-color:var(--te-navy)}
+ .te-motion .te-manuscriptStage{background-color:var(--te-red)}
+ .te-motion .te-readerStage{background-color:var(--te-ink)}
  .te-motion .te-assembleCanvas{flex:none;height:calc(var(--te-stage-height) - 48px)}
  .te-motion .te-manuscriptCanvas{height:var(--te-stage-height);width:calc(100% - 32px)}
  .te-motion .te-paper{font-size:var(--fs-body-md)}
