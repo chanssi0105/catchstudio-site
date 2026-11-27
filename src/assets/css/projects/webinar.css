@@ -1,0 +1,161 @@
+@charset "UTF-8";
+/* 웨비나 발표 자료 사례 — 디자인 v2(피그마 1319:127676) 구현.
+   PC(≥769px): 장면마다 1920 기준 좌표를 %로 옮긴 무대(.wbn-stage), 모바일(≤768px): 위→아래 흐름(.wbn-flow).
+   글자 크기는 사이트 토큰(common.css)만 사용. */
+.webinar-case{--wbn-red:#E9174E;--wbn-ease:cubic-bezier(.2,.7,.1,1);--wbn-dark:#18181B}
+.wbn-page{background:#fff;color:#18181B;overflow-x:clip}
+.wbn-page *,.wbn-page *::before,.wbn-page *::after{box-sizing:border-box}
+.wbn-page>section:not(.p-overviewCard) :where(p,h2,figure){margin:0}
+.wbn-page picture,.wbn-page img{display:block;max-width:100%}
+.wbn-page img{width:100%;height:auto}
+
+/* 첫 화면: 사진·제목 층별 시차(제목은 사이트 공통이 위로 빠르게, 사진은 이 파일 JS가 느리게) */
+.wbn-heroPicture,.wbn-heroPicture img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 100%}
+.wbn-heroPicture{transform-origin:50% 80%;will-change:transform}
+.wbn-hero::after{background:linear-gradient(to bottom,#0006,#0000 45%)}
+.wbn-hero .p-heroFx__inner{place-items:start center;padding-top:15.7svh}
+.wbn-hero .p-heroFx__title{line-height:1.2} /* 피그마 첫 화면 제목 줄 간격(72px 두 줄 172) — 노트북 화면과 겹치지 않게 */
+@media(min-aspect-ratio:16/9){.wbn-hero .p-heroFx__inner{padding-top:12svh}}
+@media(max-width:768px){.wbn-hero .p-heroFx__inner{padding-top:84px}} /* 피그마 모바일 첫 화면 줄 간격(216/4줄) — 키 작은 폰에서 노트북 화면과 겹치지 않게 */
+
+/* Overview 로고: FASTFIVE | HYPHEN DESIGN, 글자 높이 맞춤 */
+.wbn-logos{display:flex;align-items:center;justify-content:flex-end;width:100%;gap:22px;flex-wrap:nowrap}
+.wbn-logos img{display:block;width:auto!important;max-width:none;flex:none}
+.wbn-logos .wbn-logoFF{height:22px!important}
+.wbn-logos .wbn-logoHyphen{height:20px!important}
+.wbn-logoBar{width:1px;height:26px;background:#C9C3C5;flex:none}
+
+/* 글자(토큰) */
+.wbn-label{font:700 var(--fs-h6)/var(--lh-150) var(--font-display);color:var(--wbn-red)}
+.wbn-title{font:700 var(--fs-h3)/1.4 var(--font-display);letter-spacing:-.02em;word-break:keep-all}
+.wbn-desc{font-size:var(--fs-body-xl);line-height:var(--lh-180);letter-spacing:-.01em;word-break:keep-all}
+.wbn-sub{font:600 var(--fs-body-lg)/1.2 var(--font-display);word-break:keep-all;white-space:nowrap}
+.wbn-small{font:600 var(--fs-body-md)/1.2 var(--font-display)}
+.wbn-sampleNote{font:400 var(--fs-body-xs)/1.6 var(--font-display);color:#1E1A1B8c;letter-spacing:0;word-break:keep-all}
+
+/* 장면 */
+.wbn-scene{position:relative;background:var(--bg,#fff)}
+.wbn-stage{position:relative;width:100%}
+.wbn-stage>*{position:absolute;margin:0}
+.wbn-unit picture,.wbn-unit img{width:100%;height:auto}
+.wbn-shadow{box-shadow:0 12px 28px #0000001f}
+.wbn-s2 .wbn-shadow,.wbn-s5 .wbn-shadow{box-shadow:0 16px 36px #00000052}
+.wbn-chip{display:inline-flex;align-items:center;white-space:nowrap;padding:8px 16px;border-radius:999px;font:600 var(--fs-body-md)/1.2 var(--font-display)}
+.wbn-chip--tag{position:absolute;padding:7px 14px;font:600 var(--fs-body-sm)/1.2 var(--font-display)}
+.wbn-callout{display:flex;flex-direction:column;padding:16px 20px 20px;background:var(--wbn-red);color:#fff;word-break:keep-all}
+.wbn-callout__name{font:600 var(--fs-body-xs)/1.25 var(--font-display);letter-spacing:.02em;opacity:.92}
+.wbn-callout__title{margin-top:8px;font:700 var(--fs-body-md)/1.3 var(--font-display)}
+.wbn-callout__desc{margin-top:auto;padding-top:14px;font:400 var(--fs-body-sm)/1.4 var(--font-display)}
+.wbn-line{background:var(--wbn-red)}
+.wbn-arrow svg{display:block;width:100%;height:auto;overflow:visible}
+
+/* 걷힘 비교(온라인 리포트 .odc-compare 방식): 같은 자리에 두 장, 경계 왼쪽 = 기획안 · 오른쪽 = 완성 */
+.wbn-compare{position:relative;aspect-ratio:1248/702;background:#fff;box-shadow:0 12px 28px #0000001f;--wbn-split:42%}
+.wbn-compare>picture,.wbn-cmpPlan{position:absolute;inset:0;width:100%;height:100%}
+.wbn-compare picture,.wbn-compare img{width:100%;height:100%;object-fit:cover}
+.wbn-cmpPlan{clip-path:inset(0 calc(100% - var(--wbn-split)) 0 0)}
+.wbn-handle{position:absolute;top:0;bottom:0;left:var(--wbn-split);width:3px;margin-left:-1.5px;background:var(--wbn-dark);pointer-events:none;z-index:2}
+.wbn-handle::after{content:"";position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 16'%3E%3Cpath d='M10 2 4 8l6 6M22 2l6 6-6 6' fill='none' stroke='%2318181B' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/26px no-repeat;border:3px solid var(--wbn-dark);box-shadow:0 4px 12px #00000040}
+.wbn-range{position:absolute;inset:0;z-index:3;width:100%;height:100%;margin:0;cursor:ew-resize;appearance:none;-webkit-appearance:none;background:transparent;opacity:0;touch-action:pan-y}
+.wbn-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:56px;height:56px;background:transparent}
+.wbn-range::-moz-range-thumb{width:56px;height:56px;border:0;background:transparent}
+.wbn-compare:focus-within{outline:3px solid var(--wbn-red);outline-offset:5px}
+.wbn-cmpWrap .wbn-compare{width:100%}
+/* 다 바뀐 뒤 나타나는 설명 상자·선 */
+.wbn-motion .wbn-afterDone{opacity:0;visibility:hidden;translate:0 16px;transition:opacity .45s var(--wbn-ease),translate .45s var(--wbn-ease),visibility 0s .45s}
+.wbn-motion .is-done .wbn-afterDone{opacity:1;visibility:visible;translate:0 0;transition:opacity .45s var(--wbn-ease),translate .45s var(--wbn-ease),visibility 0s}
+
+/* 06 화면 고정 두 단계 */
+.wbn-s6 .wbn-unit{overflow:hidden}
+.wbn-beat2{position:absolute!important;inset:0;opacity:0;transition:opacity .6s var(--wbn-ease)}
+.wbn-s6.is-beat2 .wbn-beat2{opacity:1}
+.wbn-steps{height:auto}
+.wbn-steps__bar{position:absolute;left:0;right:0;top:8px;height:2px;background:#D4D4D8}
+.wbn-steps__bar i{position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--wbn-dark);transition:width .5s var(--wbn-ease)}
+.wbn-steps__dot{position:absolute;top:0;width:18px;height:18px;margin-left:-9px;border-radius:50%;border:2px solid var(--wbn-dark);background:var(--wbn-dark);transition:background .4s}
+.wbn-steps__dot.is-1{left:0}.wbn-steps__dot.is-2{left:50%;background:#fff}
+.wbn-steps__t{position:absolute;top:34px;font:600 var(--fs-body-md)/1.2 var(--font-display);color:var(--wbn-dark);white-space:nowrap;transition:color .4s}
+.wbn-steps__t.is-1{left:0}.wbn-steps__t.is-2{left:50%;color:#71717A}
+.wbn-s6.is-beat2 .wbn-steps__bar i{width:100%}
+.wbn-s6.is-beat2 .wbn-steps__dot.is-2{background:var(--wbn-dark)}
+.wbn-s6.is-beat2 .wbn-steps__t.is-1{color:#71717A}.wbn-s6.is-beat2 .wbn-steps__t.is-2{color:var(--wbn-dark)}
+.wbn-s6{transition:background-color .6s}
+.wbn-s6.is-leaving{background:#121213}
+
+/* 마무리 흐르는 벽 */
+.wbn-s7{color:#fff;padding:160px 0 160px}
+.wbn-closeHead{text-align:center;padding:0 24px}
+.wbn-closeHead .wbn-title{margin-top:20px!important}
+.wbn-wall{display:flex;flex-direction:column;gap:31px;margin-top:55px;overflow:hidden}
+.wbn-wallRow{overflow:visible}
+.wbn-wallTrack{display:flex;gap:16px;width:max-content;will-change:transform}
+.wbn-wallDup{display:flex;gap:16px}
+.wbn-wallItem{flex:none;width:15.625vw;max-width:300px}
+.wbn-wallItem img{width:100%;height:auto}
+
+/* 보이기 효과 */
+.wbn-motion [data-wbn-enter]{opacity:0;translate:0 48px;transition:opacity 1s var(--wbn-ease),translate 1s var(--wbn-ease)}
+.wbn-motion [data-wbn-enter].is-in{opacity:1;translate:0 0}
+
+/* PC/모바일 전환 */
+.wbn-m{display:none}
+@media(min-width:1200px){
+ .wbn-stage .wbn-title,.wbn-stage .wbn-desc,.wbn-stage .wbn-label,.wbn-stage .wbn-sub,.wbn-stage .wbn-sampleNote{height:auto}
+ .wbn-motion .wbn-s6{height:220svh}
+ .wbn-motion .wbn-s6 .wbn-pin{position:sticky;top:0;height:100svh;display:flex;align-items:center;overflow:hidden}
+ .wbn-s6 .wbn-stage{width:min(100%,calc(100svh*1920/1080));margin-inline:auto}
+}
+
+/* 1920 미만 PC: 무대(그림 좌표)가 폭에 비례해 줄어드는 만큼 무대 안 글자도 비례해 줄임(최소 크기는 지킴).
+   1920에서는 토큰 값과 같고, 모바일(≤768)은 흐름 배치라 토큰 그대로. */
+@media(min-width:1200px) and (max-width:1919px){
+ .wbn-stage{--fs-h3:max(24px,calc(36 * 100vw / 1920));--fs-h6:max(14px,calc(20 * 100vw / 1920));--fs-body-xl:max(16px,calc(26 * 100vw / 1920));--fs-body-lg:max(14px,calc(20 * 100vw / 1920));--fs-body-md:max(12px,calc(16 * 100vw / 1920));--fs-body-sm:max(11px,calc(14 * 100vw / 1920));--fs-body-xs:max(11px,calc(13 * 100vw / 1920))}
+ .wbn-stage .wbn-chip{padding:.5em 1em}
+ .wbn-stage .wbn-chip--tag{padding:.5em 1em}
+ .wbn-stage .wbn-callout{padding:calc(16 * 100vw / 1920) calc(20 * 100vw / 1920) calc(20 * 100vw / 1920)}
+ .wbn-stage .wbn-callout__title{margin-top:calc(8 * 100vw / 1920)}
+ .wbn-stage .wbn-callout__desc{padding-top:calc(14 * 100vw / 1920)}
+ .wbn-stage .wbn-steps__t{top:calc(34 * 100vw / 1920)}
+}
+@media(max-width:1199px){
+ .wbn-flow{max-width:760px;margin-inline:auto}
+ .wbn-closeHead{max-width:760px;margin-inline:auto}
+}
+@media(max-width:1199px){
+ .wbn-d{display:none!important}
+ .wbn-m{display:block}
+ .wbn-closeHead .wbn-title.wbn-m{display:block}
+ .wbn-flow{padding-left:20px;padding-right:20px}
+ .wbn-flow .wbn-label{font-size:var(--fs-h6)}
+ .wbn-mRow{display:block}
+ .wbn-mPair{display:flex;align-items:center;justify-content:space-between}
+ .wbn-mPair .wbn-arrow--m{flex:none;width:16px}
+ .wbn-mArrow{display:flex;justify-content:center}.wbn-mArrow svg{width:12px;height:auto}
+ .wbn-flow .wbn-unit{position:relative}
+ .wbn-over{position:absolute!important}
+ .wbn-flow .wbn-chip{padding:5px 10px;font-size:var(--fs-body-sm)}
+ .wbn-flow .wbn-chip--tag{padding:4px 8px;font-size:var(--fs-body-xs)}
+ .wbn-flow .wbn-callout{padding:14px 16px 16px;min-height:100px}
+ .wbn-flow .wbn-callout__desc{padding-top:8px}
+ .wbn-flow .wbn-compare{margin-top:0}
+ .wbn-handle::after{width:36px;height:36px;margin:-18px 0 0 -18px;background-size:18px;border-width:2px}
+ .wbn-range::-webkit-slider-thumb{width:44px;height:44px}
+ .wbn-flow .wbn-steps{position:relative;height:42px}
+ .wbn-flow .wbn-steps__bar{top:5px;height:1.5px}
+ .wbn-flow .wbn-steps__dot{width:11px;height:11px;margin-left:-5.5px;border-width:1.5px}
+ .wbn-flow .wbn-steps__t{top:21px;font-size:var(--fs-body-sm)}
+ .wbn-motion .wbn-s6 .wbn-pinBox::after{content:"";display:block;height:90svh} /* 고정 범위는 내용 상자 안이어야 해서 여백 대신 빈 칸 */
+ .wbn-motion .wbn-s6 .wbn-pinPart{position:sticky;top:max(72px,calc(50svh - 170px));z-index:1}
+ .wbn-s7{padding:70px 0 70px}
+ .wbn-wall{gap:17px;margin-top:62px}
+ .wbn-wallTrack,.wbn-wallDup{gap:8px}
+ .wbn-wallItem{width:140px}
+ .wbn-motion [data-wbn-enter]{translate:0 28px}
+}
+@media(prefers-reduced-motion:reduce){
+ .webinar-case .wbn-hero{position:relative;height:100svh}.webinar-case .p-heroSpacer{display:none}
+ .webinar-case .p-heroFx__title{opacity:1!important;transform:none!important}
+ .wbn-page *{animation:none!important;transition:none!important}
+ .wbn-afterDone{opacity:1!important;visibility:visible!important;translate:none!important}
+ .wbn-wall{overflow-x:auto}
+}
