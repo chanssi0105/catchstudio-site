@@ -1,0 +1,251 @@
+@charset "UTF-8";
+/* Azwell AI × NVIDIA 설문 캠페인 사례 — 디자인 v1(피그마 Catch Studio › Azwell › Design v1 1326:9563) 구현.
+   첫 화면: 오브제 7개가 세 층(뒤·중간·앞)으로 떠 있는 패럴랙스(마우스·스크롤·기울기, 이 파일 JS).
+   PC(≥1200px): 장면마다 1920 기준 좌표를 %로 옮긴 무대(.azw-stage), 1199 이하: 위→아래 흐름(.azw-flow, 모바일 390 치수).
+   글자 크기는 사이트 토큰(common.css)만 사용. */
+.azwell-case{--azw-red:#E9174E;--azw-green:#76B900;--azw-ease:cubic-bezier(.2,.7,.1,1)}
+.azw-page{background:#fff;color:#18181B;overflow-x:clip}
+.azw-page *,.azw-page *::before,.azw-page *::after{box-sizing:border-box}
+.azw-page>section:not(.p-overviewCard) :where(p,h2){margin:0}
+.azw-page picture,.azw-page img{display:block;max-width:100%}
+.azw-page img{width:100%;height:auto}
+
+/* ===== 첫 화면: 어두운 바탕 + 가운데 제목 + 층별 오브제 ===== */
+.azw-hero{background:#060806}
+.azw-hero::after{display:none} /* 디자인에 없는 공통 어둡게 덮개를 이 사례 첫 화면에서만 끔 */
+.azw-heroBg{position:absolute;inset:-3%;animation:azw-bgDrift 22s ease-in-out infinite alternate;will-change:transform}
+.azw-heroBg picture,.azw-heroBg img{width:100%;height:100%;object-fit:cover;object-position:0% 100%}
+@keyframes azw-bgDrift{from{transform:translate3d(-1%,.6%,0) scale(1.01)}to{transform:translate3d(1%,-.6%,0) scale(1.03)}}
+.azw-layer{position:absolute;inset:0;pointer-events:none;will-change:transform}
+.azw-layer--front{z-index:4}
+.azw-hero .p-heroFx__inner{padding:0 var(--p-gutter);place-items:center}
+.azw-heroTitle{line-height:1.2} /* 피그마 첫 화면 제목 72px·줄 간격 120% */
+.azw-heroTitle .p-heroFx__line{display:block;width:fit-content;margin-inline:auto}
+/* 오브제 자리: JS가 화면 크기에 맞춰 px로 다시 놓음(가장자리 기준 + 제목과 겹치지 않게). 아래는 JS 전 기본값 */
+.azw-obj{position:absolute;left:calc(var(--px)/1920*100%);top:calc(var(--py)/1080*100%);width:calc(var(--pw)/1920*100%)}
+.azw-float{animation:azw-bob var(--dur,7s) ease-in-out var(--dl,0s) infinite alternate;will-change:transform}
+.azw-float picture,.azw-float img{display:block;width:100%;height:auto}
+.azw-layer--back{--azw-amp:5px;--azw-rot:1.6deg}
+.azw-layer--mid{--azw-amp:8px;--azw-rot:2.4deg}
+.azw-layer--front{--azw-amp:10px;--azw-rot:2deg}
+@keyframes azw-bob{from{transform:translate3d(0,calc(var(--azw-amp) * -1),0) rotate(calc(var(--azw-rot) * -1))}to{transform:translate3d(0,var(--azw-amp),0) rotate(var(--azw-rot))}}
+.azw-hero.is-paused .azw-float,.azw-hero.is-paused .azw-heroBg{animation-play-state:paused}
+@media(max-width:1199px){
+ /* 1199 이하 제목은 네 줄: Azwell AI / × NVIDIA / Agentic AI / Adoption Survey(태블릿 가로에서 72px 두 줄이 폭을 넘음) */
+ .azw-heroTitle{line-height:1.18}
+ .azw-heroTitle .azw-ln{display:block;width:fit-content;margin-inline:auto}
+ .azw-heroTitle .p-heroFx__line{display:contents}
+}
+@media(max-width:768px),(max-width:1199px) and (max-aspect-ratio:85/100){
+ .azw-obj{left:calc(var(--mx)/390*100%);top:calc(var(--my)/844*100%);width:calc(var(--mw)/390*100%)}
+ .azw-layer--back{--azw-amp:3px}.azw-layer--mid{--azw-amp:5px}.azw-layer--front{--azw-amp:6px}
+}
+
+/* ===== Overview 로고: NVIDIA | AZWELL, 글자 높이 맞춤 ===== */
+.azw-logos{display:flex;align-items:center;justify-content:flex-end;width:100%;gap:20px;flex-wrap:nowrap}
+.azw-logos img{display:block;width:auto!important;max-width:none;flex:none}
+.azw-logos .azw-logoNv{height:18px!important}
+.azw-logos .azw-logoAz{height:15.5px!important}
+.azw-logoBar{width:1px;height:22px;background:#BFBDBD;flex:none}
+
+/* ===== 글자(토큰) ===== */
+.azw-label{font:800 var(--fs-h6)/1.2 var(--font-display);color:var(--azw-red);white-space:nowrap}
+.azw-title{margin-top:16px!important;font:700 var(--fs-h3)/1.4 var(--font-display);letter-spacing:-.02em;word-break:keep-all}
+.azw-desc{margin-top:36px!important;font-size:var(--fs-body-xl);line-height:var(--lh-180,1.8);letter-spacing:-.01em;word-break:keep-all}
+.azw-cap{font:600 var(--fs-body-sm)/1.2 var(--font-display);color:#1E1A1B}
+
+/* ===== 장면 ===== */
+.azw-scene{position:relative;background:var(--bg,#fff)}
+.azw-stage{position:relative;width:100%}
+.azw-stage>*{position:absolute;margin:0}
+.azw-copy{display:flex;flex-direction:column}
+.azw-copy--center{text-align:center;align-items:center}
+.azw-s1 .azw-title{color:#18181B}.azw-s1 .azw-desc{color:#27272A;margin-top:40px!important}
+.azw-s2 .azw-title,.azw-s2 .azw-desc{color:#18181B}
+.azw-s3 .azw-title,.azw-s4 .azw-title{color:#fff}
+.azw-s3 .azw-desc,.azw-s4 .azw-desc{color:#D4D4D8}
+
+/* 설명 상자(빨강 채움, 흰 글자) */
+.azw-callout{display:flex;flex-direction:column;padding:22px 24px 24px;background:var(--azw-red);color:#fff;border-radius:12px;word-break:keep-all}
+.azw-callout__name{font:700 var(--fs-body-sm)/1.2 var(--font-display);letter-spacing:.01em}
+.azw-callout__title{margin-top:8px;font:700 var(--fs-body-lg)/1.35 var(--font-display)}
+.azw-callout__desc{margin-top:8px;font:400 var(--fs-body-md)/1.5 var(--font-display);opacity:.92}
+.azw-line{background:var(--azw-red)}
+.azw-line--h{height:1px}
+.azw-line--v{width:1px}
+.azw-dot{width:10px;height:10px;border-radius:50%;background:var(--azw-red)}
+
+/* ===== 01 걷힘 비교: 위 = 완성 eDM, 경계 아래 = 기획서 칸(원고 끝까지, 구간마다 메일의 같은 구간 높이에 맞춰 붙임) ===== */
+.azw-cmpWrap{filter:drop-shadow(0 24px 30px #00000024)}
+.azw-cmp{position:relative;aspect-ratio:660/2242;--azw-b:0;touch-action:pan-y}
+.azw-cmpDone,.azw-cmpDone img{width:100%;height:100%;object-fit:cover}
+.azw-cmpPlan{position:absolute;inset:0;background:#fff;clip-path:inset(calc(var(--azw-b) * 1%) 0 0 0)}
+.azw-cmpPlan picture,.azw-cmpPlan img{width:100%;height:100%;object-fit:cover;object-position:50% 0}
+.azw-frame{position:absolute;left:0;right:0;border:2px solid var(--azw-red);border-radius:6px;pointer-events:none}
+.azw-handle{position:absolute;left:0;right:0;top:calc(var(--azw-b) * 1%);height:2px;margin:-1px 0 0;padding:0;border:0;background:var(--azw-red);cursor:ns-resize;z-index:3;touch-action:none;opacity:1;transition:opacity .3s}
+.azw-handle::before{content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:var(--azw-red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 32'%3E%3Cpath d='M2 10 8 4l6 6M2 22l6 6 6-6' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;box-shadow:0 4px 14px #00000040}
+.azw-handle::after{content:"";position:absolute;left:0;right:0;top:-22px;bottom:-22px} /* 끌기 쉬운 두께 */
+.azw-handle:focus-visible{outline:3px solid #18181B;outline-offset:4px}
+.azw-handle__tag{position:absolute;left:calc(100% + 20px);font:600 var(--fs-body-sm)/1 var(--font-display);color:#18181B;white-space:nowrap;transition:opacity .3s}
+.azw-handle__tag.is-up{bottom:12px}.azw-handle__tag.is-down{top:12px}
+.azw-cmp.is-done .azw-handle__tag{opacity:0}
+.azw-cmp.is-done .azw-handle{background:transparent}
+.azw-cmp.is-done .azw-handle::before{transform:translateY(-32px) scale(.85)} /* 다 바뀐 뒤 손잡이는 메일 아래 끝 안쪽에 작게(다시 끌 수 있게) */
+/* 경계가 지나간 뒤 나타나는 강조 테두리·설명 상자·선 */
+.azw-motion .azw-after{opacity:0;visibility:hidden;transition:opacity .45s var(--azw-ease),translate .45s var(--azw-ease),visibility 0s .45s}
+.azw-motion .azw-callout.azw-after{translate:-16px 0}
+.azw-motion .azw-line--h.azw-after{transform:scaleX(0);transform-origin:100% 50%;transition:opacity .2s,transform .5s var(--azw-ease),visibility 0s .5s}
+.azw-motion .azw-after.is-on{opacity:1;visibility:visible;translate:0 0;transform:none;transition:opacity .45s var(--azw-ease) var(--azw-d,0s),translate .45s var(--azw-ease) var(--azw-d,0s),transform .5s var(--azw-ease),visibility 0s}
+.azw-motion .azw-callout.azw-after.is-on{--azw-d:.25s}
+
+/* ===== 02 머리표 ①②③ → 오브제 테두리 + 선 + 설명 상자 ===== */
+.azw-head{box-shadow:0 24px 60px #0000002e}
+.azw-ring{border:2px solid var(--azw-red);border-radius:50%;pointer-events:none}
+.azw-badge{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--azw-red);color:#fff;font:700 13px/1 var(--font-display)} /* 장식 숫자(와이어·디자인과 같은 예외) */
+.azw-motion .azw-step{opacity:0;transition:opacity .4s var(--azw-ease),transform .5s var(--azw-ease),translate .5s var(--azw-ease)}
+.azw-motion .azw-ring.azw-step{transform:scale(.6)}
+.azw-motion .azw-line--v.azw-step{transform:scaleY(0);transform-origin:50% 0}
+.azw-motion .azw-callout.azw-step{translate:0 14px}
+.azw-motion .azw-badge.azw-step{opacity:.35}
+.azw-motion .azw-s2.is-s1 [data-step="1"],.azw-motion .azw-s2.is-s2 [data-step="1"],.azw-motion .azw-s2.is-s2 [data-step="2"],
+.azw-motion .azw-s2.is-s3 .azw-step{opacity:1;transform:none;translate:0 0}
+.azw-motion .azw-s2 .azw-callout.azw-step{transition-delay:.2s}
+
+/* ===== 과정 띠 MAIL → REGISTER → COMPLETE ===== */
+.azw-steps{position:relative;display:flex;justify-content:space-between;width:900px;max-width:100%}
+.azw-steps__line{position:absolute;left:150px;right:150px;top:11px;height:2px;background:#52525B}
+.azw-steps__item{position:relative;display:flex;flex-direction:column;align-items:center;width:300px;text-align:center}
+.azw-steps__dot{width:16px;height:16px;margin:3px 0;border-radius:50%;background:#52525B}
+.azw-steps__key{margin-top:11px;font:800 var(--fs-body-md)/1.2 var(--font-display);color:#A1A1AA}
+.azw-steps__sub{margin-top:5px;font:400 var(--fs-body-md)/1.2 var(--font-display);color:#71717A}
+.azw-steps__item.is-on .azw-steps__dot{width:22px;height:22px;margin:0;background:var(--azw-green);box-shadow:0 0 0 0 #76B90066}
+.azw-steps__item.is-on .azw-steps__key{color:var(--azw-green)}
+.azw-steps__item.is-on .azw-steps__sub{color:#fff}
+.azw-motion .azw-steps.is-in .is-on .azw-steps__dot{animation:azw-pulse 1.6s var(--azw-ease) .5s 2}
+@keyframes azw-pulse{0%{box-shadow:0 0 0 0 #76B90080}100%{box-shadow:0 0 0 14px #76B90000}}
+
+/* ===== 03 ONE STAGE (PC: 가운데 흐름, 1920 기준 비율) ===== */
+.azw-s3Pc{display:flex;flex-direction:column;align-items:center;padding:140px 0 160px}
+.azw-s3Copy{width:min(1000px,52.08vw)}
+.azw-s3Copy .azw-title{margin-top:16px!important}
+.azw-s3Pc .azw-steps{margin-top:59px}
+.azw-browser{position:relative;width:58.333vw;background:#2A2D2B;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px #00000073}
+.azw-browser__bar{display:flex;gap:8px;height:40px;padding:15px 17px 0}
+.azw-browser__bar i{width:10px;height:10px;border-radius:50%;background:#5A5E5B}
+/* 창 안 스크롤(M&E 두 번째 장면 방식을 이 사례에 새로 구현): 고정 구간(.azw-pin) 동안 창을 화면에 세우고 창 안 페이지를 위로 올림.
+   움직임 없을 때(움직임 줄이기·JS 전)는 고정 없이 창 안을 직접 스크롤. */
+.azw-pin{width:100%}
+.azw-pinStage{display:flex;justify-content:center}
+.azw-s3Pc .azw-pin{margin-top:75px}
+.azw-browser__view{position:relative;max-height:80svh;overflow:auto;overscroll-behavior:contain;background:#141614}
+.azw-browser__view:focus-visible{outline:3px solid var(--azw-green);outline-offset:-3px}
+.azw-browser__page picture,.azw-browser__page img{display:block;width:100%;height:auto}
+.azw-motion .azw-s3Pc{padding-bottom:40px}
+.azw-motion .azw-s3Pc .azw-pin{height:400svh;margin-top:0} /* 고정 300svh */
+.azw-motion .azw-pinStage{position:sticky;top:0;height:100svh;align-items:center;padding:calc(var(--header-h,70px) + 24px) 0 calc(var(--azw-navh,0px) + 24px)}
+.azw-motion .azw-s3Pc .azw-browser{width:min(58.333vw,calc((100svh - var(--header-h,70px) - var(--azw-navh,0px) - 48px - 40px) * 1400 / 900))}
+.azw-motion .azw-browser__view{max-height:none;overflow:hidden;overscroll-behavior:auto;aspect-ratio:1400/900} /* contain이 남으면 창 위 휠이 페이지로 안 넘어가 멈춤 */
+.azw-motion .azw-browser__page{will-change:transform}
+
+/* ===== 마무리 COMPLETION: 위 검정 머리글(가운데) → 아래 글자 없는 사진 화면 폭 전체 ===== */
+.azw-closeHead{display:flex;flex-direction:column;align-items:center;text-align:center;padding:160px 24px 0}
+.azw-s4 .azw-steps{width:600px}
+.azw-s4 .azw-steps__line{left:100px;right:100px;top:10px;background:#3F3F46}
+.azw-s4 .azw-steps__item{width:200px}
+.azw-s4 .azw-steps__dot{width:14px;height:14px;background:#3F3F46}
+.azw-s4 .azw-steps__key{margin-top:8px;font-size:var(--fs-body-sm);color:#71717A}
+.azw-s4 .azw-steps__item.is-on .azw-steps__dot{width:20px;height:20px;margin:0;background:var(--azw-green)}
+.azw-s4 .azw-steps__item.is-on .azw-steps__key{color:var(--azw-green)}
+.azw-s4 .azw-steps__item:not(.is-on) .azw-steps__dot{margin:3px 0}
+.azw-s4 .azw-closeHead .azw-label{margin-top:64px}
+.azw-closeHead .azw-title{width:1200px;max-width:100%}
+.azw-closeHead .azw-desc{width:940px;max-width:100%;margin-top:48px!important}
+.azw-closePhoto{position:relative;margin-top:80px;overflow:hidden}
+.azw-closePhoto::before{content:"";position:absolute;left:0;right:0;top:0;height:70px;background:linear-gradient(#000,#0000);z-index:1;pointer-events:none}
+.azw-closePic{display:block;transform-origin:50% 60%;will-change:transform}
+.azw-closePic img{width:100%;height:auto}
+
+/* 보이기 효과 */
+.azw-motion [data-azw-enter]{opacity:0;translate:0 48px;transition:opacity 1s var(--azw-ease),translate 1s var(--azw-ease)}
+.azw-motion [data-azw-enter].is-in{opacity:1;translate:0 0}
+
+/* ===== PC/모바일 전환 ===== */
+.azw-m{display:none}
+@media(min-width:1200px) and (max-width:1919px){
+ /* 무대가 폭에 비례해 줄어드는 만큼 무대 안 글자도 비례해 줄임(1920에서 토큰 값과 같음, 최소 크기 지킴) */
+ .azw-stage,.azw-s3Pc,.azw-closeHead{--fs-h3:max(24px,calc(36 * 100vw / 1920));--fs-h6:max(14px,calc(20 * 100vw / 1920));--fs-body-xl:max(16px,calc(26 * 100vw / 1920));--fs-body-lg:max(14px,calc(20 * 100vw / 1920));--fs-body-md:max(12px,calc(16 * 100vw / 1920));--fs-body-sm:max(11px,calc(14 * 100vw / 1920))}
+ .azw-stage .azw-callout{padding:calc(22 * 100vw / 1920) calc(24 * 100vw / 1920) calc(24 * 100vw / 1920)}
+ .azw-stage .azw-title{margin-top:calc(16 * 100vw / 1920)!important}
+ .azw-stage .azw-desc{margin-top:calc(36 * 100vw / 1920)!important}
+ .azw-s1 .azw-stage .azw-desc{margin-top:calc(40 * 100vw / 1920)!important}
+ .azw-s3Pc{padding:calc(140 * 100vw / 1920) 0 calc(160 * 100vw / 1920)}
+ .azw-s3Pc .azw-steps{width:calc(900 * 100vw / 1920);margin-top:calc(59 * 100vw / 1920)}
+ .azw-s3Pc .azw-steps__line{left:calc(150 * 100vw / 1920);right:calc(150 * 100vw / 1920)}
+ .azw-s3Pc .azw-pin{margin-top:calc(75 * 100vw / 1920)}
+ .azw-motion .azw-s3Pc .azw-pin{margin-top:0}
+ .azw-s3Pc .azw-steps__item{width:calc(300 * 100vw / 1920)}
+ .azw-closeHead{padding-top:calc(160 * 100vw / 1920)}
+ .azw-handle__tag{left:calc(100% + 12px)}
+}
+@media(max-width:1199px){
+ .azw-d{display:none!important}
+ .azw-m{display:block}
+ .azw-flow{max-width:760px;margin-inline:auto;padding-left:24px;padding-right:24px}
+ .azw-title{margin-top:13px!important}
+ .azw-desc,.azw-s1 .azw-desc{margin-top:24px!important}
+ .azw-callout{padding:16px 18px 18px;border-radius:10px}
+ .azw-callout__title{margin-top:6px;font-size:var(--fs-body-lg)}
+ .azw-callout__desc{margin-top:6px;font-size:13.5px} /* 모바일 390 토큰 13.5(PC 16에 대응) */
+ .azw-mCallouts{display:flex;flex-direction:column;gap:12px}
+ /* 01 */
+ .azw-cmpWrap--m{position:relative;filter:drop-shadow(0 24px 30px #0000001f)}
+ .azw-frame{border-radius:4px}
+ .azw-num{position:absolute;left:-11px;top:-11px;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--azw-red);color:#fff;font:700 12px/1 var(--font-display)}
+ .azw-handle::before{width:36px;height:36px;margin:-18px 0 0 -18px;background-size:9px}
+ .azw-handle__tag{left:auto;right:6px;padding:4px 7px;border-radius:999px;background:#18181Bd9;color:#fff;font-size:var(--fs-body-xs)}
+ .azw-handle__tag.is-up{bottom:8px}.azw-handle__tag.is-down{top:8px}
+ /* 02 */
+ .azw-cap--m{display:none}
+ .azw-emoji--m{position:relative;margin-left:18px;margin-top:36px!important}
+ .azw-head--m{position:relative;box-shadow:0 12px 30px #0000002e}
+ .azw-head--m .azw-ring,.azw-head--m .azw-badge,.azw-emoji--m .azw-badge{position:absolute}
+ .azw-head--m .azw-ring{border-width:1.5px}
+ .azw-badge--sm{width:18px;height:18px;font-size:10px}
+ /* 03 */
+ .azw-s3M .azw-steps{width:100%;max-width:342px;margin:36px auto 0}
+ .azw-s3M .azw-steps__line{left:56px;right:56px;top:7px;height:1.5px;background:#3F3F46}
+ .azw-s3M .azw-steps__item{width:120px}
+ .azw-s3M .azw-steps__dot{width:11px;height:11px;margin:2.5px 0}
+ .azw-s3M .azw-steps__item.is-on .azw-steps__dot{width:16px;height:16px;margin:0}
+ .azw-steps__key{margin-top:6px;font-size:12px} /* 모바일 390 토큰 12 */
+ .azw-s3M .azw-browser{width:100%;border-radius:10px;box-shadow:0 16px 40px #00000073}
+ .azw-s3M .azw-pin{margin-top:32px}
+ .azw-s3M .azw-browser__view{max-height:70svh}
+ .azw-motion .azw-s3M{padding-bottom:24px!important}
+ .azw-motion .azw-s3M .azw-pin{height:350svh;margin-top:12px} /* 고정 약 250svh */
+ .azw-motion .azw-s3M .azw-pinStage{top:var(--header-h,70px);height:calc(100svh - var(--header-h,70px));padding:16px 0 calc(var(--azw-navh,0px) + 16px)}
+ .azw-motion .azw-s3M .azw-browser{width:min(100%,420px)}
+ .azw-motion .azw-s3M .azw-browser__view{aspect-ratio:auto;height:calc(100svh - var(--header-h,70px) - var(--azw-navh,0px) - 32px - 24px)}
+ .azw-s3M .azw-browser__bar{gap:5px;height:24px;padding:9px 11px 0}
+ .azw-s3M .azw-browser__bar i{width:6px;height:6px}
+ /* 마무리 */
+ .azw-closeHead{padding:64px 24px 0;max-width:760px;margin-inline:auto}
+ .azw-s4 .azw-steps{width:100%;max-width:342px}
+ .azw-s4 .azw-steps__line{left:56px;right:56px;top:7px;height:1.5px}
+ .azw-s4 .azw-steps__item{width:120px}
+ .azw-s4 .azw-steps__dot,.azw-s4 .azw-steps__item:not(.is-on) .azw-steps__dot{width:11px;height:11px;margin:2.5px 0}
+ .azw-s4 .azw-steps__item.is-on .azw-steps__dot{width:16px;height:16px;margin:0}
+ .azw-s4 .azw-steps__key,.azw-s4 .azw-steps__item.is-on .azw-steps__key{margin-top:6px;font-size:12px}
+ .azw-s4 .azw-closeHead .azw-label{margin-top:40px}
+ .azw-closeHead .azw-title{margin-top:12px!important}
+ .azw-closeHead .azw-desc{margin-top:28px!important}
+ .azw-closePhoto{margin-top:48px}
+ .azw-motion [data-azw-enter]{translate:0 28px}
+}
+@media(prefers-reduced-motion:reduce){
+ .azwell-case .azw-hero{position:relative;height:100svh}.azwell-case .p-heroSpacer{display:none}
+ .azwell-case .p-heroFx__title{opacity:1!important;transform:none!important}
+ .azw-heroBg,.azw-float{animation:none!important}
+ .azw-page *{animation:none!important;transition:none!important}
+ .azw-after,.azw-step{opacity:1!important;visibility:visible!important;translate:none!important;transform:none!important}
+}
