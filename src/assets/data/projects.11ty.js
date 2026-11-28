@@ -11,6 +11,7 @@ module.exports = class {
       title: p.data.title || "",
       url: p.url || "",
       thumb: p.data.thumb || "",
+      category: p.data.category || "",
       year: p.data.year || ""
     }));
     return JSON.stringify(items);

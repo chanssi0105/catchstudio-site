@@ -355,8 +355,10 @@
         a.rel = "noopener noreferrer";
       }
 
+      const c = escapeHTML(item?.category || "");
       a.innerHTML =
         `<img class="p-thumb" src="${th}" alt="${t}" loading="lazy" decoding="async">` +
+        (c ? `<span class="p-cat">${c}</span>` : "") +
         `<span class="p-title">${t}</span>`;
 
       return a;
@@ -401,7 +403,9 @@
       if (!res.ok) throw new Error(`projects.json fetch failed: ${res.status}`);
 
       const json = await res.json();
-      all = Array.isArray(json) ? json : [];
+      // projects.json에는 국문·영문 사례가 함께 있음 → 지금 보는 언어 것만 남김(섞이면 이미 보인 카드가 다시 붙음)
+      const isEn = location.pathname.startsWith("/en/");
+      all = (Array.isArray(json) ? json : []).filter((x) => String(x?.url || "").startsWith("/en/") === isEn);
 
       // dataset total이 틀릴 때 대비
       total = Number.isFinite(total) && total > 0 ? total : all.length;
@@ -418,8 +422,9 @@
       try {
         await ensureData();
 
-        const loaded = grid.children.length;
-        const next = all.slice(loaded, loaded + page);
+        // 이미 화면에 있는 주소는 건너뜀(첫 화면 순서와 목록 순서가 달라도 겹치지 않게)
+        const shown = new Set([...grid.querySelectorAll("a.p-card")].map((a) => new URL(a.href, location.href).pathname));
+        const next = all.filter((x) => !shown.has(new URL(x.url, location.href).pathname)).slice(0, page);
 
         next.forEach((item, idx) => {
           const card = buildCard(item);
